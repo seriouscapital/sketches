@@ -1,0 +1,807 @@
+
+<div id="root" style="background:#000;min-height:100vh;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:rgba(255,255,255,.88)"></div>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+select option{background:#111;color:#fff}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.28)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
+input[type=range]{accent-color:#FF0099}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes pu2{0%,100%{opacity:1}50%{opacity:.5}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const{useState,useEffect,useRef}=React;
+
+const TAX={
+  "Financial Services":{_cal:"Political and Human Capital signals carry highest early-warning value.","Commercial Banking":["Regional bank","Community bank","National bank","Digital bank","Credit union"],"Investment Banking":["Bulge bracket","Middle market","Boutique advisory","Trading firm"],"Asset Management":["Institutional AM","Wealth manager / RIA","Hedge fund","Private equity","Venture capital"],"Insurance":["P&C insurer","Life & annuity","Health insurer","Reinsurer","Insurtech"],"Consumer Finance":["Credit card issuer","Auto finance","Mortgage lender","Consumer payments"],"Fintech":["Payments network","Lending platform","Wealthtech","Regtech"]},
+  "Technology":{_cal:"Human and Intellectual Capital signals carry highest early-warning value.","Enterprise Software":["ERP / CRM","Cybersecurity","Data & analytics","Cloud SaaS","DevOps"],"AI & Machine Learning":["Foundation model","Applied AI","AI infrastructure","AI-enabled SaaS"],"Consumer Technology":["Social platform","E-commerce","Consumer apps","Digital media"],"Semiconductor":["IDM","Fabless chip","Foundry","Networking hardware"],"Cloud & Infrastructure":["Hyperscaler","Managed cloud","Data center","CDN"],"IT Services":["IT outsourcing","Systems integration","Managed services","Digital transformation"]},
+  "Healthcare & Life Sciences":{_cal:"Intellectual and Political Capital signals carry highest early-warning value.","Pharmaceutical":["Large pharma","Specialty pharma","Generic / biosimilar","Rare disease","CDMO"],"Biotechnology":["Clinical-stage biotech","Commercial-stage biotech","Gene / cell therapy","Diagnostics"],"Medical Device":["Large device maker","Specialty device","Diagnostics hardware","Digital health"],"Hospital & Health System":["Academic medical center","Community hospital","Regional health system","Long-term care"],"Health Insurance":["National payer","Regional / Blue plan","Medicare advantage","Medicaid"],"Healthcare Services":["Pharmacy / PBM","Lab services","Home health","Behavioral health"]},
+  "Energy & Natural Resources":{_cal:"Political and Social Capital signals carry highest early-warning value.","Oil & Gas":["Integrated major","E&P independent","Midstream / pipeline","Oilfield services"],"Utilities":["Regulated electric","Regulated gas","Multi-utility","Rural cooperative"],"Renewable Energy":["Solar developer","Wind developer","Energy storage","Offshore wind"],"Mining & Metals":["Diversified miner","Precious metals","Critical minerals","Iron & steel"],"Chemicals":["Specialty chemicals","Commodity chemicals","Agrochemicals","Advanced materials"],"Water & Environment":["Water utility","Environmental services","Waste management"]},
+  "Consumer & Retail":{_cal:"Reputational and Human Capital signals carry highest early-warning value.","Consumer Packaged Goods":["Food & beverage (large)","Food & beverage (mid)","Personal care","Household products","Alcohol & beverage"],"Retail":["Mass market","Specialty retail","Luxury retail","Grocery","E-commerce","DTC brand"],"Restaurant & Food Service":["QSR","Fast casual","Casual dining","Franchisee","Food delivery"],"Travel & Hospitality":["Global hotel chain","Airlines","Cruise line","Online travel agency"],"Media & Entertainment":["Broadcast / cable","Streaming","Film & TV studio","Publishing","Video games"],"Consumer Services":["Fitness & wellness","Home services","Pet services","Consumer subscription"]},
+  "Industrial & Manufacturing":{_cal:"Human and Intellectual Capital signals carry highest early-warning value.","Aerospace & Defense":["Defense prime contractor","Tier 1 defense supplier","Commercial aerospace OEM","Aviation MRO"],"Automotive & Mobility":["Traditional OEM","Electric vehicle OEM","Tier 1 supplier","Dealer group"],"Industrial Equipment":["Capital equipment OEM","Process equipment","Tools & components","Agricultural equipment"],"Transportation & Logistics":["Full truckload","LTL carrier","Air cargo","Ocean shipping","Freight brokerage","Last-mile","Rail"],"Construction & Engineering":["General contractor","E&C firm","Specialty trade","Building products"],"Packaging & Paper":["Corrugated packaging","Flexible packaging","Rigid containers","Paper & tissue"]},
+  "Professional Services":{_cal:"Human and Intellectual Capital signals carry highest early-warning value.","Management Consulting":["Global strategy firm","Operations / IT consulting","Boutique specialist","Big Four advisory"],"Legal Services":["Global / BigLaw firm","Regional boutique","Legal technology","Corporate legal dept"],"Accounting & Audit":["Big Four firm","Mid-market accounting","Regional CPA","Accounting technology"],"Talent & HR Services":["Executive search","Staffing","Workforce management","Employer of record"],"Marketing & Communications":["Global agency","Independent agency","PR & public affairs","Digital marketing"],"Research & Advisory":["Market research","Industry analyst","Data intelligence","Ratings agency"]},
+  "Real Estate":{_cal:"Political and Social Capital signals carry highest early-warning value.","REIT":["Office REIT","Retail / mall REIT","Industrial REIT","Multifamily REIT","Healthcare REIT"],"Development":["Residential homebuilder","Commercial developer","Mixed-use developer"],"Real Estate Services":["Global brokerage","Commercial PM","Residential brokerage","PropTech"]},
+  "Government & Public Sector":{_cal:"Political and Reputational Capital signals carry highest early-warning value.","Federal Government":["Cabinet-level agency","Defense & intelligence","Regulatory body","Federal enterprise"],"State & Local Government":["State agency","Municipal government","Transit authority","Public utility"],"Public Education":["Research university","Regional university","Community college","K-12 district"]},
+  "Nonprofit & Social Sector":{_cal:"Reputational and Social Capital signals carry highest early-warning value.","Philanthropic Foundations":["Private foundation","Community foundation","Corporate foundation","Family office"],"NGO & Development":["Global development NGO","Humanitarian aid","Advocacy / policy"],"Healthcare Nonprofit":["Nonprofit hospital","Community health center","Social services"]}
+};
+
+const QS=[
+  {domain:"Human Capital",did:"human",lead:"12–36 mo lead",text:"How would you characterize the departure pattern of senior and specialist talent over the past 12 months?",opts:[{v:0,t:"Departure rate is stable or declining. Regretted attrition is low and isolated."},{v:1,t:"We have noticed some increase in departures, but it feels episodic and manageable."},{v:2,t:"Departure velocity has increased, particularly in specialist or leadership roles. We are actively backfilling."},{v:3,t:"Senior and specialist departure is elevated and persistent. Institutional knowledge loss is becoming visible in execution."}]},
+  {domain:"Human Capital",did:"human",lead:"12–36 mo lead",text:"When your organization makes a large capital commitment, how are the human capital implications assessed before the decision?",opts:[{v:0,t:"Human capital impact is assessed explicitly alongside financial return before commitment."},{v:1,t:"Human capital is considered informally but not assessed with the same rigor as financial impact."},{v:2,t:"The financial case is built first. Human capital implications are managed afterward during execution."},{v:3,t:"Capital decisions are made on financial terms. Human capital is a delivery assumption, not a governance input."}]},
+  {domain:"Intellectual Capital",did:"intellectual",lead:"18–48 mo lead",text:"How would you characterize your organization's R&D intensity and pipeline coverage over the past two years?",opts:[{v:0,t:"R&D investment is growing or stable. Pipeline coverage across near, medium, and long-term is actively monitored."},{v:1,t:"R&D investment is stable but pipeline skews heavily toward near-term delivery."},{v:2,t:"R&D investment has declined relative to revenue. We are executing well on current capabilities but have fewer new options."},{v:3,t:"Intellectual capital investment has been under sustained pressure. We are harvesting more than we are building."}]},
+  {domain:"Reputational Capital",did:"reputational",lead:"6–12 mo lead",text:"How has your organization's standing with critical audiences — customers, talent, partners, investors — shifted over the past 18 months?",opts:[{v:0,t:"Standing is strong and stable across key audiences. No significant narrative shift visible."},{v:1,t:"We are aware of some softening in one or two audiences, but financial metrics remain strong."},{v:2,t:"Reputational signals are shifting. Analyst and media framing has become less favorable."},{v:3,t:"We are managing active reputational pressure. Trust signals across multiple audiences are declining simultaneously."}]},
+  {domain:"Reputational Capital",did:"reputational",lead:"6–12 mo lead",text:"How does your governance system respond when a significant reputational signal emerges?",opts:[{v:0,t:"Reputational signals are measured continuously and routed to specific decision-makers with a defined governance pathway."},{v:1,t:"We monitor reputational signals but they enter governance conversations informally."},{v:2,t:"Reputational signals become governance concerns when large enough to be visible in financial metrics or media coverage."},{v:3,t:"Our governance system responds to financial and regulatory signals. Reputational signals are managed by communications, not governed."}]},
+  {domain:"Political Capital",did:"political",lead:"18–60 mo lead",text:"How has your organization's relationship with regulators, policymakers, and oversight bodies changed over the past two years?",opts:[{v:0,t:"Regulatory relationships are strong and forward-looking. We have advance visibility into regulatory direction."},{v:1,t:"Regulatory relationships are adequate. We respond to developments as they emerge. No significant deterioration."},{v:2,t:"Regulatory inquiry frequency or scrutiny has increased. We are in a more reactive posture than two years ago."},{v:3,t:"Regulatory relationships have materially deteriorated. We are managing active enforcement activity or heightened scrutiny."}]},
+  {domain:"Social Capital",did:"social",lead:"24–60 mo lead",text:"How would you characterize your organization's most important external partnerships and ecosystem relationships?",opts:[{v:0,t:"Strategic partnerships are deepening. Partners invest in the relationship. Community relationships give operational flexibility."},{v:1,t:"Partnerships are stable but increasingly transactional. We are getting what we need but generating less strategic value for partners."},{v:2,t:"Key partnerships are under some strain. Renewal conversations involve more friction than they used to."},{v:3,t:"One or more strategic relationships have become transactional or been lost. Ecosystem actors are treating us differently."}]},
+  {domain:"Financial Capital",did:"financial",lead:"Lagging indicator",text:"How would you characterize your organization's financial performance relative to internal expectations set 24 months ago?",opts:[{v:0,t:"Financial performance is strong and at or above internal expectations. Margin and revenue are healthy."},{v:1,t:"Financial performance is meeting expectations, though some pressure is building that we expect to manage."},{v:2,t:"Financial performance has begun to reflect pressures we were managing upstream. We are revising internal forecasts."},{v:3,t:"Financial metrics are showing material pressure. Investors, analysts, or the board are engaged on performance."}]},
+  {domain:"Governance Infrastructure",did:"governance",lead:"Systemic",text:"How does your governance system measure and respond to the health of non-financial capital — human, intellectual, reputational, political, social?",opts:[{v:0,t:"We have defined metrics, measurement infrastructure, and governance routines for each capital domain reviewed at board level."},{v:1,t:"We track some non-financial indicators but they are not integrated into a unified governance system. Awareness is informal."},{v:2,t:"Non-financial capital is discussed qualitatively in leadership conversations. We have no systematic measurement."},{v:3,t:"Our governance system is built for financial capital. Non-financial capital surfaces when it becomes a crisis, not before."}]},
+  {domain:"AI Deployment",did:"ai",lead:"Accelerated",text:"How are your organization's AI deployment decisions governed relative to their full capital system impact?",opts:[{v:0,t:"AI deployment decisions include explicit assessment across all six capital domains alongside financial return."},{v:1,t:"AI governance covers financial return and regulatory risk. Some consideration of broader capital impact but no structured assessment."},{v:2,t:"AI deployment is governed primarily through financial return and IT/security risk lenses. Capital system implications are largely unaddressed."},{v:3,t:"AI deployment is governed by financial return. The capital system costs — workforce, capability, trust, regulatory — are managed reactively."}]}
+];
+
+const PRESETS={"Financial Services":{w:12,z:8},"Healthcare & Life Sciences":{w:14,z:10},"Defense & Aerospace":{w:10,z:7},"Energy & Utilities":{w:11,z:9},"Technology":{w:16,z:12},"Professional Services":{w:9,z:11},"Consumer & Retail":{w:13,z:10},"General Enterprise":{w:12,z:10}};
+
+const SC={stable:"#8B9EFF",watch:"#C8973A",alert:"#FF0099",urgent:"#FF6B6B"};
+const DC={human:"#7B9FD4",intellectual:"#9B7BD4",reputational:"#FF0099",political:"#C8973A",social:"#5DAA88",financial:"#8a8a8f",governance:"#8B9EFF",ai:"#5DAACC"};
+
+const P="#FF0099",B="#8B9EFF",A="#C8973A";
+const f$=n=>n==null||isNaN(n)||n===0?"—":"$"+Math.round(n).toLocaleString();
+const fX=n=>n==null||isNaN(n)?"—":n.toFixed(1)+"×";
+
+const inp={background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.14)",color:"#fff",padding:"9px 12px",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:13,fontWeight:300,outline:"none",width:"100%",boxSizing:"border-box"};
+const lbl={fontSize:10,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"rgba(255,255,255,.55)",marginBottom:5,display:"block"};
+
+const SENT_SYS=`You are Capital Sentinel, an AI capital exposure analysis engine for Solve Next. Analyze the given organization across six capital domains. Return ONLY valid JSON — no markdown, no preamble, no explanation.
+
+Financial domain: almost always stable, flat or up trend — it is the lagging indicator. Surface upstream erosion first. mcIndex should reflect multi-capital health (typically 45-75), finIndex should reflect financial health (typically 78-92).
+
+Return exactly this JSON structure:
+{"mcIndex":number,"finIndex":number,"stage":number,"stageLabel":"string","domains":[6 objects],"alerts":[5 objects],"bridge":"string","summary":"string"}
+
+Domain object (all 6 required — human, intellectual, reputational, political, social, financial):
+{"id":"human|intellectual|reputational|political|social|financial","name":"string","status":"stable|watch|alert|urgent","trend":"up|flat|down","signals":number,"lead":"string","phase":"string","description":"string","signalList":[{"source":"string","sev":"stable|watch|alert","text":"<strong>Key fact.</strong> Supporting detail."}],"cascade":["3-5 short domain names"],"intervention":"string"}
+
+Alert object:
+{"badge":"alert|watch|stable|info","domain":"domain id","dl":"display label","time":"string like Q1 2025","text":"<strong>Key signal.</strong> Context sentence.","src":"string"}`;
+
+// ─── GROWTH GAP CURVE ──────────────────────────────
+function GGC({domains,mcIndex,finIndex,orgName}){
+  const W=700,H=200,ml=38,mr=12,mt=58,mb=28;
+  const cw=W-ml-mr,ch=H-mt-mb,NH=12,NP=8,n=NH+1+NP;
+  const WD={human:.24,political:.22,reputational:.20,intellectual:.14,social:.12,financial:.08};
+  const SS={stable:84,watch:57,alert:31,urgent:10};
+  const mcNow=mcIndex||Math.round(domains.reduce((s,d)=>s+(WD[d.id]||.1)*(SS[d.status]||50),0)*10)/10;
+  const finNow=finIndex||88;
+  const mcSt=Math.min(95,mcNow+26),finSt=68;
+  const decl=domains.filter(d=>d.trend==="down").length;
+  const pR=3+decl*2.2;
+  const pts=Array.from({length:n},(_,i)=>{
+    const isP=i>NH,ht=Math.min(1,i/NH),pt=isP?(i-NH)/NP:0;
+    return{i,isP,
+      mc:Math.max(8,Math.min(100,isP?mcNow-pR*pt*2*pt:mcSt-(mcSt-mcNow)*Math.pow(ht,1.6))),
+      fin:Math.max(8,Math.min(100,isP?finNow+1.8*Math.sqrt(pt):finSt+(finNow-finSt)*Math.pow(ht,0.55)))
+    };
+  });
+  const xi=i=>ml+(i/(n-1))*cw,yv=v=>mt+ch-(v/100)*ch;
+  const sm=c=>{if(c.length<2)return"";let d=`M${c[0][0].toFixed(1)} ${c[0][1].toFixed(1)}`;for(let i=1;i<c.length;i++){const[x0,y0]=c[i-1],[x1,y1]=c[i];d+=` C${(x0+(x1-x0)/3).toFixed(1)} ${y0.toFixed(1)} ${(x1-(x1-x0)/3).toFixed(1)} ${y1.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`;}return d;};
+  const fC=pts.map(p=>[xi(p.i),yv(p.fin)]),mC=pts.map(p=>[xi(p.i),yv(p.mc)]);
+  const gp=[...fC,...[...mC].reverse()].map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const ph1=xi(8),scx=xi(NH),ex=xi(n-1);
+  const[fx,fy]=fC[NH],[mx,my]=mC[NH];
+  const bx=fx+20,mid=(fy+my)/2,gap=Math.round(finNow-mcNow);
+  const sl=new Date().toLocaleDateString("en-US",{month:"short",year:"numeric"}).toUpperCase();
+  const grids=[25,50,75].map(v=>`<line x1="${ml}" y1="${yv(v).toFixed(1)}" x2="${ml+cw}" y2="${yv(v).toFixed(1)}" stroke="rgba(255,255,255,.06)" stroke-width="1"/><text x="${ml-4}" y="${(yv(v)+3).toFixed(1)}" fill="rgba(255,255,255,.28)" font-size="8.5" text-anchor="end" font-family="Helvetica Neue,Helvetica,Arial,sans-serif">${v}</text>`).join("");
+  let yr="";for(let i=0;i<n;i+=4){const d=new Date();d.setMonth(d.getMonth()+(i-NH)*3);yr+=`<text x="${xi(i).toFixed(1)}" y="${(mt+ch+11).toFixed(1)}" fill="rgba(255,255,255,.26)" font-size="8.5" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial,sans-serif">${d.getFullYear()}</text>`;}
+
+  return React.createElement("div",{style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.08)",borderTop:`3px solid ${P}`,padding:"12px 14px 8px",marginBottom:2}},
+    React.createElement("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8,gap:10}},
+      React.createElement("div",null,
+        React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",color:P,marginBottom:2}},"VIS-01 · Growth Gap Curve · Solve Next"),
+        React.createElement("div",{style:{fontSize:14,fontWeight:900,letterSpacing:"-.02em",textTransform:"uppercase",color:"#fff",lineHeight:1}},orgName),
+        React.createElement("div",{style:{fontSize:10,fontWeight:300,color:"rgba(255,255,255,.45)",marginTop:3,fontStyle:"italic"}},"Capital health diverging from financial performance — governance window open")
+      ),
+      React.createElement("div",{style:{display:"flex",gap:14,flexShrink:0}},
+        ...[{v:finNow,l:"Financial",c:B},{v:Math.round(mcNow),l:"Multi-capital",c:P}].map(({v,l,c})=>
+          React.createElement("div",{key:l,style:{textAlign:"right"}},
+            React.createElement("div",{style:{fontSize:20,fontWeight:900,letterSpacing:"-.04em",color:c,lineHeight:1}},v),
+            React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginTop:2}},l+" index")
+          )
+        )
+      )
+    ),
+    React.createElement("svg",{viewBox:`0 0 ${W} ${H}`,xmlns:"http://www.w3.org/2000/svg",style:{width:"100%",display:"block",overflow:"visible"}},
+      React.createElement("defs",null,React.createElement("clipPath",{id:"ggc"},React.createElement("rect",{x:ml,y:mt,width:cw,height:ch}))),
+      React.createElement("rect",{x:ml,y:mt,width:(ph1-ml).toFixed(1),height:ch,fill:"rgba(255,255,255,.012)",clipPath:"url(#ggc)"}),
+      React.createElement("rect",{x:ph1.toFixed(1),y:mt,width:(scx-ph1).toFixed(1),height:ch,fill:"rgba(255,0,153,.02)",clipPath:"url(#ggc)"}),
+      React.createElement("rect",{x:scx.toFixed(1),y:mt,width:(ex-scx).toFixed(1),height:ch,fill:"rgba(255,80,80,.015)",clipPath:"url(#ggc)"}),
+      React.createElement("line",{x1:ph1.toFixed(1),y1:mt-12,x2:ph1.toFixed(1),y2:mt+ch,stroke:"rgba(255,255,255,.07)",strokeWidth:"1",strokeDasharray:"3 3"}),
+      ...[{x:(ml+ph1)/2,t:"PHASE I",s:"Invisible erosion",c1:"rgba(255,255,255,.38)",c2:"rgba(255,255,255,.22)"},{x:(ph1+scx)/2,t:"PHASE II",s:"Signal accumulation",c1:"rgba(255,0,153,.8)",c2:"rgba(255,0,153,.5)"},{x:(scx+ex)/2,t:"PHASE III",s:"Financial translation",c1:"rgba(255,255,255,.24)",c2:"rgba(255,255,255,.16)"}].map(({x,t,s,c1,c2})=>
+        React.createElement("g",{key:t},
+          React.createElement("text",{x:x.toFixed(1),y:mt-24,fill:c1,fontSize:"7.5",textAnchor:"middle",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",fontWeight:"700",letterSpacing:"1.5"},t),
+          React.createElement("text",{x:x.toFixed(1),y:mt-13,fill:c2,fontSize:"7",textAnchor:"middle",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"},s)
+        )
+      ),
+      React.createElement("g",{dangerouslySetInnerHTML:{__html:grids+yr}}),
+      React.createElement("line",{x1:ml,y1:mt+ch,x2:ml+cw,y2:mt+ch,stroke:"rgba(255,255,255,.09)",strokeWidth:"1"}),
+      React.createElement("polygon",{points:gp,fill:"rgba(255,0,153,.07)",clipPath:"url(#ggc)"}),
+      React.createElement("path",{d:sm(fC),fill:"none",stroke:"#8B9EFF",strokeWidth:"2.5",strokeLinejoin:"round",strokeLinecap:"round",clipPath:"url(#ggc)"}),
+      React.createElement("path",{d:sm(mC),fill:"none",stroke:"#FF0099",strokeWidth:"2",strokeDasharray:"7 4",strokeLinejoin:"round",strokeLinecap:"round",clipPath:"url(#ggc)"}),
+      React.createElement("rect",{x:scx.toFixed(1),y:mt,width:(ex-scx).toFixed(1),height:ch,fill:"rgba(0,0,0,.18)",clipPath:"url(#ggc)"}),
+      React.createElement("line",{x1:scx.toFixed(1),y1:mt,x2:scx.toFixed(1),y2:mt+ch,stroke:"rgba(255,255,255,.28)",strokeWidth:"1.5",strokeDasharray:"4 3"}),
+      React.createElement("text",{x:(scx+5).toFixed(1),y:(mt-3).toFixed(1),fill:"rgba(255,255,255,.44)",fontSize:"8",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",fontWeight:"700"},sl+" · SCAN DATE"),
+      React.createElement("circle",{cx:fx.toFixed(1),cy:fy.toFixed(1),r:"4",fill:"#8B9EFF",stroke:"#000",strokeWidth:"1.5"}),
+      React.createElement("circle",{cx:mx.toFixed(1),cy:my.toFixed(1),r:"4",fill:"#FF0099",stroke:"#000",strokeWidth:"1.5"}),
+      React.createElement("text",{x:(fx-6).toFixed(1),y:(fy-7).toFixed(1),fill:"#8B9EFF",fontSize:"10",fontWeight:"700",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",textAnchor:"middle"},finNow),
+      React.createElement("text",{x:(mx-6).toFixed(1),y:(my+14).toFixed(1),fill:"#FF0099",fontSize:"10",fontWeight:"700",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",textAnchor:"middle"},Math.round(mcNow)),
+      React.createElement("line",{x1:bx.toFixed(1),y1:fy.toFixed(1),x2:bx.toFixed(1),y2:my.toFixed(1),stroke:"rgba(255,255,255,.18)",strokeWidth:"1"}),
+      React.createElement("text",{x:(bx+6).toFixed(1),y:(mid+4).toFixed(1),fill:"rgba(255,255,255,.52)",fontSize:"9.5",fontWeight:"700",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"},`${gap}-pt gap`),
+      ...[{x:ml,l:"Financial performance",c:"#8B9EFF",d:false},{x:ml+145,l:"Multi-capital health index",c:"#FF0099",d:true}].map(({x,l,c,d})=>
+        React.createElement("g",{key:l},
+          React.createElement("line",{x1:x,y1:"11",x2:x+16,y2:"11",stroke:c,strokeWidth:d?2:2.5,strokeDasharray:d?"6 3":undefined}),
+          React.createElement("circle",{cx:x+8,cy:"11",r:"2.5",fill:c}),
+          React.createElement("text",{x:x+21,y:"15",fill:"rgba(255,255,255,.55)",fontSize:"9",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"},l)
+        )
+      ),
+      React.createElement("text",{x:W-mr,y:"15",fill:"rgba(255,255,255,.2)",fontSize:"7.5",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",textAnchor:"end"},"AI-estimated · Not a live data feed")
+    )
+  );
+}
+
+// ─── DOMAIN CARD ──────────────────────────────────
+function DCard({d,expanded,onToggle}){
+  const sc=SC[d.status]||"#8a8a8f";
+  return React.createElement("div",{
+    style:{background:expanded?"#111":"#0a0a0a",border:"1px solid rgba(255,255,255,.07)",borderTop:`3px solid ${sc}`,cursor:"pointer"},
+    onClick:onToggle
+  },
+    React.createElement("div",{style:{padding:"11px 11px 9px"}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:sc,display:"flex",alignItems:"center",gap:5,marginBottom:5}},
+        React.createElement("span",{style:{width:6,height:6,borderRadius:"50%",background:sc,display:"inline-block",flexShrink:0}}),
+        d.status.charAt(0).toUpperCase()+d.status.slice(1)
+      ),
+      React.createElement("div",{style:{fontSize:13,fontWeight:900,letterSpacing:"-.01em",color:"#fff",marginBottom:4,lineHeight:1.1}},d.name),
+      React.createElement("div",{style:{display:"flex",justifyContent:"space-between"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:"rgba(255,255,255,.45)"}},d.signals>0?`${d.signals} signal${d.signals>1?"s":""}`:"No signals"),
+        React.createElement("div",{style:{fontSize:9,color:"rgba(255,255,255,.38)"}},d.lead)
+      ),
+      React.createElement("div",{style:{fontSize:10,fontWeight:700,marginTop:4,color:d.trend==="down"?P:d.trend==="up"?B:"rgba(255,255,255,.38)"}},
+        d.trend==="down"?"↘ Deteriorating":d.trend==="up"?"↗ Improving":"→ Stable"
+      )
+    ),
+    expanded&&React.createElement("div",{style:{borderTop:"1px solid rgba(255,255,255,.07)",padding:"11px",background:"#0d0d0d"}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:P,marginBottom:8}},"Signal details"),
+      ...(d.signalList||[]).map((s,i)=>
+        React.createElement("div",{key:i,style:{background:"#0a0a0a",borderLeft:`2px solid ${SC[s.sev]||"#8a8a8f"}`,padding:"7px 9px",marginBottom:4}},
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:2}},
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.42)"}},s.source),
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,textTransform:"uppercase",color:SC[s.sev]}},s.sev)
+          ),
+          React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.8)",lineHeight:1.5},dangerouslySetInnerHTML:{__html:s.text}})
+        )
+      ),
+      d.cascade&&React.createElement("div",{style:{background:"#0a0a0a",padding:"8px 9px",marginTop:6}},
+        React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:A,marginBottom:5}},"Cascade pathway"),
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:3,flexWrap:"wrap"}},
+          ...(d.cascade||[]).map((c,i)=>[
+            i>0&&React.createElement("span",{key:"a"+i,style:{color:"rgba(255,255,255,.25)",fontSize:10}},"→"),
+            React.createElement("span",{key:"c"+i,style:{fontSize:8,fontWeight:700,textTransform:"uppercase",padding:"2px 5px",border:"1px solid",color:i===0?P:i<d.cascade.length-1?A:"rgba(255,255,255,.38)",background:i===0?"rgba(255,0,153,.08)":i<d.cascade.length-1?"rgba(200,151,58,.08)":"rgba(255,255,255,.04)",borderColor:i===0?"rgba(255,0,153,.22)":i<d.cascade.length-1?"rgba(200,151,58,.22)":"rgba(255,255,255,.1)"}},c)
+          ]).flat().filter(Boolean)
+        )
+      ),
+      React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.52)",lineHeight:1.6,fontStyle:"italic",borderLeft:"2px solid rgba(255,0,153,.28)",paddingLeft:8,marginTop:7}},d.intervention)
+    )
+  );
+}
+
+// ─── HEADER ───────────────────────────────────────
+function Header({cur,nav,done}){
+  const items=[["sentinel","Sentinel"],["calculator","Calculator"],["assessment","Assessment"],["results","Results"],["briefing","Briefing"]];
+  return React.createElement("div",{style:{background:"#000",borderBottom:"1px solid rgba(255,255,255,.08)",height:50,display:"flex",alignItems:"center",padding:"0 18px",gap:4,position:"sticky",top:0,zIndex:50,flexShrink:0}},
+    React.createElement("div",{onClick:()=>nav("home"),style:{cursor:"pointer",marginRight:14,fontSize:13,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"#fff",flexShrink:0}},
+      "Solve/",React.createElement("span",{style:{color:P}},"Next")
+    ),
+    React.createElement("div",{style:{flex:1,display:"flex",gap:0,overflowX:"auto"}},
+      ...items.map(([k,l])=>
+        React.createElement("button",{key:k,onClick:()=>nav(k),style:{background:"none",border:"none",cursor:"pointer",padding:"0 9px",height:50,fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:cur===k?"#fff":done[k]?"rgba(255,255,255,.58)":"rgba(255,255,255,.3)",borderBottom:`2px solid ${cur===k?P:done[k]?B:"transparent"}`,whiteSpace:"nowrap",flexShrink:0}},
+          l,done[k]&&cur!==k?" ✓":""
+        )
+      )
+    ),
+    React.createElement("button",{onClick:()=>nav("briefing"),style:{background:"transparent",border:`1px solid rgba(255,0,153,.4)`,color:P,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 10px",cursor:"pointer",flexShrink:0}},"Request briefing")
+  );
+}
+
+function PBar({done}){
+  return React.createElement("div",{style:{height:3,background:"rgba(255,255,255,.06)",display:"flex",flexShrink:0}},
+    ...[[P,"sentinel"],[B,"calculator"],[A,"assessment"]].map(([c,k])=>
+      React.createElement("div",{key:k,style:{flex:1,background:done[k]?c:"transparent",transition:"background .4s"}})
+    )
+  );
+}
+
+// ─── HOME PAGE ────────────────────────────────────
+function HomePage({nav,done}){
+  const tools=[
+    {k:"sentinel",c:P,n:"01",t:"Capital Sentinel",d:"The signals your financial reports miss.",b:"AI-powered scan of any organization across all six capital domains. Real Growth Gap Curve. Real signal intelligence.",cta:"Run a scan →"},
+    {k:"calculator",c:B,n:"02",t:"Capital Liberation Calculator",d:"How much capital is your organization funding rather than governing?",b:"Estimate trapped capital and the financial return on governance intervention. Three inputs. Board-ready output.",cta:"Calculate exposure →"},
+    {k:"assessment",c:A,n:"03",t:"Growth Gap Signal Assessment",d:"Where is your organization in the cascade?",b:"Ten questions. Four minutes. Phase I, II, or III determination with domain-level breakdown.",cta:"Begin assessment →"}
+  ];
+  const allDone=Object.values(done).filter(Boolean).length===3;
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",position:"relative",overflow:"hidden"}},
+    React.createElement("div",{style:{position:"absolute",top:"-15%",right:"-10%",width:"50%",height:"70%",borderRadius:"50%",background:"radial-gradient(ellipse,rgba(255,0,153,.09) 0%,transparent 70%)",pointerEvents:"none"}}),
+    React.createElement("div",{style:{maxWidth:720,margin:"0 auto",padding:"48px 20px 40px",position:"relative",zIndex:1}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".26em",textTransform:"uppercase",color:P,marginBottom:13}},"Capital Intelligence Suite · Solve Next"),
+      React.createElement("h1",{style:{fontSize:"clamp(36px,6vw,70px)",fontWeight:900,lineHeight:.92,letterSpacing:"-.04em",textTransform:"uppercase",color:"#fff",marginBottom:18}},
+        "Govern",React.createElement("br"),
+        "what your",React.createElement("br"),
+        React.createElement("span",{style:{color:P,fontWeight:300,fontStyle:"italic"}},"P&L cannot see.")
+      ),
+      React.createElement("p",{style:{fontSize:14,fontWeight:300,color:"rgba(255,255,255,.78)",lineHeight:1.65,maxWidth:450,marginBottom:32}},"Three tools. One conversation. The capital exposure your financial governance system misses — made visible before it reaches your income statement."),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:3,marginBottom:14}},
+        ...tools.map(t=>
+          React.createElement("div",{key:t.k,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderTop:`3px solid ${t.c}`,padding:"15px 13px",display:"flex",flexDirection:"column"}},
+            React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"rgba(255,255,255,.28)",marginBottom:6}},t.n,done[t.k]?" · ✓ Complete":""),
+            React.createElement("div",{style:{fontSize:13,fontWeight:700,color:"#fff",marginBottom:4,lineHeight:1.2}},t.t),
+            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:t.c,marginBottom:6,lineHeight:1.4}},t.d),
+            React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.58)",lineHeight:1.6,flex:1,marginBottom:11}},t.b),
+            React.createElement("button",{onClick:()=>nav(t.k),style:{background:"transparent",border:`1px solid ${t.c}50`,color:t.c,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"8px 10px",cursor:"pointer",textAlign:"left"}},t.cta)
+          )
+        )
+      ),
+      allDone
+        ?React.createElement("button",{onClick:()=>nav("results"),style:{background:P,border:"none",color:"#000",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:11,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",padding:"12px",cursor:"pointer",width:"100%"}},"View your Capital Exposure Summary →")
+        :React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.22)",textAlign:"center"}},"Complete all three tools to receive your unified Capital Exposure Summary")
+    )
+  );
+}
+
+// ─── SENTINEL ─────────────────────────────────────
+function SentinelTool({st,setSt,nav,setDone}){
+  const[scr,setScr]=useState(st.sentinelData?"dash":"setup");
+  const[lm,setLm]=useState("Initializing scan…");
+  const[err,setErr]=useState(null);
+  const[exp,setExp]=useState(null);
+  const[on,setOn]=useState(st.orgName||"");
+  const[sec,setSec]=useState(st.sector||"");
+  const[ind,setInd]=useState(st.industry||"");
+  const[ot,setOt]=useState(st.orgType||"");
+  const inds=sec?Object.keys(TAX[sec]).filter(k=>k!=="_cal"):[];
+  const orgs=sec&&ind&&TAX[sec][ind]?TAX[sec][ind]:[];
+  const cal=sec?TAX[sec]._cal:"";
+  const ok=on&&sec&&ind&&ot;
+  const MSGS=["Initializing scan…",`Analyzing ${on}…`,"Assessing Human Capital signals…","Evaluating Intellectual Capital pipeline…","Scanning Reputational patterns…","Reviewing Political exposure…","Mapping Social Capital ecosystem…","Computing multi-capital health index…","Generating Growth Gap projection…","Compiling governance briefing…"];
+  const run=async()=>{
+    setScr("load");setErr(null);let mi=0;setLm(MSGS[0]);
+    const iv=setInterval(()=>{mi=Math.min(mi+1,MSGS.length-1);setLm(MSGS[mi]);},900);
+    try{
+      const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4000,system:SENT_SYS,messages:[{role:"user",content:`Analyze: ${on} — ${ot} — ${ind} — ${sec}.`}]})});
+      clearInterval(iv);
+      const j=await r.json();
+      const tx=j.content?.[0]?.text||"";
+      const d=JSON.parse(tx.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim());
+      setSt(p=>({...p,orgName:on,sector:sec,industry:ind,orgType:ot,sentinelData:d}));
+      setDone(p=>({...p,sentinel:true}));
+      setScr("dash");
+    }catch(e){clearInterval(iv);setErr("Scan failed: "+e.message);setScr("setup");}
+  };
+  const data=st.sentinelData;
+
+  if(scr==="load")return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}},
+    React.createElement("div",{style:{width:44,height:44,border:"2px solid rgba(255,0,153,.2)",borderTop:`2px solid ${P}`,borderRadius:"50%",animation:"spin 1s linear infinite",marginBottom:22}}),
+    React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",color:P,marginBottom:7}},"Capital Sentinel · Scanning"),
+    React.createElement("div",{style:{fontSize:18,fontWeight:900,letterSpacing:"-.02em",textTransform:"uppercase",color:"#fff",marginBottom:5}},on),
+    React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.5)",animation:"pu 1.8s ease infinite"}},lm)
+  );
+
+  if(scr==="setup")return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",display:"flex",alignItems:"center",justifyContent:"center",padding:"28px 20px",position:"relative",overflow:"hidden"}},
+    React.createElement("div",{style:{position:"absolute",top:"-15%",right:"-10%",width:"50%",height:"70%",borderRadius:"50%",background:"radial-gradient(ellipse,rgba(255,0,153,.09) 0%,transparent 70%)",pointerEvents:"none"}}),
+    React.createElement("div",{style:{width:"100%",maxWidth:520,position:"relative",zIndex:1}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".26em",textTransform:"uppercase",color:P,marginBottom:13}},"Capital Signal Intelligence"),
+      React.createElement("h1",{style:{fontSize:"clamp(32px,5vw,60px)",fontWeight:900,lineHeight:.92,letterSpacing:"-.04em",textTransform:"uppercase",color:"#fff",marginBottom:16}},
+        "The signals",React.createElement("br"),
+        "financial reports",React.createElement("br"),
+        React.createElement("span",{style:{color:P,fontWeight:300,fontStyle:"italic"}},"miss.")
+      ),
+      React.createElement("p",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.78)",lineHeight:1.65,marginBottom:22,maxWidth:400}},"AI-powered analysis of any organization across all six capital domains — with enough lead time to govern before erosion reaches your P&L."),
+      err&&React.createElement("div",{style:{background:"rgba(255,0,153,.08)",border:"1px solid rgba(255,0,153,.28)",color:P,padding:"8px 11px",fontSize:12,marginBottom:11}},err),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:9}},
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Organization name"),React.createElement("input",{style:inp,value:on,onChange:e=>setOn(e.target.value),placeholder:"e.g. JPMorgan Chase, Unilever, Boeing…"})),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Sector"),
+          React.createElement("select",{style:inp,value:sec,onChange:e=>{setSec(e.target.value);setInd("");setOt("");}},
+            React.createElement("option",{value:""},"— Select sector —"),
+            ...Object.keys(TAX).map(s=>React.createElement("option",{key:s,value:s},s))
+          )
+        ),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}},
+          React.createElement("div",null,React.createElement("label",{style:lbl},"Industry"),
+            React.createElement("select",{style:{...inp,opacity:!sec?.5:1},disabled:!sec,value:ind,onChange:e=>{setInd(e.target.value);setOt("");}},
+              React.createElement("option",{value:""},"— Select —"),
+              ...inds.map(i=>React.createElement("option",{key:i,value:i},i))
+            )
+          ),
+          React.createElement("div",null,React.createElement("label",{style:lbl},"Organization type"),
+            React.createElement("select",{style:{...inp,opacity:!ind?.5:1},disabled:!ind,value:ot,onChange:e=>setOt(e.target.value)},
+              React.createElement("option",{value:""},"— Select —"),
+              ...orgs.map(o=>React.createElement("option",{key:o,value:o},o))
+            )
+          )
+        ),
+        cal&&React.createElement("div",{style:{background:"rgba(255,255,255,.04)",borderLeft:`3px solid ${P}`,padding:"8px 11px"}},
+          React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:P,marginBottom:3}},`Signal calibration — ${sec}`),
+          React.createElement("div",{style:{fontSize:12,fontWeight:300,color:"rgba(255,255,255,.62)",lineHeight:1.55}},cal)
+        ),
+        React.createElement("button",{disabled:!ok,onClick:run,style:{background:"transparent",border:`1px solid ${ok?"rgba(255,0,153,.5)":"rgba(255,255,255,.12)"}`,color:ok?P:"rgba(255,255,255,.3)",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:10,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",padding:"12px 18px",cursor:ok?"pointer":"not-allowed",transition:"all .2s",marginTop:3,opacity:ok?1:.6}},ok?"Run capital scan →":"Complete all fields to scan")
+      ),
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.2)",marginTop:11,textAlign:"center"}},"AI-estimated from Claude's knowledge · Not a live data feed")
+    )
+  );
+
+  if(!data)return null;
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",display:"flex",flexDirection:"column"}},
+    React.createElement("div",{style:{background:"#000",borderBottom:"1px solid rgba(255,255,255,.07)",padding:"8px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}},
+      React.createElement("div",{style:{fontSize:13,fontWeight:700,color:"#fff"}},st.orgName),
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:"#8a8a8f"}},st.sector," · ",st.industry),
+      React.createElement("div",{style:{flex:1}}),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5}},
+        React.createElement("div",{style:{width:6,height:6,borderRadius:"50%",background:B,animation:"pu2 2s infinite"}}),
+        React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"rgba(255,255,255,.45)"}},"AI Analysis")
+      ),
+      React.createElement("div",{style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",padding:"3px 10px",fontSize:8,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:A}},data.stageLabel||`Stage ${data.stage}`),
+      React.createElement("button",{onClick:()=>setScr("setup"),style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.38)",background:"none",border:"none",cursor:"pointer"}},"← New scan")
+    ),
+    React.createElement("div",{style:{flex:1,display:"grid",gridTemplateColumns:"1fr 280px",overflow:"auto",minHeight:0}},
+      React.createElement("div",{style:{overflowY:"auto",padding:"9px 9px 9px 11px",background:"#000",display:"flex",flexDirection:"column",gap:2}},
+        React.createElement(GGC,{domains:data.domains,mcIndex:data.mcIndex,finIndex:data.finIndex,orgName:st.orgName}),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2}},
+          ...data.domains.map(d=>React.createElement(DCard,{key:d.id,d,expanded:exp===d.id,onToggle:()=>setExp(exp===d.id?null:d.id)}))
+        ),
+        React.createElement("div",{style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.07)",borderLeft:`3px solid ${P}`,padding:"11px 13px",display:"flex",alignItems:"center",gap:10}},
+          React.createElement("div",{style:{color:P,fontSize:11,flexShrink:0,fontWeight:700}},"◈"),
+          React.createElement("div",{style:{flex:1}},
+            React.createElement("div",{style:{fontSize:12,fontWeight:700,color:"#fff",marginBottom:2}},data.bridge),
+            React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.52)"}},data.summary)
+          ),
+          React.createElement("button",{onClick:()=>nav("briefing"),style:{background:"transparent",border:`1px solid rgba(255,0,153,.4)`,color:P,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"6px 10px",cursor:"pointer",flexShrink:0}},"Request briefing →")
+        ),
+        React.createElement("button",{onClick:()=>nav("calculator"),style:{background:"rgba(139,158,255,.06)",border:"1px solid rgba(139,158,255,.2)",color:B,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"9px",cursor:"pointer",textAlign:"center"}},"Tool 1 of 3 complete — Continue to Capital Liberation Calculator →")
+      ),
+      React.createElement("div",{style:{borderLeft:"1px solid rgba(255,255,255,.07)",display:"flex",flexDirection:"column",overflow:"hidden",background:"#000"}},
+        React.createElement("div",{style:{padding:"9px 13px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}},
+          React.createElement("span",{style:{fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"rgba(255,255,255,.5)"}},"Signal feed"),
+          React.createElement("span",{style:{fontSize:8,fontWeight:700,color:P,background:"rgba(255,0,153,.08)",border:"1px solid rgba(255,0,153,.26)",padding:"2px 6px"}},data.alerts.filter(a=>a.badge==="alert").length," active")
+        ),
+        React.createElement("div",{style:{flex:1,overflowY:"auto",padding:6,display:"flex",flexDirection:"column",gap:4}},
+          ...data.alerts.map((a,i)=>{
+            const col=a.badge==="alert"?P:a.badge==="watch"?A:a.badge==="stable"?B:"#8a8a8f";
+            const dc=DC[a.domain]||"#8a8a8f";
+            return React.createElement("div",{key:i,style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.06)",padding:"8px 10px"}},
+              React.createElement("div",{style:{display:"flex",alignItems:"center",gap:4,marginBottom:4}},
+                React.createElement("span",{style:{fontSize:7,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",padding:"2px 4px",border:"1px solid",color:col,background:`${col}18`,borderColor:`${col}32`,flexShrink:0}},a.badge),
+                React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:dc}},a.dl),
+                React.createElement("span",{style:{fontSize:8,color:"rgba(255,255,255,.32)",marginLeft:"auto"}},a.time)
+              ),
+              React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.78)",lineHeight:1.5},dangerouslySetInnerHTML:{__html:a.text}}),
+              React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:"rgba(255,255,255,.32)",marginTop:3}},a.src)
+            );
+          })
+        ),
+        React.createElement("div",{style:{padding:"9px 12px",borderTop:"1px solid rgba(255,255,255,.07)",flexShrink:0}},
+          React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.6)",lineHeight:1.6,marginBottom:7}},data.summary),
+          React.createElement("button",{onClick:()=>nav("briefing"),style:{width:"100%",background:"transparent",border:`1px solid rgba(255,0,153,.4)`,color:P,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",padding:"8px",cursor:"pointer"}},"Request deep analysis")
+        )
+      )
+    )
+  );
+}
+
+// ─── CALCULATOR ───────────────────────────────────
+function CalculatorTool({st,setSt,nav,setDone}){
+  const[bud,setBud]=useState("");
+  const[wo,setWo]=useState(12);const[zo,setZo]=useState(10);
+  const[ir,setIr]=useState(20);const[zl,setZl]=useState(25);
+  const[eng,setEng]=useState("");
+  const[sc,setSc]=useState("Base");const[ai,setAi]=useState(false);const[pr,setPr]=useState("");
+  const b=parseFloat(bud.replace(/,/g,""))||0;
+  let uIr=ir/100,uZl=zl/100;
+  if(sc==="Conservative"){uIr=.10;uZl=.15;}
+  if(sc==="Aggressive"){uIr=.30;uZl=.35;}
+  let prot=b*(wo/100)*uIr;if(ai)prot*=1.35;
+  const lib=b*(zo/100)*uZl,trap=b*(zo/100),tot=prot+lib,tot3=tot*3;
+  const eN=parseFloat((eng||"").replace(/,/g,""))||0;
+  const roi=eN>0?tot3/eN:null,pay=eN>0&&tot>0?Math.round(eN/(tot/12)):null;
+  const ap=p=>{if(!p)return;setPr(p);const d=PRESETS[p]||PRESETS["General Enterprise"];setWo(d.w);setZo(d.z);};
+
+  const Sl=({label,value,min,max,onChange,col})=>React.createElement("div",{style:{marginBottom:12}},
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:4}},
+      React.createElement("span",{style:{...lbl,marginBottom:0}},label),
+      React.createElement("span",{style:{fontSize:13,fontWeight:700,color:col||P}},value,"%")
+    ),
+    React.createElement("input",{type:"range",min,max,step:1,value,onChange:e=>onChange(+e.target.value),style:{width:"100%",cursor:"pointer",accentColor:col||P}})
+  );
+
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000"}},
+    React.createElement("div",{style:{borderBottom:"1px solid rgba(255,255,255,.07)",padding:"16px 18px 12px"}},
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:P,marginBottom:4}},"Capital Liberation Calculator · Solve Next"),
+      React.createElement("div",{style:{fontSize:"clamp(18px,2.8vw,28px)",fontWeight:900,letterSpacing:"-.03em",textTransform:"uppercase",color:"#fff",marginBottom:2}},"How much capital is your organization funding rather than governing?"),
+      st.orgName&&React.createElement("div",{style:{fontSize:10,fontWeight:300,color:"rgba(255,255,255,.38)",fontStyle:"italic"}},"Continuing analysis for ",st.orgName)
+    ),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2,padding:"2px 2px 0"}},
+      // Input panel
+      React.createElement("div",{style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.07)",borderTop:`3px solid ${P}`,padding:"14px 13px"}},
+        React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:P,marginBottom:11}},"Capital exposure baseline"),
+        React.createElement("div",{style:{marginBottom:9}},React.createElement("label",{style:lbl},"Industry preset"),
+          React.createElement("select",{style:inp,value:pr,onChange:e=>ap(e.target.value)},
+            React.createElement("option",{value:""},"— Apply preset —"),
+            ...Object.keys(PRESETS).map(p=>React.createElement("option",{key:p,value:p},p))
+          )
+        ),
+        React.createElement("div",{style:{marginBottom:9}},React.createElement("label",{style:lbl},"Annual transformation budget ($)"),
+          React.createElement("input",{style:inp,placeholder:"e.g. 500,000,000",value:bud,onChange:e=>setBud(e.target.value)})
+        ),
+        React.createElement("div",{style:{marginBottom:9}},React.createElement("label",{style:lbl},"Late-stage write-off rate (%)"),
+          React.createElement("input",{type:"number",style:inp,value:wo,onChange:e=>setWo(+e.target.value),min:0,max:50,step:.5}),
+          React.createElement("div",{style:{fontSize:9,fontWeight:300,color:"rgba(255,255,255,.28)",marginTop:2,fontStyle:"italic"}},"Initiatives terminated after significant capital deployed")
+        ),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Zombie capital estimate (%)"),
+          React.createElement("input",{type:"number",style:inp,value:zo,onChange:e=>setZo(+e.target.value),min:0,max:40,step:.5}),
+          React.createElement("div",{style:{fontSize:9,fontWeight:300,color:"rgba(255,255,255,.28)",marginTop:2,fontStyle:"italic"}},"Initiatives continuing due to inertia rather than impact")
+        )
+      ),
+      // Assumptions panel
+      React.createElement("div",{style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.07)",borderTop:`3px solid ${B}`,padding:"14px 13px"}},
+        React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:B,marginBottom:4}},"Governance improvement assumptions"),
+        React.createElement("div",{style:{fontSize:10,fontWeight:300,color:"rgba(255,255,255,.38)",marginBottom:12,fontStyle:"italic"}},"Achievable with structured governance. All values editable."),
+        React.createElement(Sl,{label:"Impairment reduction",value:sc==="Conservative"?10:sc==="Aggressive"?30:ir,min:5,max:35,onChange:setIr,col:P}),
+        React.createElement(Sl,{label:"Zombie capital liberation rate",value:sc==="Conservative"?15:sc==="Aggressive"?35:zl,min:10,max:40,onChange:setZl,col:B}),
+        React.createElement("div",{style:{marginBottom:12}},
+          React.createElement("label",{style:lbl},"Sensitivity scenario"),
+          React.createElement("div",{style:{display:"flex",gap:2}},
+            ...["Conservative","Base","Aggressive"].map(s=>
+              React.createElement("button",{key:s,onClick:()=>setSc(s),style:{flex:1,background:sc===s?"rgba(255,0,153,.1)":"rgba(255,255,255,.04)",border:`1px solid ${sc===s?P:"rgba(255,255,255,.08)"}`,color:sc===s?P:"rgba(255,255,255,.5)",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",padding:"6px 2px",cursor:"pointer"}},s)
+            )
+          ),
+          sc==="Aggressive"&&React.createElement("div",{style:{fontSize:9,color:A,marginTop:4,fontStyle:"italic"}},"⚠ Requires documented governance maturity")
+        ),
+        React.createElement("div",{style:{marginBottom:12}},
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
+            React.createElement("label",{style:{...lbl,marginBottom:0}},"AI exposure amplification"),
+            React.createElement("button",{onClick:()=>setAi(!ai),style:{background:ai?"rgba(255,0,153,.12)":"rgba(255,255,255,.04)",border:`1px solid ${ai?P:"rgba(255,255,255,.1)"}`,color:ai?P:"rgba(255,255,255,.38)",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 8px",cursor:"pointer"}},ai?"On":"Off")
+          ),
+          ai&&React.createElement("div",{style:{fontSize:9,color:A,fontStyle:"italic"}},"Protection value × 1.35 for AI-compressed cascade timelines")
+        ),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Engagement investment ($) — optional"),
+          React.createElement("input",{style:inp,placeholder:"e.g. 400,000",value:eng,onChange:e=>setEng(e.target.value)}),
+          React.createElement("div",{style:{fontSize:9,fontWeight:300,color:"rgba(255,255,255,.28)",marginTop:2,fontStyle:"italic"}},"Enter to calculate ROI multiple and payback period")
+        )
+      ),
+      // Results panel
+      React.createElement("div",{style:{background:"#0a0a0a",border:"1px solid rgba(255,255,255,.07)",borderTop:`3px solid ${P}`,padding:"14px 13px"}},
+        React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:P,marginBottom:11}},"Exposure value summary"),
+        React.createElement("div",{style:{textAlign:"center",padding:"11px 0 13px",borderBottom:"1px solid rgba(255,255,255,.08)",marginBottom:13}},
+          React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"rgba(255,255,255,.38)",marginBottom:4}},"Estimated trapped capital"),
+          React.createElement("div",{style:{fontSize:30,fontWeight:900,letterSpacing:"-.04em",color:P,lineHeight:1}},b>0?f$(trap):"—")
+        ),
+        ...[["Protection value (annual)",prot,B],["Liberation value (annual)",lib,B],["Total annual exposure",tot,"#fff"]].map(([l,v,c])=>
+          React.createElement("div",{key:l,style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8,paddingBottom:l.includes("Total")?8:0,borderBottom:l.includes("Total")?"1px solid rgba(255,255,255,.08)":"none"}},
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.42)"}},l),
+            React.createElement("span",{style:{fontSize:l.includes("Total")?18:15,fontWeight:700,color:c}},b>0?f$(v):"—")
+          )
+        ),
+        React.createElement("div",{style:{marginBottom:11}},
+          React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginBottom:3}},"3-year exposure value"),
+          React.createElement("div",{style:{fontSize:24,fontWeight:900,letterSpacing:"-.04em",color:"#fff"}},b>0?f$(tot3):"—")
+        ),
+        roi!=null&&React.createElement("div",{style:{borderLeft:`3px solid ${P}`,paddingLeft:9,marginBottom:11}},
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:3}},
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.38)"}},"ROI multiple"),
+            React.createElement("span",{style:{fontSize:20,fontWeight:900,color:P}},roi>50?"50+×":fX(roi))
+          ),
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"baseline"}},
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.38)"}},"Payback period"),
+            React.createElement("span",{style:{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.68)"}},pay," months")
+          ),
+          roi>50&&React.createElement("div",{style:{fontSize:9,color:A,marginTop:4,fontStyle:"italic"}},"⚠ Exceeds 50×. Verify inputs reflect actual conditions.")
+        ),
+        ai&&React.createElement("div",{style:{fontSize:9,color:A,fontStyle:"italic",marginBottom:8}},"AI amplification applied (×1.35)"),
+        React.createElement("div",{style:{fontSize:9,fontWeight:300,color:"rgba(255,255,255,.25)",fontStyle:"italic",lineHeight:1.55,marginBottom:11}},"Estimates are directional. Not a financial audit."),
+        React.createElement("button",{onClick:()=>{setSt(p=>({...p,calculatorData:{trap,prot,lib,tot,tot3,roi,pay}}));setDone(p=>({...p,calculator:true}));nav("assessment");},style:{background:"transparent",border:`1px solid rgba(139,158,255,.4)`,color:B,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"9px",cursor:"pointer",width:"100%"}},"Save & continue to Assessment →")
+      )
+    )
+  );
+}
+
+// ─── ASSESSMENT ───────────────────────────────────
+function AssessmentTool({st,setSt,nav,setDone}){
+  const[scr,setScr]=useState("intro");
+  const[qi,setQi]=useState(0);
+  const[ans,setAns]=useState(Array(10).fill(null));
+  const[sel,setSel]=useState(null);
+  const CT={0:"Governance infrastructure is functioning in this domain.",1:"Informal awareness without structured routing — a common Phase I pattern.",2:"Signal accumulation present. This domain warrants governance attention.",3:"Active exposure. This domain is likely contributing to your phase determination."};
+  const PT={
+    1:"Your organization's financial metrics are likely strong. This is precisely the condition in which upstream capital erosion is most dangerous — and most invisible. The governance window is wide open. Intervention cost at this phase is approximately 1× what it will be at Phase III.",
+    2:"Signals are accumulating across one or more capital domains. Financial metrics may still look healthy — that is expected at Phase II. The governance window remains open but is narrowing. Corrective cost at Phase II is 5–15× what it would have been at Phase I.",
+    3:"Financial translation is approaching or has begun. The cascade that started in upstream capital domains is now reaching the financial layer your governance system can see. At Phase III, the corrective cost is an order of magnitude greater than Phase I."
+  };
+  const next=()=>{
+    const a=[...ans];a[qi]=sel;setAns(a);
+    if(qi<9){setQi(qi+1);setSel(a[qi+1]);}
+    else{
+      const score=a.reduce((s,v)=>s+(v||0),0);
+      const ph=score<=8?1:score<=18?2:3;
+      const pl=ph===1?"Phase I — Invisible erosion":ph===2?"Phase II — Signal accumulation":"Phase III — Financial translation approaching";
+      const dm={human:(a[0]||0)+(a[1]||0),intellectual:a[2]||0,reputational:(a[3]||0)+(a[4]||0),political:a[5]||0,social:a[6]||0,financial:a[7]||0,governance:a[8]||0,ai:a[9]||0};
+      const mx={human:6,intellectual:3,reputational:6,political:3,social:3,financial:3,governance:3,ai:3};
+      const ds={};Object.keys(dm).forEach(k=>{const p=dm[k]/mx[k];ds[k]=p<=.33?"Stable":p<=.66?"Watch":"Alert";});
+      const res={totalScore:score,phase:ph,phaseLabel:pl,domainStatuses:ds,answers:a};
+      setSt(p=>({...p,assessmentData:res}));setDone(p=>({...p,assessment:true}));setScr("results");
+    }
+  };
+  const back=()=>{if(qi>0){setQi(qi-1);setSel(ans[qi-1]);}};
+
+  if(scr==="intro")return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",display:"flex",alignItems:"center",justifyContent:"center",padding:"28px 20px",position:"relative",overflow:"hidden"}},
+    React.createElement("div",{style:{position:"absolute",top:"-15%",right:"-10%",width:"50%",height:"70%",borderRadius:"50%",background:"radial-gradient(ellipse,rgba(200,151,58,.07) 0%,transparent 70%)",pointerEvents:"none"}}),
+    React.createElement("div",{style:{width:"100%",maxWidth:490,position:"relative",zIndex:1}},
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",color:A,marginBottom:13}},"10 questions · 4 minutes · No registration required"),
+      React.createElement("h1",{style:{fontSize:"clamp(32px,5vw,58px)",fontWeight:900,lineHeight:.92,letterSpacing:"-.04em",textTransform:"uppercase",color:"#fff",marginBottom:16}},
+        "Where is your",React.createElement("br"),"organization",React.createElement("br"),React.createElement("span",{style:{color:P}},"in the cascade?")
+      ),
+      React.createElement("p",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.78)",lineHeight:1.65,marginBottom:22,maxWidth:400}},"Most organizations are governed by instruments that can only see financial capital — the last signal to reflect organizational health. This assessment identifies which phase of the Growth Gap cascade your organization is currently in."),
+      React.createElement("div",{style:{display:"flex",gap:16,marginBottom:22}},
+        ...[{c:"rgba(255,255,255,.45)",l:"Phase I",s:"Invisible erosion"},{c:A,l:"Phase II",s:"Signal accumulation"},{c:P,l:"Phase III",s:"Financial translation"}].map(({c,l,s})=>
+          React.createElement("div",{key:l,style:{display:"flex",alignItems:"center",gap:6}},
+            React.createElement("div",{style:{width:6,height:6,borderRadius:"50%",background:c,flexShrink:0}}),
+            React.createElement("div",null,
+              React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.62)"}},l),
+              React.createElement("div",{style:{fontSize:9,color:"rgba(255,255,255,.35)"}},s)
+            )
+          )
+        )
+      ),
+      React.createElement("button",{onClick:()=>setScr("q"),style:{background:"transparent",border:`1px solid rgba(200,151,58,.5)`,color:A,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:10,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",padding:"11px 18px",cursor:"pointer",width:"100%"}},"Begin assessment →"),
+      React.createElement("div",{style:{fontSize:8,color:"rgba(255,255,255,.25)",marginTop:9,textAlign:"center"}},"Your responses are not stored until you choose to save results.")
+    )
+  );
+
+  if(scr==="q"){
+    const q=QS[qi];const dc=DC[q.did]||"#8a8a8f";
+    return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",padding:"0 20px 36px",maxWidth:580,margin:"0 auto"}},
+      React.createElement("div",{style:{paddingTop:20,marginBottom:18}},
+        React.createElement("div",{style:{height:3,background:"rgba(255,255,255,.07)",marginBottom:8}},React.createElement("div",{style:{height:"100%",width:`${(qi/10)*100}%`,background:P,transition:"width .3s"}})),
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between"}},
+          React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:dc}},q.domain," ",React.createElement("span",{style:{color:"rgba(255,255,255,.28)"}},"· ",q.lead)),
+          React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.32)"}},"Question ",qi+1," of 10")
+        )
+      ),
+      React.createElement("div",{style:{fontSize:18,fontWeight:700,color:"rgba(255,255,255,.9)",lineHeight:1.4,marginBottom:16}},q.text),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:5,marginBottom:13}},
+        ...q.opts.map((o,i)=>{
+          const s=sel===o.v;
+          return React.createElement("div",{key:i,onClick:()=>setSel(o.v),style:{background:s?"rgba(255,0,153,.06)":"rgba(255,255,255,.04)",border:`1px solid ${s?P:"rgba(255,255,255,.07)"}`,borderLeft:`${s?3:1}px solid ${s?P:"rgba(255,255,255,.07)"}`,padding:"11px 12px",cursor:"pointer",display:"flex",gap:10,transition:"all .15s"}},
+            React.createElement("span",{style:{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:s?P:"rgba(255,255,255,.26)",flexShrink:0}},["A","B","C","D"][i]),
+            React.createElement("span",{style:{fontSize:12,fontWeight:300,color:s?"rgba(255,255,255,.9)":"rgba(255,255,255,.7)",lineHeight:1.5}},o.t)
+          );
+        })
+      ),
+      sel!==null&&React.createElement("div",{style:{fontSize:10,color:"rgba(255,255,255,.42)",fontStyle:"italic",marginBottom:13}},CT[sel]),
+      React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+        qi>0?React.createElement("button",{onClick:back,style:{background:"none",border:"none",color:"rgba(255,255,255,.35)",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",cursor:"pointer"}},"← Back"):React.createElement("div"),
+        React.createElement("button",{disabled:sel===null,onClick:next,style:{background:"transparent",border:`1px solid ${sel!==null?"rgba(200,151,58,.5)":"rgba(255,255,255,.12)"}`,color:sel!==null?A:"rgba(255,255,255,.28)",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",padding:"10px 16px",cursor:sel!==null?"pointer":"not-allowed",transition:"all .2s"}},qi<9?"Next →":"See results →")
+      )
+    );
+  }
+
+  const d=st.assessmentData;if(!d)return null;
+  const pc=d.phase===1?"rgba(255,255,255,.85)":d.phase===2?A:P;
+  const stC={Stable:B,Watch:A,Alert:P};
+  const dL={human:"Human Capital",intellectual:"Intellectual Capital",reputational:"Reputational Capital",political:"Political Capital",social:"Social Capital",financial:"Financial Capital",governance:"Governance Infrastructure",ai:"AI Deployment"};
+  const PT2={1:"The governance window is open. Intervention cost at this phase is approximately 1× what it will be at Phase III.",2:"The governance window is narrowing. Corrective cost at Phase II is 5–15× what it would have been at Phase I.",3:"The governance window is closing. Options are becoming constrained. Urgency is high."};
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",padding:"26px 20px 46px",maxWidth:640,margin:"0 auto"}},
+    React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".16em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginBottom:13}},"Growth Gap Signal Assessment · Capital Cascade Position"),
+    React.createElement("div",{style:{fontSize:"clamp(30px,4.5vw,52px)",fontWeight:900,letterSpacing:"-.03em",textTransform:"uppercase",color:pc,lineHeight:1,marginBottom:4}},d.phaseLabel.split("—")[0].trim()),
+    React.createElement("div",{style:{fontSize:15,fontWeight:300,color:pc,fontStyle:"italic",marginBottom:7}},d.phaseLabel.split("—")[1]?.trim()),
+    React.createElement("div",{style:{fontSize:14,fontWeight:300,color:"rgba(255,255,255,.68)",marginBottom:20}},PT2[d.phase]),
+    React.createElement("div",{style:{marginBottom:20}},
+      React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:4}},
+        React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.3)"}},"Stable governance"),
+        React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.3)"}},"Crisis threshold")
+      ),
+      React.createElement("div",{style:{height:5,background:"rgba(255,255,255,.07)",position:"relative"}},
+        React.createElement("div",{style:{height:"100%",width:`${(d.totalScore/30)*100}%`,background:pc}})
+      ),
+      React.createElement("div",{style:{textAlign:"center",marginTop:4,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.42)"}},d.totalScore,"/30")
+    ),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4,marginBottom:20}},
+      ...Object.keys(d.domainStatuses).map(k=>{
+        const st2=d.domainStatuses[k];const c=stC[st2]||"#8a8a8f";
+        return React.createElement("div",{key:k,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.07)",borderLeft:`3px solid ${c}`,padding:"9px 10px"}},
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}},
+            React.createElement("span",{style:{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.8)"}},dL[k]),
+            React.createElement("span",{style:{fontSize:8,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",color:c,background:`${c}18`,padding:"2px 5px"}},st2)
+          ),
+          React.createElement("div",{style:{fontSize:10,fontWeight:300,color:"rgba(255,255,255,.48)",lineHeight:1.45}},st2==="Stable"?"No active signals. Maintain current cadence.":st2==="Watch"?"Early signals detected. Increase governance frequency.":"Accumulation pattern present. Intervention warranted.")
+        );
+      })
+    ),
+    React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.76)",lineHeight:1.75,marginBottom:18}},PT[d.phase]),
+    React.createElement("div",{style:{borderLeft:`3px solid ${P}`,padding:"13px 15px",marginBottom:11,background:"rgba(255,0,153,.04)"}},
+      React.createElement("div",{style:{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}},`The governance window for your organization is ${d.phase===1?"open":d.phase===2?"narrowing":"closing"}.`),
+      React.createElement("div",{style:{fontSize:12,fontWeight:300,color:"rgba(255,255,255,.68)",marginBottom:11}},"The Capital Exposure Briefing maps the internal drivers of the signals your assessment has identified — in 90 minutes, with no internal data required."),
+      React.createElement("button",{onClick:()=>nav("briefing"),style:{background:"transparent",border:`1px solid rgba(255,0,153,.5)`,color:P,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",padding:"10px",cursor:"pointer",width:"100%"}},"Request a briefing →")
+    ),
+    React.createElement("button",{onClick:()=>nav("results"),style:{width:"100%",background:"rgba(255,0,153,.06)",border:"1px solid rgba(255,0,153,.2)",color:P,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"10px",cursor:"pointer"}},"View your unified Capital Exposure Summary →")
+  );
+}
+
+// ─── RESULTS ──────────────────────────────────────
+function ResultsPage({st,nav}){
+  const{orgName,sector,industry,sentinelData:sd,calculatorData:cd,assessmentData:ad}=st;
+  const cols={sentinel:P,calculator:B,assessment:A};
+  const labs={sentinel:"Capital Sentinel scan",calculator:"Capital Liberation Calculator",assessment:"Growth Gap Signal Assessment"};
+  const keys={sentinel:"sentinelData",calculator:"calculatorData",assessment:"assessmentData"};
+  const missing=["sentinel","calculator","assessment"].filter(k=>!st[keys[k]]);
+  if(missing.length>0)return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",padding:"36px 20px",maxWidth:540,margin:"0 auto"}},
+    React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".16em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginBottom:13}},"Capital Exposure Summary · Solve Next"),
+    React.createElement("div",{style:{fontSize:24,fontWeight:900,letterSpacing:"-.02em",textTransform:"uppercase",color:"#fff",marginBottom:6}},"Complete all three tools to unlock your summary."),
+    React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.58)",marginBottom:22}},"The unified summary synthesizes your scan, calculator, and assessment into a single capital exposure profile."),
+    React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:5}},
+      ...["sentinel","calculator","assessment"].map(k=>{
+        const dn=!!st[keys[k]];
+        return React.createElement("div",{key:k,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderLeft:`3px solid ${dn?cols[k]:"rgba(255,255,255,.12)"}`,padding:"11px 13px",display:"flex",alignItems:"center",justifyContent:"space-between"}},
+          React.createElement("div",null,
+            React.createElement("div",{style:{fontSize:10,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:dn?"rgba(255,255,255,.62)":cols[k]}},labs[k]),
+            React.createElement("div",{style:{fontSize:10,color:"rgba(255,255,255,.35)",marginTop:2}},dn?"✓ Complete":"Not completed")
+          ),
+          !dn&&React.createElement("button",{onClick:()=>nav(k),style:{background:"transparent",border:`1px solid ${cols[k]}50`,color:cols[k],fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 9px",cursor:"pointer"}},"Start →")
+        );
+      })
+    )
+  );
+
+  const gap=Math.round((sd.finIndex||88)-(sd.mcIndex||62));
+  const pc=ad.phase===1?"rgba(255,255,255,.85)":ad.phase===2?A:P;
+  const scAl=sd.domains.filter(d=>d.status==="alert"||d.status==="urgent").length;
+  const stC={Stable:B,Watch:A,Alert:P};
+  const dL={human:"Human",intellectual:"Intellectual",reputational:"Reputational",political:"Political",social:"Social",financial:"Financial",governance:"Governance",ai:"AI"};
+
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",overflowY:"auto"}},
+    React.createElement("div",{style:{maxWidth:780,margin:"0 auto",padding:"26px 18px 46px"}},
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".16em",textTransform:"uppercase",color:P,marginBottom:5}},"Capital Exposure Summary · Solve Next · ",new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})),
+      React.createElement("h1",{style:{fontSize:"clamp(22px,3vw,36px)",fontWeight:900,letterSpacing:"-.03em",textTransform:"uppercase",color:"#fff",marginBottom:4}},orgName||"Your organization"," — Capital exposure profile"),
+      React.createElement("div",{style:{fontSize:9,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginBottom:22}},sector,industry?" · "+industry:""),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2,marginBottom:18}},
+        ...[{t:"Growth Gap",v:`${gap}-pt gap`,s:"Financial vs. multi-capital health",c:P},{t:"Trapped capital",v:f$(cd.trap),s:"Capital funding rather than governing",c:B},{t:"Cascade phase",v:ad.phaseLabel.split("—")[0].trim(),s:"Current cascade position",c:pc}].map(({t,v,s,c})=>
+          React.createElement("div",{key:t,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderTop:`3px solid ${c}`,padding:"13px 11px"}},
+            React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"rgba(255,255,255,.4)",marginBottom:4}},t),
+            React.createElement("div",{style:{fontSize:19,fontWeight:900,letterSpacing:"-.02em",color:c,lineHeight:1,marginBottom:3}},v),
+            React.createElement("div",{style:{fontSize:9,fontWeight:300,color:"rgba(255,255,255,.42)"}},s)
+          )
+        )
+      ),
+      React.createElement("div",{style:{borderLeft:`3px solid ${P}`,paddingLeft:13,marginBottom:20}},
+        React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.8)",lineHeight:1.75}},
+          React.createElement("span",null,orgName||"This organization"," is currently in "),
+          React.createElement("strong",{style:{color:pc}},ad.phaseLabel),
+          React.createElement("span",null,". The ",gap,"-point gap between financial performance and multi-capital health reflects ",scAl," capital ",scAl===1?"domain":"domains"," at alert status — while financial metrics ",ad.phase<3?"remain stable, masking upstream erosion that has not yet reached the income statement":"show increasing pressure as upstream erosion reaches financial translation",". An estimated ",f$(cd.trap)," in trapped capital represents an immediate governance opportunity that does not require budget expansion.")
+        )
+      ),
+      // Tool output cards
+      ...[
+        {title:"Capital signal scan (Sentinel)",c:P,content:React.createElement("div",null,
+          React.createElement(GGC,{domains:sd.domains,mcIndex:sd.mcIndex,finIndex:sd.finIndex,orgName:orgName||"Organization"}),
+          React.createElement("div",{style:{display:"flex",gap:3,flexWrap:"wrap",marginTop:6}},
+            ...sd.domains.map(d=>React.createElement("span",{key:d.id,style:{fontSize:8,fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",padding:"2px 6px",background:`${SC[d.status]}18`,border:`1px solid ${SC[d.status]}32`,color:SC[d.status]}},d.name.split(" ")[0]," · ",d.status))
+          ),
+          React.createElement("div",{style:{fontSize:11,fontWeight:300,color:"rgba(255,255,255,.58)",fontStyle:"italic",marginTop:8,borderLeft:"2px solid rgba(255,0,153,.25)",paddingLeft:8}},sd.bridge)
+        )},
+        {title:"Capital liberation analysis",c:B,content:React.createElement("div",null,
+          React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5,marginBottom:9}},
+            ...[["Trapped capital",f$(cd.trap),P],["Annual exposure value",f$(cd.tot),B],["3-year value",f$(cd.tot3),"#fff"]].map(([l,v,c])=>
+              React.createElement("div",{key:l,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.07)",padding:"10px 11px"}},
+                React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.4)",marginBottom:3}},l),
+                React.createElement("div",{style:{fontSize:17,fontWeight:700,color:c}},v)
+              )
+            )
+          ),
+          cd.roi&&React.createElement("div",{style:{fontSize:12,fontWeight:300,color:"rgba(255,255,255,.6)",fontStyle:"italic"}},fX(cd.roi)," ROI multiple — payback in ",cd.pay," months. Protection and liberation value alone justify intervention without growth assumptions.")
+        )},
+        {title:"Growth Gap signal assessment",c:A,content:React.createElement("div",null,
+          React.createElement("div",{style:{height:4,background:"rgba(255,255,255,.07)",marginBottom:8}},React.createElement("div",{style:{height:"100%",width:`${(ad.totalScore/30)*100}%`,background:pc}})),
+          React.createElement("div",{style:{display:"flex",gap:3,flexWrap:"wrap",marginBottom:8}},
+            ...Object.keys(ad.domainStatuses).map(k=>{const s2=ad.domainStatuses[k];const c2=stC[s2]||"#8a8a8f";return React.createElement("span",{key:k,style:{fontSize:8,fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",padding:"2px 6px",background:`${c2}18`,border:`1px solid ${c2}32`,color:c2}},dL[k]," · ",s2);})
+          ),
+          React.createElement("div",{style:{fontSize:12,fontWeight:300,color:"rgba(255,255,255,.68)",lineHeight:1.65}},"Score: ",ad.totalScore,"/30. ",ad.phase===1?"Governance window is open — Phase I intervention costs are proportional and options are many.":ad.phase===2?"Governance window is narrowing — Phase II signals indicate cascade propagation has begun.":"Phase III — financial translation is approaching or underway.")
+        )}
+      ].map(({title,c,content})=>
+        React.createElement("div",{key:title,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderTop:`3px solid ${c}`,padding:"14px 13px",marginBottom:3}},
+          React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".16em",textTransform:"uppercase",color:c,marginBottom:11}},title),
+          content
+        )
+      ),
+      React.createElement("div",{style:{background:"rgba(255,0,153,.04)",border:"1px solid rgba(255,0,153,.15)",borderTop:`3px solid ${P}`,padding:"18px 16px",marginTop:2}},
+        React.createElement("div",{style:{fontSize:19,fontWeight:900,letterSpacing:"-.02em",textTransform:"uppercase",color:"#fff",marginBottom:6}},"Is fragility accumulation outpacing endurance building?"),
+        React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.72)",marginBottom:13,lineHeight:1.7}},"The Capital Exposure Briefing translates these three signals into a Preliminary Exposure Hypothesis — the internal governance gaps most likely driving what you are seeing. 90 minutes. No internal data required. Complimentary."),
+        React.createElement("button",{onClick:()=>nav("briefing"),style:{background:P,border:"none",color:"#000",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:11,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",padding:"12px 20px",cursor:"pointer",width:"100%"}},"Request a Capital Exposure Briefing →")
+      )
+    )
+  );
+}
+
+// ─── BRIEFING ─────────────────────────────────────
+function BriefingPage({st,nav}){
+  const[nm,setNm]=useState("");const[em,setEm]=useState("");const[org,setOrg]=useState(st.orgName||"");const[rl,setRl]=useState("");const[nt,setNt]=useState("");const[done,setDone]=useState(false);const[er,setEr]=useState("");
+  const ad=st.assessmentData,cd=st.calculatorData,sd=st.sentinelData;
+  const submit=()=>{if(!nm||!em||!org){setEr("Please complete name, email, and organization.");return;}setEr("");setDone(true);};
+  if(done)return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",display:"flex",alignItems:"center",justifyContent:"center",padding:"36px 20px"}},
+    React.createElement("div",{style:{maxWidth:440,width:"100%",textAlign:"center"}},
+      React.createElement("div",{style:{fontSize:30,color:P,marginBottom:13}},"✓"),
+      React.createElement("div",{style:{fontSize:20,fontWeight:900,letterSpacing:"-.02em",textTransform:"uppercase",color:"#fff",marginBottom:6}},"Briefing request received."),
+      React.createElement("div",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.68)",lineHeight:1.7,marginBottom:20}},"A member of the Solve Next team will be in touch within one business day to confirm timing and share the Preliminary Exposure Hypothesis framework we will use to prepare."),
+      React.createElement("div",{style:{height:1,background:"rgba(255,255,255,.08)",marginBottom:16}}),
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"rgba(255,255,255,.35)",marginBottom:9}},"In the meantime"),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:5}},
+        ...[["sentinel","Review your capital scan",P],["calculator","Revisit your liberation estimate",B],["assessment","Retake the signal assessment",A]].map(([k,l,c])=>
+          React.createElement("button",{key:k,onClick:()=>nav(k),style:{background:"transparent",border:`1px solid ${c}50`,color:c,fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:9,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",padding:"9px",cursor:"pointer",width:"100%"}},l," →")
+        )
+      )
+    )
+  );
+  return React.createElement("div",{style:{minHeight:"calc(100vh - 53px)",background:"#000",padding:"32px 20px 46px",display:"flex",justifyContent:"center"}},
+    React.createElement("div",{style:{width:"100%",maxWidth:480}},
+      React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:P,marginBottom:11}},"Capital Exposure Briefing · Solve Next"),
+      React.createElement("h1",{style:{fontSize:"clamp(20px,2.8vw,30px)",fontWeight:900,letterSpacing:"-.03em",textTransform:"uppercase",color:"#fff",marginBottom:11}},"90 minutes. No internal data required. Complimentary."),
+      React.createElement("p",{style:{fontSize:13,fontWeight:300,color:"rgba(255,255,255,.72)",lineHeight:1.7,marginBottom:18}},"We arrive with a Preliminary Exposure Hypothesis — our read of the internal governance gaps most likely producing the signals you've identified. The hypothesis converts the conversation from curiosity to commitment."),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:3,marginBottom:16}},
+        ...[{c:P,t:"Format",v:"90-minute facilitated conversation"},{c:B,t:"Deliverable",v:"Two-page Preliminary Exposure Hypothesis"},{c:A,t:"Price",v:"Complimentary — no engagement required"}].map(({c,t,v})=>
+          React.createElement("div",{key:t,style:{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderTop:`3px solid ${c}`,padding:"10px 9px"}},
+            React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:c,marginBottom:3}},t),
+            React.createElement("div",{style:{fontSize:10,fontWeight:300,color:"rgba(255,255,255,.7)",lineHeight:1.5}},v)
+          )
+        )
+      ),
+      (ad||cd||sd)&&React.createElement("div",{style:{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderLeft:"3px solid rgba(255,0,153,.38)",padding:"10px 12px",marginBottom:14}},
+        React.createElement("div",{style:{fontSize:8,fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"rgba(255,0,153,.65)",marginBottom:6}},"Your capital exposure profile — pre-populated"),
+        ad&&React.createElement("div",{style:{fontSize:11,color:"rgba(255,255,255,.6)",marginBottom:2}},React.createElement("span",{style:{color:ad.phase===1?"rgba(255,255,255,.72)":ad.phase===2?A:P,fontWeight:700}},ad.phaseLabel)),
+        sd&&React.createElement("div",{style:{fontSize:11,color:"rgba(255,255,255,.6)",marginBottom:2}},"Growth Gap: ",React.createElement("span",{style:{fontWeight:700,color:B}},Math.round((sd.finIndex||88)-(sd.mcIndex||62)),"-point gap")),
+        cd&&React.createElement("div",{style:{fontSize:11,color:"rgba(255,255,255,.6)"}},"Trapped capital estimate: ",React.createElement("span",{style:{fontWeight:700,color:P}},f$(cd.trap))," annually")
+      ),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:9}},
+        er&&React.createElement("div",{style:{background:"rgba(255,0,153,.08)",border:"1px solid rgba(255,0,153,.26)",color:P,padding:"7px 10px",fontSize:11}},er),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Full name *"),React.createElement("input",{style:inp,value:nm,onChange:e=>setNm(e.target.value),placeholder:"Your name"})),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Work email *"),React.createElement("input",{style:inp,type:"email",value:em,onChange:e=>setEm(e.target.value),placeholder:"you@organization.com"})),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Organization *"),React.createElement("input",{style:inp,value:org,onChange:e=>setOrg(e.target.value),placeholder:"Your organization"})),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Role"),React.createElement("input",{style:inp,value:rl,onChange:e=>setRl(e.target.value),placeholder:"e.g. Chief Strategy Officer"})),
+        React.createElement("div",null,React.createElement("label",{style:lbl},"Notes — optional"),React.createElement("textarea",{style:{...inp,height:68,resize:"vertical"},value:nt,onChange:e=>setNt(e.target.value),placeholder:"Any specific areas of concern or context that would help us prepare"})),
+        React.createElement("button",{onClick:submit,style:{background:P,border:"none",color:"#000",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",fontSize:11,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",padding:"12px",cursor:"pointer",width:"100%"}},"Request briefing →"),
+        React.createElement("div",{style:{fontSize:8,color:"rgba(255,255,255,.25)",textAlign:"center"}},"Your information is not shared outside Solve Next. A person will respond within one business day.")
+      )
+    )
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────
+function Suite(){
+  const[cur,setCur]=useState("home");
+  const[st,setSt]=useState({orgName:"",sector:"",industry:"",orgType:"",sentinelData:null,calculatorData:null,assessmentData:null});
+  const[done,setDone]=useState({sentinel:false,calculator:false,assessment:false});
+  useEffect(()=>{setDone(p=>({...p,sentinel:!!st.sentinelData,calculator:!!st.calculatorData,assessment:!!st.assessmentData}));},[st]);
+  const nav=t=>setCur(t);
+  return React.createElement("div",{style:{background:"#000",minHeight:"100vh",fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif",color:"rgba(255,255,255,.88)",display:"flex",flexDirection:"column"}},
+    React.createElement(Header,{cur,nav,done}),
+    React.createElement(PBar,{done}),
+    React.createElement("div",{style:{flex:1}},
+      cur==="home"&&React.createElement(HomePage,{nav,done}),
+      cur==="sentinel"&&React.createElement(SentinelTool,{st,setSt,nav,setDone}),
+      cur==="calculator"&&React.createElement(CalculatorTool,{st,setSt,nav,setDone}),
+      cur==="assessment"&&React.createElement(AssessmentTool,{st,setSt,nav,setDone}),
+      cur==="results"&&React.createElement(ResultsPage,{st,nav}),
+      cur==="briefing"&&React.createElement(BriefingPage,{st,nav})
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(Suite));
+</script>

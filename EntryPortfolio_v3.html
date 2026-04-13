@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolveNext — Complete Entry System</title>
+
+<style>
+:root{
+  --pink:#FF0099;--black:#000000;--white:#ffffff;
+  --navy:#333399;--gray:#8a8a8f;--rule:rgba(255,255,255,.08);
+  --amber:#C8973A;--amber-bg:rgba(200,151,58,.1);--amber-br:rgba(200,151,58,.3);
+  --pink-bg:rgba(255,0,153,.08);--pink-br:rgba(255,0,153,.28);
+  --navy-bg:rgba(51,51,153,.1);--navy-br:rgba(51,51,153,.28);
+  --s1:rgba(255,255,255,.04);--s2:rgba(255,255,255,.07);
+  --b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);
+  --tx:rgba(255,255,255,.88);--tx2:rgba(255,255,255,.6);--mu:#8a8a8f
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000000;color:rgba(255,255,255,.88);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;font-weight:300;min-height:100vh;overflow-x:hidden}
+
+/* ── COVER ── */
+#cover{min-height:100vh;background:#000000;display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden}
+#cover::before{content:'';position:absolute;top:-20%;right:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(255,0,153,.12) 0%,transparent 70%);pointer-events:none}
+.ct{display:flex;justify-content:space-between;align-items:flex-start}
+.clogo{font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ffffff}
+.clogo span{color:var(--pink)}
+.cmeta{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,.2);padding:8px 18px;color:rgba(255,255,255,.7)}
+.cmain{position:relative;z-index:1}
+.cey{font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--pink);margin-bottom:18px;display:flex;align-items:center;gap:1rem}
+.cey::before{content:'';display:block;width:2rem;height:1px;background:var(--pink)}
+.ctitle{font-size:clamp(44px,7vw,88px);font-weight:900;line-height:.92;letter-spacing:-.04em;text-transform:uppercase;color:#ffffff;margin-bottom:24px}
+.ctitle em{font-style:italic;color:var(--pink);font-weight:300}
+.csub{font-size:16px;font-weight:300;color:rgba(255,255,255,.85);max-width:38rem;line-height:1.65;margin-bottom:0}
+.ccols{display:flex;gap:3rem;margin-top:24px}
+.cclbl{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:.5rem;color:var(--pink)}
+.cclbl.t{color:#0066CC}
+.ccp{font-size:13px;font-weight:300;color:rgba(255,255,255,.5);line-height:1.6}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--pink);display:inline-block}
+.dot.t{background:#0066CC}
+.cbot{display:flex;justify-content:space-between;align-items:flex-end}
+.chint{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.cct{font-size:72px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;letter-spacing:-.04em}
+.sbtn{display:inline-flex;align-items:center;gap:.75rem;margin-top:2.5rem;padding:14px 24px;background:transparent;border:1px solid rgba(255,0,153,.5);color:var(--pink);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.sbtn:hover{background:rgba(255,0,153,.1);border-color:var(--pink)}
+.arr{transition:transform .3s}
+.sbtn:hover .arr{transform:translateX(4px)}
+
+/* ── APP ── */
+#app{display:none;min-height:100vh}
+.layout{display:grid;grid-template-columns:272px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:#000000;border-right:1px solid rgba(255,255,255,.08);padding:2rem 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sb-brand{padding:0 1.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:1.25rem}
+.sb-bl{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ffffff;margin-bottom:2px}
+.sb-bl span{color:var(--pink)}
+.sb-bt{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:3px}
+.sb-sec{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:0 1.75rem;margin:.75rem 0 .35rem}
+.ni{display:flex;align-items:flex-start;gap:.85rem;padding:.7rem 1.75rem;cursor:pointer;transition:all .2s;border-left:2px solid transparent}
+.ni:hover{background:rgba(255,255,255,.03)}
+.ni.active{background:rgba(255,0,153,.06);border-left-color:var(--pink)}
+.ni.pn.active{background:rgba(51,51,153,.08);border-left-color:var(--navy)}
+.ni.gn.active{background:rgba(255,255,255,.05);border-left-color:rgba(255,255,255,.3)}
+.nn{font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.2);padding-top:.15rem;flex-shrink:0;transition:color .2s}
+.ni.active .nn{color:var(--pink)}
+.ni.pn.active .nn{color:var(--navy)}
+.ni.gn.active .nn{color:rgba(255,255,255,.5)}
+.nt{font-size:12px;font-weight:400;color:rgba(255,255,255,.45);line-height:1.3;transition:color .2s}
+.ni.active .nt,.ni.pn.active .nt,.ni.gn.active .nt{color:#ffffff}
+.ns{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-top:.15rem;display:block;transition:color .2s}
+.ni.active .ns{color:rgba(255,0,153,.6)}
+.ni.pn.active .ns{color:rgba(51,51,153,.7)}
+.nov{font-size:9px;color:rgba(51,51,153,.5);margin-left:.2rem}
+.sbdiv{height:1px;background:rgba(255,255,255,.06);margin:.75rem 1.75rem}
+.sbfoot{margin-top:auto;padding:1.25rem 1.75rem 0;border-top:1px solid rgba(255,255,255,.06)}
+.sbback{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);cursor:pointer;transition:color .2s}
+.sbback:hover{color:var(--pink)}
+
+/* ── MAIN CONTENT ── */
+.main{background:#000000;overflow-y:auto}
+.page{display:none;max-width:820px;margin:0 auto;padding:52px 56px 80px;animation:fu .35s ease}
+.page.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── OFFER HEADER ── */
+.ph{border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:32px;margin-bottom:40px}
+.ey{display:flex;align-items:center;gap:.75rem;margin-bottom:16px;flex-wrap:wrap}
+.en{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px;border:1px solid}
+.en{color:var(--pink);background:rgba(255,0,153,.08);border-color:rgba(255,0,153,.28)}
+.en.p{color:#0066CC;background:rgba(0,102,204,.08);border-color:rgba(0,102,204,.28)}
+.en.g{color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
+.et{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border:1px solid}
+.et.s{color:var(--pink);border-color:rgba(255,0,153,.28)}
+.et.p{color:#0066CC;border-color:rgba(0,102,204,.28)}
+.et.n{color:#0066CC;border-color:rgba(0,102,204,.28);background:rgba(0,102,204,.06)}
+.eb{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray)}
+.ptl{font-size:clamp(32px,4.5vw,52px);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;color:#ffffff;line-height:1.0;margin-bottom:12px}
+.phk{font-size:16px;font-weight:300;font-style:italic;color:rgba(255,255,255,.72);line-height:1.6}
+
+/* ── OFFER GRID ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:32px}
+.cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-top:3px solid rgba(255,255,255,.1);padding:20px 22px}
+.cell:nth-child(odd){border-top-color:var(--pink)}
+.cell:nth-child(even){border-top-color:transparent;border-top-width:1px}
+.cl{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
+.cl.t{color:#0066CC}
+.cc{font-size:13px;font-weight:300;color:rgba(255,255,255,.82);line-height:1.65}
+.cc strong{font-weight:700;color:#ffffff}
+
+/* ── CONTENT SECTIONS ── */
+.sec{margin-bottom:28px}
+.sl{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.sl.t{color:#0066CC}
+.sl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.sbody{font-size:14px;font-weight:300;color:rgba(255,255,255,.78);line-height:1.75}
+.sbody p{margin-bottom:12px}
+.sbody p:last-child{margin-bottom:0}
+
+/* ── BRIDGE BOX ── */
+.bb{background:rgba(255,0,153,.06);border:1px solid rgba(255,0,153,.18);border-left:3px solid var(--pink);padding:20px 24px;margin-bottom:24px;position:relative}
+.bb.t{background:rgba(51,51,153,.08);border-color:rgba(51,51,153,.2);border-left-color:var(--navy)}
+.bbl{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:10px}
+.bbl.t{color:var(--navy)}
+.bbt{font-size:14px;font-weight:300;font-style:italic;color:rgba(255,255,255,.88);line-height:1.6}
+
+/* ── LIFT BAR ── */
+.lbar{display:flex;gap:1rem;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+.li{display:flex;flex-direction:column;gap:5px;flex:1;min-width:100px}
+.ll{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray)}
+.lv{font-size:13px;font-weight:700;color:#ffffff}
+.lv.t{color:#0066CC}.lv.g{color:var(--pink)}.lv.o{color:var(--amber)}
+.ldot{width:1px;background:rgba(255,255,255,.08);align-self:stretch}
+
+/* ── PAGE NAV ── */
+.pnav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}
+.pb{display:flex;align-items:center;gap:.5rem;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);cursor:pointer;transition:color .2s;background:none;border:none}
+.pb:hover{color:var(--pink)}
+.pb.inv{visibility:hidden}
+
+/* ── OVERVIEW PAGE ── */
+.ov-i{font-size:16px;font-weight:300;line-height:1.65;color:rgba(255,255,255,.82);margin-bottom:40px;max-width:580px}
+.tp{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:40px}
+.pan{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-top:3px solid rgba(255,255,255,.1);padding:28px}
+.pan:first-child{border-top-color:var(--pink)}
+.pan:last-child{border-top-color:var(--navy)}
+.ph2{display:flex;align-items:center;gap:.75rem;margin-bottom:16px}
+.ph2d{width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0}
+.ph2d.t{background:var(--navy)}
+.ph2l{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray)}
+.pantl{font-size:20px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:12px;color:#ffffff}
+.panb{font-size:13px;font-weight:300;color:rgba(255,255,255,.78);line-height:1.7}
+.panl{margin-top:14px;list-style:none}
+.panl li{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--gray);line-height:1.9;padding-left:1rem;position:relative}
+.panl li::before{content:'—';position:absolute;left:0;color:var(--pink)}
+.panl.t li::before{color:var(--navy)}
+.pbox{background:#000000;border:1px solid rgba(255,0,153,.18);border-top:3px solid var(--pink);padding:28px 32px;position:relative}
+.pbox p{font-size:15px;font-weight:300;color:rgba(255,255,255,.8);line-height:1.7;font-style:italic;margin-bottom:12px}
+.pbox p:last-child{margin-bottom:0}
+.pbox strong{color:var(--pink);font-style:normal;font-weight:700}
+
+/* ── ARC MAP ── */
+.maprow{display:flex;align-items:stretch;margin-bottom:40px}
+.mn{padding:16px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:13px;font-weight:700;letter-spacing:-.01em;flex:1;text-align:center;color:#ffffff;line-height:1.3}
+.mn.d{background:rgba(255,0,153,.06);border-color:rgba(255,0,153,.2);border-top:3px solid var(--pink)}
+.mn.a{background:rgba(51,51,153,.1);border-color:rgba(51,51,153,.25);border-top:3px solid var(--navy)}
+.mnl{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);display:block;margin-bottom:5px}
+.mnl.t{color:var(--navy)}
+.mna{font-size:16px;color:rgba(255,255,255,.2);padding:0 6px;display:flex;align-items:center}
+
+/* ── DECISION / BUILD PAGE HEADERS ── */
+.dh{border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:32px;margin-bottom:40px}
+.dtl{font-size:clamp(32px,4.5vw,52px);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;color:#ffffff;margin-bottom:12px;line-height:1.0}
+.ds{font-size:14px;font-weight:300;color:rgba(255,255,255,.6);line-height:1.65;max-width:540px}
+.dsec{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.dsec.t{color:var(--navy)}
+.dsec::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+
+/* ── DECISION TABLE ── */
+.dt{width:100%;border-collapse:collapse;margin-bottom:32px;font-size:13px}
+.dt thead tr{background:rgba(255,255,255,.06)}
+.dt thead th{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);padding:14px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+.dt thead th.t{color:var(--navy)}
+.dt tbody tr{border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s;cursor:pointer}
+.dt tbody tr:hover{background:rgba(255,255,255,.04)}
+.dt tbody td{padding:14px 16px;vertical-align:top;line-height:1.5;color:rgba(255,255,255,.78);font-weight:300}
+.dt tbody td:first-child{color:rgba(255,255,255,.88)}
+.tdo{font-weight:700;color:#ffffff;font-size:13px}
+.tdo.t{color:rgba(255,255,255,.88)}
+.tdn{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--pink)}
+.tdn.t{color:var(--navy)}
+.tdw{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--gray);margin-top:4px;display:block;text-transform:uppercase}
+
+/* ── BUILD TABLE ── */
+.bt{width:100%;border-collapse:collapse;margin-bottom:32px}
+.bt thead tr{background:rgba(255,255,255,.06)}
+.bt thead th{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--navy);padding:14px 18px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+.bt tbody tr{border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s;cursor:pointer}
+.bt tbody tr:hover{background:rgba(255,255,255,.04)}
+.bt tbody td{padding:14px 18px;vertical-align:top;line-height:1.55;color:rgba(255,255,255,.78);font-weight:300;font-size:13px}
+.wb{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid}
+.w1{color:var(--navy);background:rgba(51,51,153,.1);border-color:rgba(51,51,153,.28)}
+.w2{color:var(--amber);background:rgba(200,151,58,.1);border-color:rgba(200,151,58,.3)}
+.w3{color:#C84020;background:rgba(200,64,32,.08);border-color:rgba(200,64,32,.28)}
+
+/* ── PRINCIPLE BOX (decision guide) ── */
+.principle-box, div[style*="background:var(--ink)"], .pbox{background:#000000;border:1px solid rgba(255,0,153,.15);border-top:3px solid var(--pink);padding:28px 32px;margin-top:32px}
+.principle-box p,.pbox p{font-size:15px;font-weight:300;font-style:italic;color:rgba(255,255,255,.78);line-height:1.7;margin-bottom:12px}
+.principle-box p:last-child,.pbox p:last-child{margin-bottom:0}
+.principle-box strong,.pbox strong{color:var(--pink);font-style:normal;font-weight:700}
+
+/* ── MOBILE ── */
+.mbar{display:none}.ov{display:none}
+@media(max-width:720px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-285px;top:0;z-index:100;width:272px;transition:left .3s}
+  .sidebar.open{left:0}
+  .mbar{display:flex;justify-content:space-between;align-items:center;background:#000000;border-bottom:1px solid rgba(255,255,255,.08);padding:14px 20px;position:sticky;top:0;z-index:50}
+  .mbl{font-size:13px;font-weight:700;letter-spacing:.06em;color:#ffffff}
+  .mbl span{color:var(--pink)}
+  .mbtn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:4px}
+  .mbtn span{display:block;width:20px;height:1px;background:rgba(255,255,255,.6)}
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90}
+  .ov.active{display:block}
+  .page{padding:2rem 1.25rem 4rem}
+  .grid,.tp,.ccols{grid-template-columns:1fr;flex-direction:column}
+  .cell,.pan:first-child{border-right:none}
+  .maprow{flex-wrap:wrap}
+}
+@media(min-width:721px){.mbar{display:none}}
+
+/* ═══════════════════════════════════════════════════
+   LEGIBILITY PATCH — Human Factors & WCAG AA
+   ═══════════════════════════════════════════════════
+   All failing contrast fixed to ≥ 4.5:1 on #000.
+   Minimum label size raised to 11px.
+   Navy (#333399, 2.1:1 on black) → #8B9EFF (8.4:1)
+   for all text on dark backgrounds.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Navy-on-black replaced with accessible light blue ── */
+.en.p        { color:#8B9EFF; background:rgba(139,158,255,.09); border-color:rgba(139,158,255,.30); }
+.et.p        { color:#8B9EFF; border-color:rgba(139,158,255,.28); }
+.et.n        { color:#8B9EFF; border-color:rgba(139,158,255,.28); background:rgba(139,158,255,.07); }
+.cl.t        { color:#8B9EFF; }
+.bbl.t       { color:#8B9EFF; }
+.bb.t        { border-left-color:#8B9EFF; }
+.ph2d.t      { background:#8B9EFF; }
+.pan:last-child { border-top-color:#8B9EFF; }
+.panl.t li::before { color:#8B9EFF; }
+.mnl.t       { color:#8B9EFF; }
+.mn.a        { border-top-color:#8B9EFF; background:rgba(139,158,255,.07); border-color:rgba(139,158,255,.18); }
+.dsec.t      { color:#8B9EFF; }
+.dsec.t::after { background:rgba(139,158,255,.15); }
+.dt thead th.t { color:#8B9EFF; }
+.tdn.t       { color:#8B9EFF; }
+.lv.t        { color:#8B9EFF; }
+.w1          { color:#8B9EFF; background:rgba(139,158,255,.1); border-color:rgba(139,158,255,.28); }
+.bt thead th { color:#8B9EFF; }
+.sl.t        { color:#8B9EFF; }
+.ni.pn.active .nn { color:#8B9EFF; }
+.ni.pn.active .ns { color:rgba(139,158,255,.75); }
+.nov         { color:rgba(139,158,255,.68); font-size:10px; }
+
+/* ── Label sizes: 9px → 11px minimum ── */
+.cl          { font-size:11px; color:rgba(255,255,255,.65); }
+.ll          { font-size:11px; color:rgba(255,255,255,.65); }
+.bbl         { font-size:11px; }
+.sl          { font-size:11px; }
+.en          { font-size:10px; }
+.et          { font-size:10px; }
+.eb          { font-size:10px; color:rgba(255,255,255,.62); letter-spacing:.10em; }
+.dt thead th { font-size:11px; }
+.bt thead th { font-size:11px; }
+.wb          { font-size:10px; }
+.pb          { font-size:11px; letter-spacing:.16em; }
+.tdn         { font-size:11px; }
+.tdw         { font-size:11px; color:rgba(255,255,255,.58); }
+
+/* ── Sidebar ── */
+.sb-sec      { font-size:11px; color:rgba(255,255,255,.55); }
+.nn          { font-size:11px; color:rgba(255,255,255,.52); }
+.ns          { font-size:11px; color:rgba(255,255,255,.55); }
+.ni.active .ns { color:rgba(255,0,153,.75); }
+.sbback      { font-size:11px; color:rgba(255,255,255,.55); }
+.sbback:hover { color:var(--pink); }
+
+/* ── Cover ── */
+.csub        { font-size:17px; color:rgba(255,255,255,.88); }
+.cclbl       { font-size:11px; }
+.ccp         { font-size:14px; color:rgba(255,255,255,.58); }
+.chint       { font-size:11px; color:rgba(255,255,255,.50); }
+
+/* ── Page headers ── */
+.ptl         { font-size:clamp(34px,4.5vw,52px); }
+.phk         { font-size:16px; color:rgba(255,255,255,.78); }
+
+/* ── Grid cells ── */
+.cc          { font-size:14px; color:rgba(255,255,255,.85); line-height:1.7; }
+.cc strong   { color:#ffffff; font-weight:700; }
+
+/* ── Section body text ── */
+.sbody       { font-size:14px; color:rgba(255,255,255,.85); line-height:1.8; }
+.ov-i        { font-size:17px; color:rgba(255,255,255,.88); }
+
+/* ── Two-panel overview ── */
+.pantl       { font-size:22px; }
+.panb        { font-size:14px; color:rgba(255,255,255,.82); }
+.panl li     { font-size:12px; color:rgba(255,255,255,.62); }
+.ph2l        { font-size:11px; color:rgba(255,255,255,.62); letter-spacing:.16em; }
+
+/* ── Arc map ── */
+.mn          { font-size:14px; font-weight:600; }
+.mnl         { font-size:10px; }
+.mna         { color:rgba(255,255,255,.42); font-size:18px; }
+
+/* ── Decision / Build pages ── */
+.ds          { font-size:15px; color:rgba(255,255,255,.72); }
+.dt tbody td { font-size:14px; color:rgba(255,255,255,.85); }
+.dt tbody td:first-child { color:rgba(255,255,255,.90); }
+.tdo         { font-size:14px; font-weight:700; color:#ffffff; }
+.bt tbody td { font-size:14px; color:rgba(255,255,255,.85); }
+
+/* ── Bridge box ── */
+.bbt         { font-size:15px; color:rgba(255,255,255,.92); }
+
+/* ── Lift bar ── */
+.lv          { font-size:13px; }
+.lv.g        { color:var(--pink); }
+.lv.o        { color:var(--amber); }
+
+/* ── Principle box ── */
+.pbox p      { font-size:16px; color:rgba(255,255,255,.88); }
+.pbox strong { color:var(--pink); }
+
+</style>
+</head>
+<body>
+<div id="cover">
+  <div class="ct"><div class="clogo">Solve/<span>Next</span></div><div class="cmeta">Complete Entry System · v2.0</div></div>
+  <div class="cmain">
+    <div class="cey">Serious Capital Architecture</div>
+    <h1 class="ctitle">The Complete<br><em>Entry System</em></h1>
+    <p class="csub">Every path into the capital exposure conversation — whether it begins with a human interaction or a product experience. Six service entries. Ten product entries. One integrated decision framework.</p>
+    <div class="ccols">
+      <div><div class="cclbl"><span class="dot"></span> Human-Led Entries</div><p class="ccp">Six facilitated entry offers matched to buyer type and emotional state. Each requires a relationship context and produces a finding through structured engagement.</p></div>
+      <div><div class="cclbl t"><span class="dot t"></span> Product-Led Entries</div><p class="ccp">Ten self-directed instruments and tools. Each produces a real finding before any service conversation begins. Four are architecturally non-obvious.</p></div>
+    </div>
+    <button class="sbtn" onclick="openApp()">Open Playbook <span class="arr">→</span></button>
+  </div>
+  <div class="cbot"><div class="chint">16 entry paths · 1 destination</div><div class="cct">16</div></div>
+</div>
+
+<div id="app">
+  <div class="ov" id="ov" onclick="closeMobileNav()"></div>
+  <div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-brand"><div class="sb-bl">SolveNext</div><div class="sb-bt">Complete Entry<br>System</div></div>
+    <div class="sb-sec">Overview</div>
+    <div class="ni gn" onclick="sp('pov',this)"><div class="nn">◈</div><div><div class="nt">How the System Works</div><span class="ns">Two paths, one destination</span></div></div>
+    <div class="sbdiv"></div>
+    <div class="sb-sec">Human-Led Entries</div>
+    <div class="ni active" onclick="sp('s01',this)"><div class="nn">S01</div><div><div class="nt">Capital Exposure Briefing</div><span class="ns">Senior Executive</span></div></div>
+    <div class="ni" onclick="sp('s02',this)"><div class="nn">S02</div><div><div class="nt">Portfolio Imbalance Session</div><span class="ns">CEO / CSO / CINO</span></div></div>
+    <div class="ni" onclick="sp('s03',this)"><div class="nn">S03</div><div><div class="nt">AI Capital Exposure Review</div><span class="ns">Executive / AI Lead</span></div></div>
+    <div class="ni" onclick="sp('s04',this)"><div class="nn">S04</div><div><div class="nt">Single Initiative Audit</div><span class="ns">Initiative Sponsor</span></div></div>
+    <div class="ni" onclick="sp('s05',this)"><div class="nn">S05</div><div><div class="nt">CFO Capital Discipline Review</div><span class="ns">CFO / Finance Leader</span></div></div>
+    <div class="ni" onclick="sp('s06',this)"><div class="nn">S06</div><div><div class="nt">Board Governance Session</div><span class="ns">Board / Risk Committee</span></div></div>
+    <div class="sbdiv"></div>
+    <div class="sb-sec">Product-Led Entries</div>
+    <div class="ni pn" onclick="sp('p01',this)"><div class="nn">P01</div><div><div class="nt">Growth Gap Signal Quiz</div><span class="ns">Self-qualifying executive</span></div></div>
+    <div class="ni pn" onclick="sp('p02',this)"><div class="nn">P02</div><div><div class="nt">Capital Clarity Canvas</div><span class="ns">High-autonomy executive</span></div></div>
+    <div class="ni pn" onclick="sp('p03',this)"><div class="nn">P03</div><div><div class="nt">AI Capital Exposure Calculator</div><span class="ns">AI-invested executive</span></div></div>
+    <div class="ni pn" onclick="sp('p04',this)"><div class="nn">P04</div><div><div class="nt">Assumption Blindspot Identifier</div><span class="ns">Initiative-anxious leader</span></div></div>
+    <div class="ni pn" onclick="sp('p05',this)"><div class="nn">P05</div><div><div class="nt">Portfolio Imbalance Visualizer</div><span class="ns">Portfolio-concerned exec</span></div></div>
+    <div class="ni pn" onclick="sp('p06',this)"><div class="nn">P06</div><div><div class="nt">Growth Gap Benchmark Report</div><span class="ns">Cold / inbound lead</span></div></div>
+    <div class="ni pn" onclick="sp('p07',this)"><div class="nn">P07</div><div><div class="nt">External Exposure Mirror<span class="nov">◆</span></div><span class="ns">Any — AI-powered</span></div></div>
+    <div class="ni pn" onclick="sp('p08',this)"><div class="nn">P08</div><div><div class="nt">Capital Liberation Calculator<span class="nov">◆</span></div><span class="ns">Resource-constrained</span></div></div>
+    <div class="ni pn" onclick="sp('p09',this)"><div class="nn">P09</div><div><div class="nt">Governor Identity Assessment<span class="nov">◆</span></div><span class="ns">Individual executive</span></div></div>
+    <div class="ni pn" onclick="sp('p10',this)"><div class="nn">P10</div><div><div class="nt">Think Wrong Bridge Tool<span class="nov">◆</span></div><span class="ns">Active TW client</span></div></div>
+    <div class="sbdiv"></div>
+    <div class="sb-sec">Guides</div>
+    <div class="ni gn" onclick="sp('dec',this)"><div class="nn">→</div><div><div class="nt">Integrated Decision Guide</div><span class="ns">Which entry, when</span></div></div>
+    <div class="ni gn" onclick="sp('bld',this)"><div class="nn">→</div><div><div class="nt">Product Build Sequence</div><span class="ns">Wave 1 → 3 roadmap</span></div></div>
+    <div class="sbfoot"><div class="sbback" onclick="backToCover()">← Back to cover</div></div>
+  </nav>
+  <main class="main">
+    <div class="mbar"><div class="mbl">Solve/<span>Next</span> · Entry System</div><button class="mbtn" onclick="toggleMobileNav()"><span></span><span></span><span></span></button></div>
+<!-- OVERVIEW -->
+<div class="page" id="pov">
+  <div class="ph"><div class="ey"><span class="en g">Overview</span><span class="eb">How the Complete Entry System Works</span></div><h1 class="ptl">Two Paths Into One Conversation</h1><p class="phk">Every entry — human-led or product-led — has one destination: the Capital Exposure Diagnostic.</p></div>
+  <p class="ov-i">Some executives will be brought into the capital exposure conversation through a relationship. Others will find their way independently — through a talk, an article, a peer referral, or a tool that produces a finding they didn't expect. This system provides both paths.</p>
+  <div class="tp">
+    <div class="pan"><div class="ph2"><div class="ph2d"></div><div class="ph2l">Human-Led · S01–S06</div></div><div class="pantl">Service Entries</div><div class="panb">Six facilitated engagements matched to buyer type and emotional state. Each requires a relationship context. Each produces a real finding through structured conversation or workshop.</div><ul class="panl"><li>Requires facilitator presence</li><li>Finding co-constructed with buyer</li><li>Priced from complimentary to $25K</li><li>Entry trigger: relationship or referral</li><li>Converts: session to Diagnostic mandate</li></ul></div>
+    <div class="pan"><div class="ph2"><div class="ph2d t"></div><div class="ph2l" style="color:#333399">Product-Led · P01–P10</div></div><div class="pantl">Product Entries</div><div class="panb">Ten self-directed instruments and tools. No relationship context required. Each produces a finding the executive generates themselves — harder to dismiss than a finding a vendor delivers.</div><ul class="panl t"><li>No facilitator required for most</li><li>Finding self-generated by executive</li><li>All free or lightly gated for user</li><li>Entry trigger: thought leadership, search, cold contact</li><li>Converts: self-discomfort to conversation request</li></ul></div>
+  </div>
+  <div class="sec"><div class="sl">The Full Arc</div></div>
+  <div class="maprow"><div class="mn"><span class="mnl t">Product-Led</span>Self-Directed P01–P10</div><div class="mna">→</div><div class="mn"><span class="mnl">Human-Led</span>Service Entries S01–S06</div><div class="mna">→</div><div class="mn d"><span class="mnl t">Destination</span>Capital Exposure Diagnostic</div><div class="mna">→</div><div class="mn a"><span class="mnl">Platform</span>Governance Architecture</div></div>
+  <div class="pbox"><p>The governing test for every entry is identical: <strong>does completing this leave the executive with a finding they want to resolve?</strong></p><p>A capability demonstration produces admiration. A finding produces demand. <strong>The output is what converts — not the experience, not the relationship, not the pitch.</strong></p><p>The four entries marked ◆ are architecturally non-obvious. They reach buyers the other entries do not — the skeptic, the constrained CEO, the career-focused individual, and the Think Wrong client with no path to the governance conversation.</p></div>
+  <div class="pnav"><button class="pb inv">←</button><button class="pb" onclick="sp('s01',gi('s01'))">First Entry →</button></div>
+</div>
+
+<!-- S01 -->
+<div class="page active" id="s01">
+  <div class="ph"><div class="ey"><span class="en">S01</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: Senior Executive — Warm Relationship</span></div><h1 class="ptl">Capital Exposure Briefing</h1><p class="phk">"Let us show you what we see in your situation."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">Warm relationship, senior executive who knows your work and is curious — but has no active mandate and no budget committed. They've heard the ideas. They're not yet activated. The goal is to <strong>create a finding they want to resolve.</strong></div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">A prepared 60–90 minute facilitated conversation. You arrive with a one-page <strong>Preliminary Exposure Hypothesis</strong> built from publicly available signals — their industry, AI investment patterns, public growth statements, and analyst commentary.</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">A written two-page <strong>Preliminary Exposure Hypothesis</strong> left with the executive. Three exposure zones identified. One or two questions framed that they likely cannot answer with current internal visibility.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc"><strong>Zero budget required.</strong> 90 minutes of executive time. No internal data access needed. Price for SolveNext: complimentary — value is pipeline activation, not revenue.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>The power of this offer is in what you bring before you walk in the room. A written hypothesis based on external signals signals three things simultaneously: that you've done serious work, that you see things others don't, and that there's a gap between their public posture and their likely internal reality.</p><p>The written hypothesis is the psychological mechanism. It creates a documented gap — something named and specific — that they now want to close. Curiosity converts to urgency when the problem has a name and a form.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"This is based on external signals only. We can only see so far from the outside. The Diagnostic gives you the real picture — the actual capital exposure architecture across creation, protection, and liberation. What we've shown you today is the hypothesis. The Diagnostic is the answer."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">1 prep hour</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">60–90 min</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">Complimentary</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">None — public signals</div></div></div>
+  <div class="pnav"><button class="pb inv">←</button><button class="pb" onclick="sp('s02',gi('s02'))">Next Offer →</button></div>
+</div>
+
+<!-- S02 -->
+<div class="page" id="s02">
+  <div class="ph"><div class="ey"><span class="en">S02</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: CEO / Chief Strategy Officer / CINO</span></div><h1 class="ptl">Portfolio Imbalance Session</h1><p class="phk">"Let's look at where your capital is actually allocated."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">Strategy or innovation relationship. They sense growth is underperforming but can't name why. Often preceded by <strong>"we're investing but not seeing returns."</strong> The problem is felt but unlocated.</div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">Half-day facilitated working session with 3–5 executives. You map their portfolio live across Optimize / Grow / Renew. <strong>No advance data collection required</strong> — the map is built collaboratively in the room.</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">A single visual: their portfolio distribution vs. industry benchmark, plus a <strong>"Reallocation Opportunity" framing</strong> showing what a 10% capital shift would unlock in both protection and creation of capital.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc">Half-day of executive team time. No pre-work required. <strong>Price: $8K–$15K</strong> or included as part of a relationship-building engagement at your discretion.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>The mechanism here is visual self-discovery. When executives build the portfolio map themselves and then see the imbalance rendered against a benchmark, the dissatisfaction is self-generated. You haven't told them they have a problem. They've shown themselves.</p><p>This removes identity threat almost entirely. The finding comes from them, not from an external critique of their strategy. The 10% reallocation simulation makes the path forward feel manageable.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"This session gives you the portfolio-level view. But portfolio imbalance is a symptom. The Diagnostic tells you where the exposure actually lives inside each bucket — which initiatives are creating serious capital and which are consuming it without a clear path to return."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">Half-day, 1 facilitator</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">3–4 hour session</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">$8K–$15K</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">None — built live</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s01',gi('s01'))">← Previous</button><button class="pb" onclick="sp('s03',gi('s03'))">Next Offer →</button></div>
+</div>
+
+<!-- S03 -->
+<div class="page" id="s03">
+  <div class="ph"><div class="ey"><span class="en">S03</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: Executive with AI Portfolio / AI Transformation Lead</span></div><h1 class="ptl">AI Capital Exposure Review</h1><p class="phk">"You're spending heavily on AI. Do you know which investments are building capital — and which are just consuming it?"</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">Any executive at an organization actively investing in AI. The anxiety is already present: unclear ROI, regulatory exposure, board scrutiny. <strong>You're naming what they're already feeling.</strong></div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">2–3 week targeted review of their AI initiative portfolio. You apply Super Vital Assumption mapping to their top 3–5 AI investments and score them on capital creation potential versus exposure concentration. Requires document intake and 2–3 leadership interviews.</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">A one-page <strong>AI Capital Exposure Heatmap</strong> — board-presentable — showing each AI initiative's exposure profile, assumption concentration risk, and capital governance gaps. Plus a governance gap summary with 3–5 immediate actions.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc">Moderate lift: document intake, 2–3 leadership interviews, 2–3 weeks. <strong>Price: $15K–$25K.</strong> Scoped tightly enough to produce a boardroom-ready output that justifies the investment immediately.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>This is your fastest-to-market wedge right now. The AI governance conversation is happening at every board table. You are not creating the urgency — you are naming and structuring anxiety that already exists. That is the most powerful selling position available.</p><p>The Heatmap travels. It gets shared. It gets presented to the board. One well-designed heatmap creates conversations you didn't initiate. AI also functions as a Trojan horse: the review introduces assumption mapping and capital impact scoring without naming the full architecture.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"This review covers your AI portfolio specifically. But AI exposure rarely lives in isolation — it's almost always connected to portfolio imbalance and liberation failures elsewhere. The full Diagnostic maps the entire capital exposure architecture and shows you how the AI layer interacts with your broader growth position."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">Moderate — 2–3 interviews</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">2–3 weeks</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">$15K–$25K</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">AI docs + interviews</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s02',gi('s02'))">← Previous</button><button class="pb" onclick="sp('s04',gi('s04'))">Next Offer →</button></div>
+</div>
+
+<!-- S04 -->
+<div class="page" id="s04">
+  <div class="ph"><div class="ey"><span class="en">S04</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: Initiative Sponsor / Program Owner</span></div><h1 class="ptl">Single Initiative Assumption Audit</h1><p class="phk">"You already have something you're nervous about. Let us look at it."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">Any relationship where a specific high-stakes initiative is visible and anxiety is present. <strong>They don't need to feel a systemic problem.</strong> They just need to be uncertain about one thing.</div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">Focused 2–3 week engagement on a single initiative. You apply the Super Vital Assumption framework: surface what the initiative depends on, classify assumptions by criticality and testability, and identify where capital is exposed.</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">An <strong>Assumption Risk Map</strong>: which assumptions are super vital, which are untested, the capital at risk if critical ones fail, and a recommended testing sequence that reduces exposure before additional capital is committed.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc">Only the initiative sponsor's access is required. <strong>Lightest lift of all service offers. Price: $10K–$18K.</strong> Easy to approve, easy to start, almost always produces findings that demand a broader conversation.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>This offer bypasses every procurement and political barrier because it requires no organizational commitment — only one sponsor who is already nervous about something. The decision to engage is made by one person with one concern.</p><p>The conversion mechanism is almost structural: assumption audits on individual initiatives almost always surface portfolio-level patterns. When they see that what they thought was an initiative problem is actually a governance pattern, the natural response is "how widespread is this?" That question is your invitation.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"What we found in this initiative suggests a pattern that almost certainly exists across your portfolio. This isn't isolated — it's a governance signature. The Diagnostic surfaces that pattern systematically across your entire capital architecture, so you're not discovering it one initiative at a time."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">Lightest of all offers</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">2–3 weeks</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">$10K–$18K</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">One initiative + sponsor</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s03',gi('s03'))">← Previous</button><button class="pb" onclick="sp('s05',gi('s05'))">Next Offer →</button></div>
+</div>
+
+<!-- S05 -->
+<div class="page" id="s05">
+  <div class="ph"><div class="ey"><span class="en">S05</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: CFO / Finance Leader</span></div><h1 class="ptl">CFO Capital Discipline Review</h1><p class="phk">"How much capital is currently exposed to initiatives that can't yet demonstrate learning progress?"</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">CFO or senior finance leader, often skeptical of innovation or transformation spend. Introduced through board relationships or a CEO who wants their CFO bought in before proceeding. <strong>Entry language is risk and governance — never innovation.</strong></div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">3–4 week review of one innovation or transformation portfolio. You apply LFI vs. ROI framing — identifying which initiatives are being funded at ROI thresholds when they should be at LFI thresholds, and where escalation of commitment has set in.</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">A <strong>Capital Discipline Report</strong>: portfolio-level view of learning-stage vs. scale-stage capital allocation, an estimate of exposure reduction achievable through funding sequence correction, and stage-gate criteria the CFO can implement immediately.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc">Requires portfolio data and 2–3 finance and innovation leadership interviews. <strong>Price: $15K–$25K.</strong> Frames as governance strengthening and risk reduction — not transformation. Not innovation investment. Financial discipline.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>CFOs don't feel the innovation problem — they feel the financial control problem. Budget creep, escalation of commitment, no clear stage-gate logic, no way to distinguish exploratory capital from deployment capital. This offer speaks their language entirely.</p><p>CFO buy-in is the most powerful internal accelerator available. When the CFO understands the framework, they become an internal champion. A CFO-entered engagement frequently converts to a full Diagnostic faster than any other entry path.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"This review addresses the funding sequencing layer. But capital exposure doesn't only live in how you fund — it lives in what you're creating, what you're protecting, and what capital is trapped in things that should have been stopped. The Diagnostic gives you the complete picture across all three exposure dimensions."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">Moderate — data + interviews</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">3–4 weeks</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">$15K–$25K</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">Portfolio data + finance</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s04',gi('s04'))">← Previous</button><button class="pb" onclick="sp('s06',gi('s06'))">Next Offer →</button></div>
+</div>
+
+<!-- S06 -->
+<div class="page" id="s06">
+  <div class="ph"><div class="ey"><span class="en">S06</span><span class="et s">Service Entry</span><span class="eb">Primary Buyer: Board Member / Risk or Audit Committee</span></div><h1 class="ptl">Board Governance Session</h1><p class="phk">"Governing AI and innovation risk — what your board needs to know, and what questions it should be asking."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl">Entry Context</div><div class="cc">Board member, board committee, or a CEO preparing management for a board conversation on AI or growth governance. Often enters through speaking engagements, the book, or a peer referral. <strong>This is a force multiplier, not a revenue event.</strong></div></div>
+    <div class="cell"><div class="cl">Format &amp; Duration</div><div class="cc">90-minute facilitated board or committee session. You present the Capital Exposure framework, walk through 2–3 industry case patterns, and close with a structured self-assessment: "what questions should this board be asking that it currently cannot answer?"</div></div>
+    <div class="cell"><div class="cl">Deliverable</div><div class="cc">A written <strong>Governance Gap Summary</strong>: the three to five questions the board itself identified as currently unanswerable, and the structural reasons why. This document goes to management as a board-level inquiry — which becomes an organizational mandate.</div></div>
+    <div class="cell"><div class="cl">What It Costs Them</div><div class="cc">90 minutes of board time. No data, no internal preparation. <strong>Price: $5K–$8K, or complimentary for strategic board relationships.</strong> Revenue value is low. Commercial multiplier value is high — a board mandate is worth more than any sales call with management.</div></div>
+  </div>
+  <div class="sec"><div class="sl">Why It Works</div><div class="sbody"><p>Boards are uniquely receptive to governance framing because governance is their constitutional responsibility. You are not asking them to adopt a system — you are helping them fulfill an obligation they already have.</p><p>Board-initiated demand fundamentally changes the sales dynamic at management level. Instead of selling up through the organization, you are responding to pull from above. Deal velocity accelerates dramatically. One board session can unlock three Diagnostic conversations in a single organization.</p></div></div>
+  <div class="bb"><div class="bbl">Bridge to Diagnostic</div><div class="bbt">"The questions this board has surfaced today are precisely what the Capital Exposure Diagnostic is designed to answer. It gives management the data, the framework, and the governance architecture to respond to this board with clarity. We can scope that engagement to have initial findings ready for your next committee meeting."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Lift</div><div class="lv">Minimal — one session</div></div><div class="ldot"></div><div class="li"><div class="ll">Duration</div><div class="lv">90 minutes</div></div><div class="ldot"></div><div class="li"><div class="ll">Price</div><div class="lv">$5K–$8K or complimentary</div></div><div class="ldot"></div><div class="li"><div class="ll">Data Required</div><div class="lv">None</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s05',gi('s05'))">← Previous</button><button class="pb" onclick="sp('p01',gi('p01'))">Product Entries →</button></div>
+</div>
+<!-- P01 -->
+<div class="page" id="p01">
+  <div class="ph"><div class="ey"><span class="en p">P01</span><span class="et p">Product Entry · Wave 1</span><span class="eb">Self-qualifying executive — cold to warm relationship</span></div><h1 class="ptl">Growth Gap Signal Quiz</h1><p class="phk">"Five minutes. A score. And a pattern you'll recognize."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">An executive has encountered the Growth Gap narrative and wants to know if it applies to them. <strong>They are self-qualifying before any conversation.</strong> This is the outermost ring of the diagnostic system — captures attention and generates pre-qualified pipeline before any human contact.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">An 8–12 question digital quiz — free, ungated, shareable. Questions probe initiative portfolio patterns, capital decisions, and growth durability signals. Produces a <strong>Growth Gap Score (1–10)</strong> with a two-paragraph pattern interpretation. Completable in under five minutes.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A Growth Gap Score with a brief interpretation: where the organization likely sits on the Growth Gap curve and which portfolio imbalance pattern is most probable given their answers. <strong>It names the pattern. It does not resolve it.</strong></div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">The score creates mild dissatisfaction by design. The finding is <strong>real but incomplete</strong> — it signals a problem without resolving it. The natural next question is: "Is this actually true for us?" That question is the Diagnostic. Moderate/high scores arrive conversation-ready.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"You answered in a pattern that shows up in organizations facing a Growth Gap. The quiz gives you the signal. The Capital Exposure Briefing (S01) gives you the hypothesis about where specifically it's concentrated — built from your industry, your public posture, and what we typically find in organizations at your growth stage."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv t">Wave 1 — Now</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free / ungated</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S01 — Briefing</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('s06',gi('s06'))">← Service Entries</button><button class="pb" onclick="sp('p02',gi('p02'))">Next →</button></div>
+</div>
+
+<!-- P02 -->
+<div class="page" id="p02">
+  <div class="ph"><div class="ey"><span class="en p">P02</span><span class="et p">Product Entry · Wave 1</span><span class="eb">High-autonomy executive — thinks before talking</span></div><h1 class="ptl">Capital Clarity Canvas</h1><p class="phk">"A structured 20-minute self-reflection that produces an exposure map in your own words."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">A significant portion of enterprise executive buyers will not engage with a service team until they have formed a view on their own situation. They encountered SolveNext through a talk or peer referral but <strong>have not yet entered a service conversation.</strong> Also functions as a pre-read that pre-populates the team's entry context before S01.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A downloadable or interactive single-page framework guiding an executive through five structured capital exposure questions — calibrated to surface exposure, not just description. Completable in 20 minutes, alone, without a facilitator. <strong>Design challenge, not an engineering challenge.</strong></div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A completed canvas — in the executive's own words — naming their capital exposure picture across five domains. <strong>The act of completing it produces the finding.</strong> Self-generated dissatisfaction is the most durable kind and the hardest to dismiss.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">No finding is harder to dismiss than one you produced yourself. The executive who completes the Canvas arrives at S01 already believing the problem exists and having named it. <strong>Conversation quality and conversion rate both rise</strong> when this precedes the service engagement.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"You just mapped your capital exposure in your own words. The Capital Exposure Briefing (S01) takes that map and pressure-tests it — using the same five domains the Diagnostic examines — so you can see not just what you wrote, but what it means for your portfolio."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv t">Wave 1 — Now</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">Optional</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S01 — Briefing</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p01',gi('p01'))">← Previous</button><button class="pb" onclick="sp('p03',gi('p03'))">Next →</button></div>
+</div>
+
+<!-- P03 -->
+<div class="page" id="p03">
+  <div class="ph"><div class="ey"><span class="en p">P03</span><span class="et p">Product Entry · Wave 1</span><span class="eb">Executive with significant AI investment — board pressure building</span></div><h1 class="ptl">AI Capital Exposure Calculator</h1><p class="phk">"Five inputs. An index. And a score your board will eventually ask you about."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">The organization has committed meaningful capital to AI — and someone at the top is beginning to wonder whether that capital is well-sequenced. <strong>This is the product companion to S03.</strong> It qualifies the prospect and pre-populates the entry hypothesis before the service review begins.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A short digital form — five to seven inputs — where a leader enters their AI investment total, number of active AI initiatives, distribution across optimization vs. transformation vs. exploration, and current stage-gating discipline. Generates an <strong>AI Capital Exposure Index</strong> (Low / Moderate / High / Acute) in under three minutes.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">An AI Capital Exposure Index with brief narrative covering: concentration of AI capital in low-uncertainty vs. high-uncertainty use cases, estimated stage-gating maturity, and primary exposure risk signal. Directional, not precise. <strong>Tells them whether their exposure warrants closer examination.</strong></div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">Most organizations have not characterized their AI exposure in a structured way. The calculator gives them one — and reveals that their current posture has not been examined that way before. A "High" or "Acute" score is visceral. Even "Moderate" surfaces at least one concentration risk the executive wants to resolve.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"The index tells you where your AI exposure is concentrated. The AI Capital Exposure Review (S03) takes three weeks and produces a board-ready briefing on your exposure posture — the fastest way to go from a signal to a finding you can act on."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv t">Wave 1 — Now</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S03 — AI Review</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p02',gi('p02'))">← Previous</button><button class="pb" onclick="sp('p04',gi('p04'))">Next →</button></div>
+</div>
+
+<!-- P04 -->
+<div class="page" id="p04">
+  <div class="ph"><div class="ey"><span class="en p">P04</span><span class="et p">Product Entry · Wave 1</span><span class="eb">Innovation-fatigued leader — frustrated by initiative failure patterns</span></div><h1 class="ptl">Assumption Blindspot Identifier</h1><p class="phk">"A structured tool that shows where capital is committed ahead of assumption validation."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">A leader who has been living with a portfolio of initiatives long enough to feel which ones are not moving. Entry trigger: a portfolio review, a failed initiative post-mortem, or frustration with the gap between initiative investment and outcomes. <strong>They want a framework that explains why it's hard — not a verdict on what they've done wrong.</strong></div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A 6–10 question digital tool where a leader identifies three to five current strategic initiatives and answers structured questions about the key assumptions behind each — when those assumptions were last tested, and what would have to be true for the capital commitment to be justified. Takes 10–15 minutes.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">An <strong>Assumption Concentration Risk Report</strong>: which initiatives carry the highest unvalidated assumption load relative to capital committed, the portfolio-level concentration of untested assumptions, and the top three "assumption blind spots" by capital weight.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">Most leaders have not previously mapped assumptions against capital commitments — completing the exercise is itself the finding. It produces a specific named problem: <strong>"We have concentrated capital in initiatives whose critical assumptions have not been tested."</strong> That problem has an obvious solution path — S04, then the Diagnostic.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"The report shows where capital is most exposed to unvalidated assumptions — but it doesn't tell you which to test first or how to use testing to discipline future funding decisions. The Single Initiative Assumption Audit (S04) takes your highest-risk initiatives and builds a structured assumption-testing plan connected directly to your funding gates."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv t">Wave 1 — Now</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S04 — Assumption Audit</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p03',gi('p03'))">← Previous</button><button class="pb" onclick="sp('p05',gi('p05'))">Next →</button></div>
+</div>
+
+<!-- P05 -->
+<div class="page" id="p05">
+  <div class="ph"><div class="ey"><span class="en p">P05</span><span class="et p">Product Entry · Wave 2</span><span class="eb">Portfolio-concerned CFO or CSO — strategy offsite or board prep</span></div><h1 class="ptl">Portfolio Imbalance Visualizer</h1><p class="phk">"An interactive tool that shows whether your capital distribution matches your declared strategy."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">A strategy offsite, a board presentation requiring capital allocation rationale, or a moment when leadership senses that initiative sprawl has made the portfolio hard to read. They want the asymmetry named but are not ready to expose it in a structured engagement. <strong>This tool lets them look before they commit.</strong></div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">An interactive visual tool where an executive allocates their approximate capital budget across Optimize / Grow / Renew / Maximize. The tool displays their allocation against two benchmarks: their publicly declared strategic intent, and the allocation pattern associated with durable growth in their sector. Produces a <strong>Portfolio Asymmetry Score with heatmap.</strong></div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A Portfolio Asymmetry Score with heatmap showing: over-concentration in Optimize vs. under-investment in Renew, misalignment between declared strategy and capital reality. <strong>A picture they did not have before they started.</strong> Hard to argue with a picture.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">Portfolio imbalance is one of the five diagnostic domains. This tool surfaces it in isolation — making the imbalance visible as a structural problem rather than a feeling. Seeing one's own allocation displayed against a growth benchmark produces self-generated dissatisfaction. <strong>The visual does what no slide deck could.</strong></div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"The Asymmetry Score shows where capital is concentrated — but not why it landed there or what would need to change. The Portfolio Imbalance Session (S02) examines the actual initiative distribution behind the allocation pattern and produces a finding you can bring to your leadership team."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv g">Wave 2 — 60 days</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S02 — Portfolio Session</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p04',gi('p04'))">← Previous</button><button class="pb" onclick="sp('p06',gi('p06'))">Next →</button></div>
+</div>
+
+<!-- P06 -->
+<div class="page" id="p06">
+  <div class="ph"><div class="ey"><span class="en p">P06</span><span class="et p">Product Entry · Wave 2</span><span class="eb">Cold or inbound lead — encountered SolveNext through thought leadership</span></div><h1 class="ptl">Growth Gap Benchmark Report</h1><p class="phk">"Annual sector intelligence on how organizations like yours are actually allocating capital — and what it predicts."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">Strategy leads, CSOs, and CEOs who encounter SolveNext through thought leadership channels and want to self-qualify before entering a service conversation. Also the most effective <strong>warm outreach instrument</strong> in the portfolio: a report can be sent to a cold prospect without the friction of a direct pitch.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">An annual or semi-annual sector-level report — free, downloadable, lightly gated — analyzing Growth Gap patterns across a specific industry. Shows how organizations actually allocate capital across portfolio horizons, what the median portfolio asymmetry looks like, and which allocation patterns correlate with growth durability vs. fragility.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A specific sector-level finding that makes the executive wonder <strong>where their organization sits relative to the pattern.</strong> Discomfort that is specific, not generic. The primary investment is intellectual, not engineering — and one report generates twelve months of outreach capacity.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">This is the only entry in the portfolio with a <strong>category-building function</strong> alongside a commercial one. Each report published positions SolveNext as the definitive source of Growth Gap intelligence — generating inbound interest and warming cold outreach simultaneously.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"The benchmark shows you where the sector sits. The Capital Exposure Briefing (S01) shows you where your organization sits — and what the gap between those positions is costing you. That conversation takes ninety minutes and requires no internal data."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv g">Wave 2 — 60 days</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free / lightly gated</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S01 or Diagnostic direct</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p05',gi('p05'))">← Previous</button><button class="pb" onclick="sp('p07',gi('p07'))">Next →</button></div>
+</div>
+<!-- P07 NON-OBVIOUS -->
+<div class="page" id="p07">
+  <div class="ph"><div class="ey"><span class="en p">P07</span><span class="et p">Product Entry · Wave 2</span><span class="et n">◆ Non-Obvious</span><span class="eb">Any prospect — requires no self-reporting</span></div><h1 class="ptl">External Exposure Mirror</h1><p class="phk">"This is what your capital posture looks like from the outside. It does not require your help to see it."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">An executive enters their company name or ticker. Within minutes they receive an AI-generated provisional capital health picture derived entirely from <strong>public signals</strong> — 10-K disclosures, earnings transcripts, R&amp;D intensity, buyback patterns, hiring velocity, media sentiment, regulatory mentions. No self-reporting required.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">An AI tool using the same public-data analysis infrastructure planned for platform onboarding. Processes external signals into a provisional capital exposure picture across extraction intensity, governance structure indicators, reputational trajectory, and leading capital health proxies. Generates a <strong>Provisional External Exposure Profile.</strong></div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A profile showing what an outside observer would conclude about the organization's capital posture — not what the organization believes about itself. The finding answers two viscerally uncomfortable questions: <strong>"Is this what our board sees?"</strong> and <strong>"Is this what a potential acquirer sees?"</strong></div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">Every other entry asks the executive what they think about their organization. This one tells them what an outside observer would conclude. <strong>Fundamentally harder to dismiss.</strong> The executive can't edit away a finding built from public data — which means the discomfort is more durable and demand for internal clarity more immediate.</div></div>
+  </div>
+  <div class="sec"><div class="sl t">Architectural Note</div><div class="sbody"><p>This uses the same AI public-data analysis module described in the platform architecture for generating provisional starter baselines during Diagnostic onboarding. Building the Mirror as a public-facing entry experience builds that infrastructure simultaneously — not a duplication of investment, but the same investment serving two purposes.</p></div></div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"This is based entirely on external signals. The Diagnostic maps your internal capital architecture — the initiative-level decisions, governance patterns, and allocation choices that are producing the external picture you just saw. Most organizations find that the internal reality is more complex and more actionable than what the public signals suggest."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv g">Wave 2 — 90 days</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S01 or Diagnostic direct</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p06',gi('p06'))">← Previous</button><button class="pb" onclick="sp('p08',gi('p08'))">Next →</button></div>
+</div>
+
+<!-- P08 NON-OBVIOUS -->
+<div class="page" id="p08">
+  <div class="ph"><div class="ey"><span class="en p">P08</span><span class="et p">Product Entry · Wave 2</span><span class="et n">◆ Non-Obvious</span><span class="eb">Resource-constrained executive — feeling limited, not exposed</span></div><h1 class="ptl">Capital Liberation Calculator</h1><p class="phk">"What could you fund if you stopped what you should stop?"</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">The CEO who is not feeling exposed — who is feeling <strong>constrained.</strong> Not enough capital to fund what matters. Every other entry approaches capital exposure through risk framing. This one approaches it through <strong>opportunity framing</strong> — and reaches a buyer the other entries miss entirely.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A structured input tool where a leader identifies three to five current initiatives they suspect may be past their useful life, or answers questions about their portfolio's stop-decision history over the past 24 months. Generates an estimated <strong>Liberation Opportunity</strong> — capital that might be reclaimable and redirectable.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A Liberation Opportunity Estimate showing: the capital that might be freed from zombie initiatives, the governance barrier preventing the stop decision, and what that capital could accomplish if redeployed. <strong>It reframes the resource constraint as a governance problem</strong> — which is a solvable problem.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">Liberation is one of the five diagnostic domains, but no other entry leads with it. The constrained CEO who discovers their resource problem is actually a governance problem experiences frustrated possibility: <strong>"We have the capital. We just can't get to it."</strong> That is a mandate-creating finding.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry</div><div class="bbt">"The calculator shows what might be freed. The Diagnostic shows exactly where it's trapped — which initiatives, which governance patterns, which stop-decision failures — and how to structure the redeployment so the liberated capital actually reaches the things you want to fund."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv g">Wave 2 — 90 days</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">S02 or Diagnostic direct</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p07',gi('p07'))">← Previous</button><button class="pb" onclick="sp('p09',gi('p09'))">Next →</button></div>
+</div>
+
+<!-- P09 NON-OBVIOUS -->
+<div class="page" id="p09">
+  <div class="ph"><div class="ey"><span class="en p">P09</span><span class="et p">Product Entry · Wave 3</span><span class="et n">◆ Non-Obvious</span><span class="eb">Individual executive — career and identity dimension, not just organizational</span></div><h1 class="ptl">Governor Identity Assessment</h1><p class="phk">"Where do you sit on the capital governance maturity spectrum — and what does Stage 4 look like?"</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">A significant portion of enterprise buyers make decisions with a personal identity dimension. This entry operates at the <strong>individual leader level</strong> — an angle no other entry in this portfolio addresses. Triggers: thought leadership encounters, professional development conversations, peer comparisons.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A short individual assessment — 12–15 questions — placing the executive on the Instigator → Steward → Governor → Architect capital governance maturity spectrum. Returns a <strong>Governance Maturity Stage</strong> (1–4) with description, behavioral gap narrative, and a picture of what Stage 4 looks like.</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A personal governance maturity stage with a description of what Stage 4 looks like and what specific behavioral gaps exist. <strong>The finding is personal, not institutional.</strong> That is a qualitatively different kind of discomfort to resolve — and a qualitatively different kind of finding to share.</div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">This is the entry with the highest <strong>viral coefficient</strong>. Identity-anchored findings are shareable in ways that organizational vulnerability findings are not. One result creates three conversations. It also creates simultaneous demand signals: individual demand for the certification pathway and organizational demand for the Diagnostic.</div></div>
+  </div>
+  <div class="bb t"><div class="bbl t">Bridge to Service Entry and Certification</div><div class="bbt">"The assessment shows where you sit as an individual capital governor. The Diagnostic shows what it means for your organization's portfolio — and whether the governance maturity of your leadership team is matched to the exposure level your capital architecture has created."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv o">Wave 3 — 90–180 days</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">None required</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to User</div><div class="lv">Free</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">Certification + Diagnostic</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p08',gi('p08'))">← Previous</button><button class="pb" onclick="sp('p10',gi('p10'))">Next →</button></div>
+</div>
+
+<!-- P10 NON-OBVIOUS -->
+<div class="page" id="p10">
+  <div class="ph"><div class="ey"><span class="en p">P10</span><span class="et p">Internal Facilitation Tool · Wave 1</span><span class="et n">◆ Non-Obvious</span><span class="eb">Active Think Wrong client — not yet a Diagnostic prospect</span></div><h1 class="ptl">Think Wrong → Diagnostic Bridge</h1><p class="phk">"A facilitation protocol that runs at the close of every Think Wrong session — and converts the room into a Diagnostic pipeline."</p></div>
+  <div class="grid">
+    <div class="cell"><div class="cl t">Entry Mode</div><div class="cc">This is not a public-facing product. It is an internal facilitation tool that addresses a documented gap in the current commercial motion: Think Wrong sessions currently lead to mid-level buyers and have <strong>no designed escalation to the Diagnostic.</strong> This protocol closes that gap inside every existing engagement.</div></div>
+    <div class="cell"><div class="cl t">The Instrument</div><div class="cc">A structured 20-minute exercise run at the <strong>close of every Think Wrong session</strong> by the SolveNext facilitator. Takes the assumption surfacing work just completed and reframes it through a capital exposure lens: which of the assumptions surfaced are also capital allocation decisions? Which ones, if wrong, represent concentrated capital exposure?</div></div>
+    <div class="cell"><div class="cl t">What It Produces</div><div class="cc">A one-page <strong>Capital Exposure Signal</strong> for the room — produced from their own Think Wrong outputs, in the room, before they leave. Three to five assumption clusters identified as capital exposure risks. One central question the room cannot currently answer. <strong>The finding comes from their session, not from a SolveNext pitch.</strong></div></div>
+    <div class="cell"><div class="cl t">Why It Converts</div><div class="cc">An executive cannot dismiss a finding built from their own session outputs. It also elevates the conversation to executive level — correcting the documented problem of Think Wrong engagements <strong>landing with mid-level buyers</strong> who lack Diagnostic mandate. Build time: one to two weeks. No engineering required.</div></div>
+  </div>
+  <div class="sec"><div class="sl t">Implementation Note</div><div class="sbody"><p>This is a facilitation protocol, not an engineering challenge. The investment is in designing the reframe questions and the one-page Capital Exposure Signal template. Every Think Wrong engagement becomes a Diagnostic pipeline event from the moment this protocol is deployed — with no change to the Think Wrong offer itself and no visible commercial motion for the client.</p></div></div>
+  <div class="bb t"><div class="bbl t">Bridge from Session to Diagnostic</div><div class="bbt">"What we just surfaced in this session is the hypothesis. The Capital Exposure Diagnostic takes this pattern — the assumptions you've identified, the capital decisions behind them — and maps it systematically across your full portfolio. That's what converts today's finding into a governance architecture you can act on."</div></div>
+  <div class="lbar"><div class="li"><div class="ll">Build Wave</div><div class="lv t">Wave 1 — Now</div></div><div class="ldot"></div><div class="li"><div class="ll">Facilitation</div><div class="lv">Required (internal)</div></div><div class="ldot"></div><div class="li"><div class="ll">Cost to Client</div><div class="lv">Included in TW</div></div><div class="ldot"></div><div class="li"><div class="ll">Unlocks</div><div class="lv">Diagnostic — exec level</div></div></div>
+  <div class="pnav"><button class="pb" onclick="sp('p09',gi('p09'))">← Previous</button><button class="pb" onclick="sp('dec',gi('dec'))">Decision Guide →</button></div>
+</div>
+<!-- DECISION GUIDE -->
+<div class="page" id="dec">
+  <div class="dh"><div class="ey" style="margin-bottom:1.2rem"><span class="en g">Guide</span><span class="eb">Integrated Entry Decision Framework</span></div><h1 class="dtl">Which Entry to Use When</h1><p class="ds">Each entry — service or product — is matched to a buyer, relationship context, and emotional state. When you know how someone encountered SolveNext and what they're currently feeling, you know which path to direct them toward.</p></div>
+  <div class="dsec">Human-Led Paths — When You Have a Relationship Context</div>
+  <table class="dt">
+    <thead><tr><th>If you're talking to…</th><th>And they're feeling…</th><th>Start with…</th></tr></thead>
+    <tbody>
+      <tr onclick="sp('s01',gi('s01'))"><td>Senior executive, <strong>warm relationship</strong></td><td>Curious but not yet activated — no active mandate</td><td><span class="tdn">S01 —</span><br><span class="tdo">Capital Exposure Briefing</span></td></tr>
+      <tr onclick="sp('s02',gi('s02'))"><td><strong>CEO / CSO / CINO</strong></td><td>Growth feels off but can't name why — portfolio anxiety</td><td><span class="tdn">S02 —</span><br><span class="tdo">Portfolio Imbalance Session</span></td></tr>
+      <tr onclick="sp('s03',gi('s03'))"><td>Executive with <strong>significant AI spend</strong></td><td>AI ROI anxiety, board pressure on AI governance</td><td><span class="tdn">S03 —</span><br><span class="tdo">AI Capital Exposure Review</span></td></tr>
+      <tr onclick="sp('s04',gi('s04'))"><td><strong>Initiative sponsor</strong> / program owner</td><td>Nervous about one specific bet already in motion</td><td><span class="tdn">S04 —</span><br><span class="tdo">Single Initiative Audit</span></td></tr>
+      <tr onclick="sp('s05',gi('s05'))"><td><strong>CFO / Finance leader</strong></td><td>Skeptical of innovation spend, wants financial discipline</td><td><span class="tdn">S05 —</span><br><span class="tdo">CFO Capital Discipline Review</span></td></tr>
+      <tr onclick="sp('s06',gi('s06'))"><td><strong>Board member</strong> / risk or audit committee</td><td>Governance accountability, AI oversight responsibility</td><td><span class="tdn">S06 —</span><br><span class="tdo">Board Governance Session</span></td></tr>
+    </tbody>
+  </table>
+  <div class="dsec t" style="margin-top:2.5rem">Product-Led Paths — When Someone Encounters SolveNext Independently</div>
+  <table class="dt">
+    <thead><tr><th>If someone…</th><th>And they're feeling…</th><th class="t">Direct them to…</th></tr></thead>
+    <tbody>
+      <tr onclick="sp('p01',gi('p01'))"><td>Heard the Growth Gap narrative, wants to know if it applies</td><td>Curious, self-qualifying, time-constrained</td><td><span class="tdn t">P01 —</span><br><span class="tdo t">Growth Gap Signal Quiz</span><span class="tdw">→ then S01</span></td></tr>
+      <tr onclick="sp('p02',gi('p02'))"><td>Encountered SolveNext but <strong>thinks before they talk</strong></td><td>Interested but high-autonomy — needs to form their own view first</td><td><span class="tdn t">P02 —</span><br><span class="tdo t">Capital Clarity Canvas</span><span class="tdw">→ then S01</span></td></tr>
+      <tr onclick="sp('p03',gi('p03'))"><td>Researching AI governance exposure</td><td>AI ROI anxious, board pressure building</td><td><span class="tdn t">P03 —</span><br><span class="tdo t">AI Capital Exposure Calculator</span><span class="tdw">→ then S03</span></td></tr>
+      <tr onclick="sp('p04',gi('p04'))"><td>Searching for explanation for initiative failure patterns</td><td>Fatigued, frustrated, looking for a framework</td><td><span class="tdn t">P04 —</span><br><span class="tdo t">Assumption Blindspot Identifier</span><span class="tdw">→ then S04</span></td></tr>
+      <tr onclick="sp('p05',gi('p05'))"><td>Preparing for strategy offsite or board presentation</td><td>Uncomfortable about portfolio allocation — not ready to expose it</td><td><span class="tdn t">P05 —</span><br><span class="tdo t">Portfolio Imbalance Visualizer</span><span class="tdw">→ then S02</span></td></tr>
+      <tr onclick="sp('p06',gi('p06'))"><td>Received cold outreach or found SolveNext through search</td><td>Detached, not yet personally concerned</td><td><span class="tdn t">P06 —</span><br><span class="tdo t">Growth Gap Benchmark Report</span><span class="tdw">→ then S01</span></td></tr>
+      <tr onclick="sp('p07',gi('p07'))"><td>Any prospect — especially effective for cold leads ◆</td><td>Skeptical, self-sufficient — won't take your word for it</td><td><span class="tdn t">P07 —</span><br><span class="tdo t">External Exposure Mirror</span><span class="tdw">→ S01 or Diagnostic</span></td></tr>
+      <tr onclick="sp('p08',gi('p08'))"><td>CEO who feels <strong>resource-constrained</strong>, not exposed ◆</td><td>Frustrated — not enough capital for future bets</td><td><span class="tdn t">P08 —</span><br><span class="tdo t">Capital Liberation Calculator</span><span class="tdw">→ S02 or Diagnostic</span></td></tr>
+      <tr onclick="sp('p09',gi('p09'))"><td>Individual exec thinking about <strong>professional development</strong> ◆</td><td>Career-conscious, governance-interested, identity-motivated</td><td><span class="tdn t">P09 —</span><br><span class="tdo t">Governor Identity Assessment</span><span class="tdw">→ Certification + Diagnostic</span></td></tr>
+      <tr onclick="sp('p10',gi('p10'))"><td>Currently in a <strong>Think Wrong engagement</strong> ◆</td><td>Energized from session — not yet connected to capital governance</td><td><span class="tdn t">P10 —</span><br><span class="tdo t">Think Wrong Bridge Tool</span><span class="tdw">→ Diagnostic (exec level)</span></td></tr>
+    </tbody>
+  </table>
+  <div class="pbox" style="margin-top:2rem">
+    <p>Every entry — service or product — has one job: <strong>produce a finding the client wants to resolve</strong>, and make the Capital Exposure Diagnostic the obvious next step.</p>
+    <p>The service entries work when you have a relationship. The product entries work when you don't — or when the executive prefers to discover the problem themselves. <strong>Together they ensure no prospect is too cold, no contact too early, and no executive too self-sufficient</strong> to find their way into the Diagnostic.</p>
+    <p>The four entries marked ◆ are architecturally non-obvious. They reach buyers the other entries do not: the skeptic, the constrained CEO, the career-focused individual, and the Think Wrong client who has never been given a path to the governance conversation.</p>
+  </div>
+  <div class="pnav"><button class="pb" onclick="sp('p10',gi('p10'))">← Previous</button><button class="pb" onclick="sp('bld',gi('bld'))">Build Sequence →</button></div>
+</div>
+
+<!-- BUILD SEQUENCE -->
+<div class="page" id="bld">
+  <div class="dh"><div class="ey" style="margin-bottom:1.2rem"><span class="en p">Roadmap</span><span class="eb">Product Entry Build Sequence</span></div><h1 class="dtl">When to Build What</h1><p class="ds">Not all ten product entries should be built simultaneously. The sequence below reflects build simplicity, strategic leverage, and alignment with the current MVP focus. Service entries are operational immediately — they require facilitation discipline, not engineering.</p></div>
+  <div class="dsec t">Product Build Waves</div>
+  <table class="bt">
+    <thead><tr><th>Wave</th><th>Entry</th><th>Rationale</th><th>Complexity</th></tr></thead>
+    <tbody>
+      <tr onclick="sp('p10',gi('p10'))"><td><span class="wb w1">Wave 1 — Now</span></td><td><strong>P10 — Think Wrong Bridge</strong></td><td>Highest immediate leverage. Converts every existing TW engagement into Diagnostic pipeline. Requires a facilitation protocol only — no engineering. Addresses the documented gap: no escalation path from Think Wrong to Diagnostic.</td><td>Very Low</td></tr>
+      <tr onclick="sp('p02',gi('p02'))"><td><span class="wb w1">Wave 1 — Now</span></td><td><strong>P02 — Capital Clarity Canvas</strong></td><td>Design challenge, not engineering. A well-crafted single-page PDF or interactive form. Captures the high-autonomy executive who will not enter a service conversation before forming their own view.</td><td>Very Low</td></tr>
+      <tr onclick="sp('p01',gi('p01'))"><td><span class="wb w1">Wave 1 — Now</span></td><td><strong>P01 — Growth Gap Signal Quiz</strong></td><td>Buildable on Typeform or a lightweight landing page. Produces immediate qualification capacity for the Diagnostic sales motion. The outermost ring of the diagnostic system — captures attention before any human contact.</td><td>Low</td></tr>
+      <tr onclick="sp('p04',gi('p04'))"><td><span class="wb w1">Wave 1 — Now</span></td><td><strong>P04 — Assumption Blindspot Identifier</strong></td><td>Short-form instrument logic, simple scoring. Addresses innovation-fatigued leaders who don't feel a systemic problem but are anxious about specific initiatives. Direct companion to S04.</td><td>Low</td></tr>
+      <tr onclick="sp('p03',gi('p03'))"><td><span class="wb w2">Wave 2 — 60 days</span></td><td><strong>P03 — AI Capital Exposure Calculator</strong></td><td>Companions S03, the strongest near-term service entry. Calculator pre-qualifies the prospect and pre-populates the team's entry hypothesis before the review begins.</td><td>Low–Medium</td></tr>
+      <tr onclick="sp('p05',gi('p05'))"><td><span class="wb w2">Wave 2 — 60 days</span></td><td><strong>P05 — Portfolio Imbalance Visualizer</strong></td><td>Requires visualization build. Primary investment is in benchmark calibration — defensible allocation reference points by sector. Companions S02.</td><td>Medium</td></tr>
+      <tr onclick="sp('p06',gi('p06'))"><td><span class="wb w2">Wave 2 — 60 days</span></td><td><strong>P06 — Growth Gap Benchmark Report</strong></td><td>Intellectual investment, not engineering. The only entry with a category-building function alongside a commercial one. Annual cadence means one investment creates twelve months of outreach and inbound potential.</td><td>Medium (intellectual)</td></tr>
+      <tr onclick="sp('p08',gi('p08'))"><td><span class="wb w2">Wave 2 — 90 days</span></td><td><strong>P08 — Capital Liberation Calculator ◆</strong></td><td>Reaches buyers the risk-framing entries miss. The constrained CEO has a different emotional entry point — opportunity, not exposure. Builds Liberation domain awareness before the Diagnostic frames it in context.</td><td>Medium</td></tr>
+      <tr onclick="sp('p07',gi('p07'))"><td><span class="wb w2">Wave 2 — 90 days</span></td><td><strong>P07 — External Exposure Mirror ◆</strong></td><td>Uses the same AI public-data analysis module planned for platform onboarding. Building the Mirror builds the onboarding infrastructure simultaneously. Highest-converting for skeptical or cold prospects.</td><td>Medium–High</td></tr>
+      <tr onclick="sp('p09',gi('p09'))"><td><span class="wb w3">Wave 3 — 90–180 days</span></td><td><strong>P09 — Governor Identity Assessment ◆</strong></td><td>Requires the certification pathway architecture to be sufficiently defined. Build after the Instigator → Governor → Architect levels are published and credible. Highest viral coefficient in the portfolio.</td><td>Low–Medium</td></tr>
+    </tbody>
+  </table>
+  <div class="pbox">
+    <p>The service entries are <strong>operational immediately</strong> — they require facilitation discipline and conversation design, not product development. Start there.</p>
+    <p>Wave 1 product builds require days to weeks, not engineering sprints. <strong>P10 (Think Wrong Bridge) and P02 (Capital Clarity Canvas) can be live within the week</strong> — they are design deliverables, not software.</p>
+    <p>The four non-obvious entries ◆ are not the most urgent builds. They are the most strategically significant because they <strong>reach buyers no other entry serves.</strong> Build them in sequence, after the core entries are generating pipeline.</p>
+  </div>
+  <div class="pnav"><button class="pb" onclick="sp('dec',gi('dec'))">← Decision Guide</button><button class="pb" onclick="sp('pov',gi('pov'))">↑ Overview</button></div>
+</div>
+
+  </main>
+  </div>
+</div>
+
+<script>
+const pid=['pov','s01','s02','s03','s04','s05','s06','p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','dec','bld'];
+const idx={pov:0,s01:1,s02:2,s03:3,s04:4,s05:5,s06:6,p01:7,p02:8,p03:9,p04:10,p05:11,p06:12,p07:13,p08:14,p09:15,p10:16,dec:17,bld:18};
+function gi(id){return document.querySelectorAll('.ni')[idx[id]]}
+function sp(id,nav){
+  pid.forEach(p=>{const e=document.getElementById(p);if(e)e.classList.remove('active')});
+  const t=document.getElementById(id);if(t)t.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(nav)nav.classList.add('active');
+  const m=document.querySelector('.main');if(m)m.scrollTo(0,0);
+  closeMobileNav();
+}
+function openApp(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('app').style.display='block';
+  sp('s01',gi('s01'));
+}
+function backToCover(){
+  document.getElementById('cover').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+function toggleMobileNav(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('ov').classList.toggle('active');
+}
+function closeMobileNav(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('ov').classList.remove('active');
+}
+</script>
+</body>
+</html>

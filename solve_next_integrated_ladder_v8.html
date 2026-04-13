@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solve Next · The Integrated System · From Assumption to Enduring Enterprise Value</title>
+<style>
+:root {
+  --pink: #ff0099;
+  --black: #000000;
+  --white: #ffffff;
+  --navy: #333399;
+  --gray: #8a8a8f;
+  --light-gray: #f2f2f2;
+  --rule: #e0e0e0;
+  --ceo: #7A5000;
+  --cfo: #1A3D5C;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--white); }
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--white);
+  color: var(--black);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--black);
+  padding: 36px 60px 52px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  background: var(--pink);
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 52px;
+  position: relative;
+  z-index: 10;
+}
+.brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.brand span { color: var(--pink); }
+.brand-tagline {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-top: 4px;
+}
+.doc-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 18px;
+  color: rgba(255,255,255,0.7);
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+.hero-title {
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+}
+.hero-title span { color: var(--pink); }
+.hero-sub {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.88);
+  max-width: 640px;
+  margin-bottom: 44px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Mandate strip in hero */
+.mandate-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  max-width: 900px;
+  position: relative;
+  z-index: 10;
+}
+.mandate {
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.05);
+  border-left: 3px solid transparent;
+}
+.mandate.ceo { border-left-color: #C8973A; }
+.mandate.cfo { border-left-color: #4A80A8; }
+.mandate-who {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.mandate.ceo .mandate-who { color: #C8973A; }
+.mandate.cfo .mandate-who { color: #4A80A8; }
+.mandate-text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.82);
+  font-weight: 300;
+}
+.mandate-text strong { color: var(--white); font-weight: 700; }
+
+/* ── STRUCTURAL PROBLEM BAR ── */
+.problem-bar {
+  background: var(--pink);
+  padding: 20px 60px;
+}
+.problem-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.problem-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  flex-shrink: 0;
+}
+.problem-text {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--white);
+  font-style: italic;
+}
+
+/* ── TRACK LEGEND ── */
+.track-legend {
+  background: var(--black);
+  padding: 12px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.legend-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.legend-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-people { background: #34D399; }
+.legend-item.people { color: #34D399; }
+.dot-org { background: #C084FC; }
+.legend-item.org { color: #C084FC; }
+.dot-platform { background: var(--pink); }
+.legend-item.platform { color: var(--pink); }
+
+/* ── BASE SECTION ── */
+.section {
+  padding: 64px 60px;
+  border-bottom: 1px solid var(--rule);
+}
+.section-alt {
+  background: var(--light-gray);
+}
+.section-dark {
+  background: var(--black);
+  color: var(--white);
+}
+.section-white {
+  background: var(--white);
+}
+
+.section-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 10px;
+}
+.section-dark .section-tag { color: rgba(255,255,255,0.55); }
+
+.section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+.section-dark .section-title { color: var(--white); }
+.section-alt .section-title { color: var(--black); }
+
+.section-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: #444;
+  line-height: 1.6;
+  max-width: 680px;
+  margin-bottom: 40px;
+}
+.section-dark .section-sub { color: rgba(255,255,255,0.80); }
+
+.divider {
+  width: 56px;
+  height: 3px;
+  background: var(--pink);
+  margin: 16px 0 32px;
+}
+.section-dark .divider { background: rgba(255,255,255,0.2); }
+
+/* ── PRODUCT GRID ── */
+.product-grid {
+  display: grid;
+  gap: 2px;
+}
+.pg-two { grid-template-columns: 1fr 1fr; }
+.pg-three { grid-template-columns: 1fr 1fr 1fr; }
+
+/* ── PRODUCT CARD ── */
+.pcard {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--pink);
+  display: flex;
+  flex-direction: column;
+}
+.section-dark .pcard {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.08);
+  border-top-color: var(--pink);
+}
+.section-alt .pcard {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--pink);
+}
+
+.pcard-head {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.section-dark .pcard-head { border-bottom-color: rgba(255,255,255,0.08); }
+
+.track-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.track-dot-sm {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.track-pill.people { color: #1A7A52; }
+.track-pill.people .track-dot-sm { background: #1A7A52; }
+.section-dark .track-pill.people { color: #34D399; }
+.section-dark .track-pill.people .track-dot-sm { background: #34D399; }
+
+.track-pill.org { color: #6B21A8; }
+.track-pill.org .track-dot-sm { background: #6B21A8; }
+.section-dark .track-pill.org { color: #C084FC; }
+.section-dark .track-pill.org .track-dot-sm { background: #C084FC; }
+
+.track-pill.platform { color: var(--pink); }
+.track-pill.platform .track-dot-sm { background: var(--pink); }
+
+.pcard-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.25;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.section-dark .pcard-name { color: var(--white); }
+
+.pcard-sub {
+  font-size: 12px;
+  color: var(--gray);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.section-dark .pcard-sub { color: rgba(255,255,255,0.50); }
+
+.pcard-price {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--pink);
+  margin-top: 4px;
+}
+
+.pcard-body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.block-head {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+.section-dark .block-head { color: rgba(255,255,255,0.40); }
+
+.pain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pain-item {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #333;
+  padding: 5px 10px 5px 9px;
+  border-left: 2px solid #FFB3D6;
+  background: #FFF5FA;
+}
+.section-dark .pain-item {
+  background: rgba(255,0,153,0.08);
+  border-left-color: rgba(255,0,153,0.4);
+  color: rgba(255,255,255,0.82);
+}
+
+.cap-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cap-list li {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.section-dark .cap-list li { color: rgba(255,255,255,0.82); }
+.cap-list li::before {
+  content: '→';
+  color: var(--pink);
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* CEO / CFO signal footer */
+.pcard-signals {
+  padding: 12px 22px;
+  background: #fafafa;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.section-dark .pcard-signals {
+  background: rgba(0,0,0,0.3);
+  border-top-color: rgba(255,255,255,0.08);
+}
+.section-alt .pcard-signals { background: #f0f0f0; }
+
+.signal {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sig-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid;
+  width: fit-content;
+}
+.sig-badge.ceo {
+  color: #7A5000;
+  border-color: #C8973A;
+  background: #FFF8EB;
+}
+.section-dark .sig-badge.ceo {
+  color: #FCD34D;
+  border-color: rgba(252,211,77,0.4);
+  background: rgba(252,211,77,0.08);
+}
+.sig-badge.cfo {
+  color: #1A3D5C;
+  border-color: #4A80A8;
+  background: #EEF4FA;
+}
+.section-dark .sig-badge.cfo {
+  color: #60A5FA;
+  border-color: rgba(96,165,250,0.4);
+  background: rgba(96,165,250,0.08);
+}
+.sig-text {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.5;
+  font-style: italic;
+}
+.section-dark .sig-text { color: rgba(255,255,255,0.60); }
+
+/* ── CONNECTOR ── */
+.connector {
+  background: var(--light-gray);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 60px;
+}
+.connector-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.conn-line { flex: 1; height: 1px; background: var(--pink); opacity: 0.25; }
+.conn-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pink);
+  white-space: nowrap;
+}
+
+/* ── STAGE HEADER ── */
+.stage-header {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+  margin-bottom: 32px;
+  align-items: start;
+}
+.stage-num-display {
+  font-size: 96px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: rgba(0,0,0,0.06);
+  margin-bottom: -16px;
+}
+.section-dark .stage-num-display { color: rgba(255,255,255,0.06); }
+.stage-name {
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.section-dark .stage-name { color: var(--white); }
+.stage-name-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--gray);
+  font-style: italic;
+}
+.section-dark .stage-name-sub { color: rgba(255,255,255,0.45); }
+.stage-context {
+  padding-top: 32px;
+}
+.context-body {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 640px;
+}
+.section-dark .context-body { color: rgba(255,255,255,0.75); }
+
+/* ── ESCALATION BOX ── */
+.escalation-box {
+  background: var(--black);
+  padding: 28px 32px;
+  border-left: 5px solid var(--pink);
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.esc-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 10px;
+}
+.esc-q {
+  font-size: 17px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--white);
+  line-height: 1.6;
+}
+
+/* ── DESTINATION / STAGES ── */
+.stage-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-top: 36px;
+}
+.stage-card {
+  background: rgba(255,255,255,0.05);
+  padding: 22px 18px;
+  border-top: 3px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stage-card.active {
+  background: rgba(255,0,153,0.12);
+  border-top-color: var(--pink);
+}
+.sc-num {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: rgba(255,255,255,0.2);
+}
+.stage-card.active .sc-num { color: var(--pink); }
+.sc-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.3;
+}
+.stage-card.active .sc-name { color: var(--white); }
+.sc-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.55;
+  font-weight: 300;
+}
+.stage-card.active .sc-desc { color: rgba(255,255,255,0.72); }
+.sc-tag {
+  margin-top: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+
+/* ── PULLQUOTE ── */
+.pullquote {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.45;
+  border-left: 5px solid var(--pink);
+  padding-left: 24px;
+  margin: 32px 0 0;
+  max-width: 760px;
+  color: var(--black);
+}
+.section-dark .pullquote { color: var(--white); }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--black);
+  color: rgba(255,255,255,0.85);
+  padding: 32px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.footer-brand { font-size: 17px; font-weight: 900; letter-spacing: -0.01em; color: var(--white); }
+.footer-brand span { color: var(--pink); }
+.footer-tagline {
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.footer-right { text-align: right; color: rgba(255,255,255,0.45); }
+.footer-contact-line { margin-bottom: 3px; }
+
+/* inner max-width wrapper */
+.inner { max-width: 1140px; margin: 0 auto; }
+
+@media (max-width: 900px) {
+  .hero, .section, .problem-bar, .track-legend, .connector, .footer { padding-left: 28px; padding-right: 28px; }
+  .stage-header { grid-template-columns: 1fr; gap: 12px; }
+  .pg-two, .pg-three { grid-template-columns: 1fr; }
+  .mandate-strip { grid-template-columns: 1fr; }
+  .pcard-signals { grid-template-columns: 1fr; }
+  .stage-cards { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── STAGE 0 — ENTRY SYSTEM ── */
+.entry-system {
+  background: var(--black);
+  padding: 56px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.entry-system .inner { max-width: 1140px; margin: 0 auto; }
+
+.entry-intro {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+  align-items: start;
+}
+.entry-intro-left { color: var(--white); }
+.entry-stage-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.entry-stage-name {
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.entry-stage-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+}
+.entry-intro-right {
+  padding-top: 32px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 640px;
+}
+.entry-intro-right strong { color: var(--white); font-weight: 700; }
+
+.entry-principle {
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid var(--pink);
+  padding: 16px 22px;
+  margin-bottom: 36px;
+  max-width: 1140px;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.6;
+}
+.entry-principle strong { color: var(--pink); font-style: normal; font-weight: 700; }
+
+.entry-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.entry-col {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+.entry-col-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.entry-col-head.human { border-top: 3px solid var(--pink); }
+.entry-col-head.product { border-top: 3px solid #8B9EFF; }
+.entry-col-type {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.entry-col-head.human .entry-col-type { color: var(--pink); }
+.entry-col-head.product .entry-col-type { color: #8B9EFF; }
+.entry-col-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+}
+
+.entry-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 10px 16px 10px 12px;
+  align-items: start;
+}
+.entry-row:last-child { border-bottom: none; }
+.entry-row-code {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+  padding-top: 1px;
+  flex-shrink: 0;
+}
+.entry-row-body { }
+.entry-row-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+.entry-row-buyer {
+  font-size: 10px;
+  color: rgba(255,255,255,0.38);
+  font-weight: 300;
+  line-height: 1.3;
+}
+.entry-row-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid;
+  white-space: nowrap;
+  align-self: center;
+  margin-left: 8px;
+}
+.entry-row-tag.human { color: var(--pink); border-color: rgba(255,0,153,0.3); }
+.entry-row-tag.product { color: #8B9EFF; border-color: rgba(139,158,255,0.3); }
+.entry-row-tag.nonobvious { color: rgba(255,200,100,0.9); border-color: rgba(255,200,100,0.3); }
+
+.entry-connector {
+  margin-top: 28px;
+  padding: 16px 20px;
+  background: rgba(255,0,153,0.06);
+  border: 1px solid rgba(255,0,153,0.18);
+  border-left: 3px solid var(--pink);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.entry-connector-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pink);
+  flex-shrink: 0;
+}
+.entry-connector-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  font-weight: 300;
+  font-style: italic;
+}
+.entry-connector-text strong { color: var(--white); font-style: normal; }
+
+/* ── CLIENT ENTRY SECTION ── */
+.entry-begin {
+  background: var(--black);
+  padding: 48px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.entry-begin .inner { max-width: 1140px; margin: 0 auto; }
+.entry-begin-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 32px;
+  align-items: start;
+}
+.entry-begin-left { }
+.entry-begin-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.entry-begin-title {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+.entry-begin-sub {
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+}
+.entry-begin-right {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.70);
+  line-height: 1.7;
+}
+.entry-begin-right strong { color: var(--white); font-weight: 700; }
+
+.entry-paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+.entry-path {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 22px;
+}
+.entry-path.human { border-top: 3px solid var(--pink); }
+.entry-path.product { border-top: 3px solid #8B9EFF; }
+.entry-path-head {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.entry-path.human .entry-path-head { color: var(--pink); }
+.entry-path.product .entry-path-head { color: #8B9EFF; }
+.entry-path-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.entry-path-body {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+  font-weight: 300;
+}
+.entry-path-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 12px;
+}
+.entry-path-ex {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 3px 9px;
+  text-transform: uppercase;
+}
+
+.quiz-strip {
+  background: rgba(255,0,153,0.08);
+  border: 1px solid rgba(255,0,153,0.22);
+  border-left: 3px solid var(--pink);
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.quiz-strip-text { }
+.quiz-strip-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 4px;
+}
+.quiz-strip-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+}
+.quiz-strip-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+  margin-top: 2px;
+}
+.quiz-btn {
+  display: inline-block;
+  padding: 11px 24px;
+  background: var(--pink);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .entry-system { padding-left: 28px; padding-right: 28px; }
+  .entry-begin { padding-left: 28px; padding-right: 28px; }
+  .entry-intro, .entry-cols, .entry-begin-header, .entry-paths { grid-template-columns: 1fr; }
+}
+
+/* ── BUILD PRIORITY INDICATORS ── */
+.entry-row-tag.live {
+  color: #34D399;
+  border-color: rgba(52,211,153,0.4);
+  background: rgba(52,211,153,0.08);
+  letter-spacing: .12em;
+}
+.entry-row-tag.building {
+  color: #FCD34D;
+  border-color: rgba(252,211,77,0.4);
+  background: rgba(252,211,77,0.08);
+}
+.entry-row-tag.pipeline {
+  color: rgba(255,255,255,.38);
+  border-color: rgba(255,255,255,.12);
+  background: transparent;
+}
+.build-priority-bar {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-left: 3px solid #34D399;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.bpb-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.38);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.bpb-items {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.bpb-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+.bpb-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.bpb-dot.live { background: #34D399; }
+.bpb-dot.building { background: #FCD34D; }
+.bpb-dot.pipeline { background: rgba(255,255,255,.25); }
+.bpb-item.live { color: #34D399; }
+.bpb-item.building { color: #FCD34D; }
+.bpb-item.pipeline { color: rgba(255,255,255,.35); }
+
+/* Priority callout in Stage 0 product section */
+.priority-callout {
+  background: rgba(52,211,153,0.05);
+  border: 1px solid rgba(52,211,153,0.18);
+  border-left: 3px solid #34D399;
+  padding: 12px 18px;
+  margin: 14px 0 2px;
+  font-size: 12px;
+  color: rgba(255,255,255,.72);
+  font-weight: 300;
+  line-height: 1.6;
+}
+.priority-callout strong { color: #34D399; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HERO ══ -->
+<div class="hero">
+  <div class="inner">
+    <div class="top-bar">
+      <div>
+        <div class="brand">Solve/<span>Next</span></div>
+        <div class="brand-tagline">Govern the decade.</div>
+      </div>
+      <div class="doc-badge">The Integrated System · Professional Development + Advisory + Platform</div>
+    </div>
+    <div class="hero-eyebrow">From assumption to enduring enterprise value</div>
+    <div class="hero-title">Every offering.<br/>One <span>architecture.</span></div>
+    <div class="hero-sub">The Solve Next system exists to resolve a single structural problem. Two mandates. One governance architecture that holds both.</div>
+    <div class="mandate-strip">
+      <div class="mandate ceo">
+        <div class="mandate-who">The CEO Mandate</div>
+        <div class="mandate-text"><strong>Grow.</strong> Deploy capital offensively. Build the next capability before competitors force you to. Take asymmetric bets. Create new categories.</div>
+      </div>
+      <div class="mandate cfo">
+        <div class="mandate-who">The CFO Mandate</div>
+        <div class="mandate-text"><strong>Protect.</strong> Manage exposure. Contain downside. Preserve optionality. Defend the cost of capital against unanticipated correction.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ PROBLEM BAR ══ -->
+<div class="problem-bar">
+  <div class="problem-inner">
+    <span class="problem-label">The Problem</span>
+    <span class="problem-text">Both mandates are governed by instruments designed to measure only financial capital — invisible to the human, intellectual, political, reputational, and social erosion that causes financial success to hide organizational fragility. The Growth Gap is not a strategy problem. It is a governance architecture problem.</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 0 — ENTRY SYSTEM ══ -->
+<div class="entry-system">
+  <div class="inner">
+
+    <div class="entry-intro">
+      <div class="entry-intro-left">
+        <div class="entry-stage-tag">Stage 0 · Before the Ladder</div>
+        <div class="entry-stage-name">The Entry<br/>System</div>
+        <div class="entry-stage-sub">Sixteen paths. One destination.</div>
+      </div>
+      <div class="entry-intro-right">
+        Every prospect enters the Capital Symmetry Governance conversation through one of two paths. Some enter through a <strong>human-led engagement</strong> — a facilitated session matched to their buyer type and emotional state. Others enter through a <strong>product-led instrument</strong> — a self-directed tool that produces a finding before any conversation begins. Both paths lead to the same destination: the Growth Gap Diagnostic.<br/><br/>
+        The governing test for every entry is the same: <strong>does completing this leave the executive with a finding they want to resolve?</strong> A capability demonstration produces admiration. A finding produces demand. The output is what converts — not the experience, not the relationship, not the pitch.
+      </div>
+    </div>
+
+    <div class="entry-principle">
+      The four entries marked ◆ are architecturally non-obvious. They reach buyers the other entries do not — the skeptic, the resource-constrained CEO, the career-focused individual, and the Think Wrong client with no current path to the governance conversation. Build these in sequence after the core entries are generating pipeline. <strong>P10 (Think Wrong Bridge) requires only a facilitation protocol — it can be live within a week and converts every existing Think Wrong engagement into a Diagnostic pipeline event.</strong>
+    </div>
+
+    <div class="build-priority-bar">
+      <div class="bpb-label">Build status</div>
+      <div class="bpb-items">
+        <div class="bpb-item live"><div class="bpb-dot live"></div>Live — available now</div>
+        <div class="bpb-item building"><div class="bpb-dot building"></div>Building — priority development</div>
+        <div class="bpb-item pipeline"><div class="bpb-dot pipeline"></div>Pipeline — future build</div>
+      </div>
+    </div>
+
+    <div class="entry-cols">
+
+      <!-- HUMAN-LED -->
+      <div class="entry-col">
+        <div class="entry-col-head human">
+          <div>
+            <div class="entry-col-type">Human-Led Entries · S01–S06</div>
+            <div class="entry-col-desc">Requires relationship context · Finding co-constructed with buyer · Converts session to Diagnostic mandate</div>
+          </div>
+        </div>
+
+        <div class="entry-row">
+          <div class="entry-row-code">S01</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Executive Capital Exposure Briefing</div>
+            <div class="entry-row-buyer">Senior executive · warm relationship · no active mandate yet</div>
+          </div>
+          <span class="entry-row-tag human">Complimentary</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">S02</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Portfolio Imbalance Session</div>
+            <div class="entry-row-buyer">CEO / CSO / CINO · growth feels off, can't name why</div>
+          </div>
+          <span class="entry-row-tag human">$8K–$15K</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">S03</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">AI Capital Exposure Review</div>
+            <div class="entry-row-buyer">Executive with AI portfolio · board pressure building on ROI</div>
+          </div>
+          <span class="entry-row-tag human">$15K–$25K</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">S04</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Single Initiative Assumption Audit</div>
+            <div class="entry-row-buyer">Initiative sponsor · nervous about one specific bet in motion</div>
+          </div>
+          <span class="entry-row-tag human">$10K–$18K</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">S05</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">CFO Capital Discipline Review</div>
+            <div class="entry-row-buyer">CFO / finance leader · skeptical of innovation spend</div>
+          </div>
+          <span class="entry-row-tag human">$15K–$25K</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">S06</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Board Governance Session</div>
+            <div class="entry-row-buyer">Board member / risk committee · governance accountability, AI oversight</div>
+          </div>
+          <span class="entry-row-tag human">$5K–$8K</span>
+        </div>
+      </div>
+
+      <!-- PRODUCT-LED -->
+      <div class="entry-col">
+        <div class="entry-col-head product">
+          <div>
+            <div class="entry-col-type">Product-Led Entries · P01–P10</div>
+            <div class="entry-col-desc">No relationship required · Finding self-generated by executive · Converts self-discomfort to conversation request</div>
+          </div>
+        </div>
+
+        <div class="entry-row">
+          <div class="entry-row-code">P01</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Growth Gap Phase Assessment</div>
+            <div class="entry-row-buyer">Any executive · produces Phase I / II / III cascade determination · reframed from Signal Quiz · <strong>Priority 3</strong></div>
+          </div>
+          <span class="entry-row-tag building">Building</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P02</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Capital Clarity Canvas</div>
+            <div class="entry-row-buyer">High-autonomy executive · forms their own view before talking</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P03</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">AI Capital Exposure Calculator</div>
+            <div class="entry-row-buyer">AI-invested executive · board pressure on ROI</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P04</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Assumption Blindspot Identifier</div>
+            <div class="entry-row-buyer">Innovation-fatigued leader · frustrated by initiative failure patterns</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P05</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Portfolio Imbalance Visualizer</div>
+            <div class="entry-row-buyer">Portfolio-concerned CFO / CSO · strategy offsite or board prep</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P06</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Growth Gap Benchmark Report</div>
+            <div class="entry-row-buyer">Cold or inbound lead · encountered Solve Next through thought leadership</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P07</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Capital Sentinel · External Exposure Mirror ◆</div>
+            <div class="entry-row-buyer">Any — AI-powered · public signals only · Growth Gap Curve + six-domain alerts · <strong>Priority 1 · Live</strong></div>
+          </div>
+          <span class="entry-row-tag live">Live ✓</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P08</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Capital Liberation Calculator ◆</div>
+            <div class="entry-row-buyer">CFO / resource-constrained CEO · converts exposure to financial legitimacy · <strong>Priority 2</strong></div>
+          </div>
+          <span class="entry-row-tag building">Building</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P09</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Activator Identity Assessment ◆</div>
+            <div class="entry-row-buyer">Individual executive · career-conscious · build after Priority 1–3 establish pipeline</div>
+          </div>
+          <span class="entry-row-tag pipeline">Pipeline</span>
+        </div>
+        <div class="entry-row">
+          <div class="entry-row-code">P10</div>
+          <div class="entry-row-body">
+            <div class="entry-row-name">Think Wrong Bridge Tool ◆</div>
+            <div class="entry-row-buyer">Active Think Wrong client · internal facilitation protocol — no engineering required</div>
+          </div>
+          <span class="entry-row-tag building">Building</span>
+        </div>
+      </div>
+
+    </div><!-- /entry-cols -->
+
+    <div class="priority-callout">
+      <strong>Build sequence:</strong> Capital Sentinel (live) → Capital Liberation Calculator (Priority 2 · CFO bridge · one-day build) → Growth Gap Phase Assessment (Priority 3 · Phase I/II/III cascade determination). These three create the emotional sequence: concern (Sentinel) → financial legitimacy (Calculator) → self-identification (Phase Assessment). Together they hand off to the Capital Exposure Briefing without requiring a human to initiate the conversation.
+    </div>
+
+    <div class="entry-connector">
+      <span class="entry-connector-label">Every entry · One destination</span>
+      <span class="entry-connector-text">Every human-led session and every product-led instrument is designed to produce a finding the executive wants to resolve. <strong>The Growth Gap Diagnostic is always the next step.</strong> Capital Sentinel (P07) is the outermost ring — a free AI scan of any organization that generates a Growth Gap Curve and six-domain alert feed before any conversation begins. Full entry system playbook available separately.</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ TRACK LEGEND ══ -->
+<div class="track-legend">
+  <div class="legend-inner">
+    <span class="legend-kicker">Track key</span>
+    <div class="legend-item people"><div class="legend-dot dot-people"></div>People · capability development</div>
+    <div class="legend-item org"><div class="legend-dot dot-org"></div>Organizational · advisory</div>
+    <div class="legend-item platform"><div class="legend-dot dot-platform"></div>Platform · software</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 1 ══ -->
+<div class="section section-alt">
+  <div class="inner">
+    <div class="stage-header">
+      <div>
+        <div class="stage-num-display">01</div>
+        <div class="section-tag">Stage 1 · Entry</div>
+        <div class="stage-name">Cognitive<br/>Ignition</div>
+        <div class="stage-name-sub">Surface the assumptions. Create urgency.</div>
+      </div>
+      <div class="stage-context">
+        <div class="context-body">Organizations cannot govern what they cannot see — and they cannot see what they have never distinguished from belief. Before capital exposure can be measured, the assumptions underneath growth bets must be surfaced and classified: what does the organization actually know, what has it assumed without testing, and what has it simply never questioned? This stage converts organizational belief into governed uncertainty — the epistemic precondition for everything that follows.</div>
+      </div>
+    </div>
+
+    <div class="product-grid pg-three">
+
+      <!-- CARD: Innovators Intensive -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill people"><div class="track-dot-sm"></div>People · Field Intensive</div>
+          <div class="pcard-name">Think Wrong Innovators Intensive</div>
+          <div class="pcard-sub">Paris · Aix-en-Provence · Expanding locations</div>
+          <div class="pcard-price">€9,500 per participant · 4.5 days</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Growth bets built on untested assumptions — because growth made testing feel unnecessary</div>
+              <div class="pain-item">No discipline for challenging strategic certainty before capital is deployed</div>
+              <div class="pain-item">Capital committed before evidence is earned</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">Capability developed</div>
+            <ul class="cap-list">
+              <li>Deflection Point analysis — seeing inflection before crisis</li>
+              <li>Certainty Map — distinguishing knowledge from assumption</li>
+              <li>Super Vital Assumption identification and prioritization</li>
+              <li>Small bet design — evidence before scale</li>
+              <li>Capital exposure mapping applied to own live portfolio (Friday transfer)</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Pathway forward</div>
+            <ul class="cap-list">
+              <li>Day 4 escalation question bridges to Diagnostic conversation</li>
+              <li>Direct path to Level 1 Activator Intensive</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Which current growth bets have we never tested? This week surfaces the answer before capital is committed.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">The escalation question connects every assumption surfaced to a capital allocation decision only you can authorise.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Enterprise Session -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill org"><div class="track-dot-sm"></div>Organizational · Executive Session</div>
+          <div class="pcard-name">Think Wrong Enterprise Session</div>
+          <div class="pcard-sub">Capital Exposure Entry Point for Executive Teams</div>
+          <div class="pcard-price">$35,000–$60,000 · 2–4 hours</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">AI investments scaling without governance clarity</div>
+              <div class="pain-item">Strategy that feels thin — growth that doesn't feel durable</div>
+              <div class="pain-item">Innovation fatigue — workshops that produce activity, not change</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the session delivers</div>
+            <ul class="cap-list">
+              <li>Surfaces hidden assumptions shaping the most critical growth initiatives</li>
+              <li>Reveals capital exposure the CFO cannot currently see</li>
+              <li>Creates leadership-team alignment on where fragility lives</li>
+              <li>Escalation question connects session output to C-suite governance conversation</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Pathway forward</div>
+            <ul class="cap-list">
+              <li>Designed to produce urgency for the Growth Gap Diagnostic</li>
+              <li>30-day follow-up protocol activates diagnostic pipeline</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Not a workshop. An executive-team reckoning with the assumptions underneath your most important current bets.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Think Wrong exposes where governance architecture is missing — and what that absence is currently costing.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Capital Briefing -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill org"><div class="track-dot-sm"></div>Organizational · Board Briefing</div>
+          <div class="pcard-name">Executive Capital Exposure Briefing</div>
+          <div class="pcard-sub">The Intellectual Front Door for CFOs and Boards</div>
+          <div class="pcard-price">Complimentary or bundled · 45–90 min</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Board or activist pressure on capital discipline with no response architecture</div>
+              <div class="pain-item">AI investment governance anxiety — committing capital without visibility</div>
+              <div class="pain-item">CEO / CFO mandate tension with no resolution mechanism</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the briefing delivers</div>
+            <ul class="cap-list">
+              <li>The Growth Gap framing — how financial success hides organizational fragility</li>
+              <li>Introduction to all six capital forms and Capital Symmetry Stage model</li>
+              <li>The mandate tension — named, structured, and resolvable</li>
+              <li>The diagnostic as the board-grade entry point</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Pathway forward</div>
+            <ul class="cap-list">
+              <li>Designed to produce diagnostic authorization from CEO or CFO</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Are we building on solid capital foundations — or compounding hidden fragility?</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">A one-notch credit downgrade costs $75–150M on $10B in debt. This cascade is measurable before it reaches the income statement.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /product-grid -->
+  </div>
+</div>
+
+<!-- CONNECTOR -->
+<div class="connector">
+  <div class="connector-inner">
+    <div class="conn-line"></div>
+    <div class="conn-label">Ignition creates urgency · Urgency activates the Diagnostic</div>
+    <div class="conn-line"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 2 ══ -->
+<div class="section section-white">
+  <div class="inner">
+    <div class="stage-header">
+      <div>
+        <div class="stage-num-display">02</div>
+        <div class="section-tag">Stage 2 · Wedge</div>
+        <div class="stage-name">Capital<br/>Exposure</div>
+        <div class="stage-name-sub">Make fragility visible. Quantify the risk.</div>
+      </div>
+      <div class="stage-context">
+        <div class="context-body">Most organizations believe they are growing. Few can see the structural exposure inside their portfolio — because their governance instruments measure only what has already happened to financial capital. The Growth Gap Diagnostic makes the full picture visible: not just where capital is eroding, but how much of the organization's governance of diffuse capital rests on untested belief rather than validated evidence, and which capital domain is setting the actual ceiling on Capital Symmetry Stage. This is the economic center of gravity of the Solve Next system.</div>
+      </div>
+    </div>
+
+    <div class="product-grid pg-two">
+
+      <!-- CARD: Activator Intensive -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill people"><div class="track-dot-sm"></div>People · Level 1 Certification</div>
+          <div class="pcard-name">Serious Capital Activator Intensive</div>
+          <div class="pcard-sub">Powered by Think Wrong · Certified Serious Capital Activator™</div>
+          <div class="pcard-price">$5,000 per participant · 3 days</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Innovation fails before solutions — wrong problem solved exceptionally well</div>
+              <div class="pain-item">Organizational beliefs treated as facts — governance decisions made on untested assumption rather than evidence</div>
+              <div class="pain-item">No human capability inside the organization to govern pre-commitment uncertainty</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">Capability developed</div>
+            <ul class="cap-list">
+              <li>Classify organizational beliefs as untested assumptions, testable hypotheses, or validated knowledge — the epistemic discipline that prevents capital commitment from resting on belief alone</li>
+              <li>Identify and prioritize the assumptions most consequential to capital allocation — those whose failure would change a decision only the CFO or CEO can authorise</li>
+              <li>Design the smallest credible evidence-generating action bounded by affordable loss — learning before consuming capital at scale</li>
+              <li>Facilitate productive assumption-surfacing conversations across stakeholder groups without creating resistance</li>
+              <li>Credential: Certified Serious Capital Activator™</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Organizational impact</div>
+            <ul class="cap-list">
+              <li>Activators protect early-stage capital — preventing premature commitment before the most consequential assumptions are tested</li>
+              <li>3–5 Activators in the same portfolio shift the organization from Presumption-governed to Evidence-governed exploration</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Activators distinguish what the organization knows from what it believes — before capital commitment makes the distinction expensive.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Capital protection at the earliest stage: replacing organizational belief with tested evidence before investment locks in the assumptions underneath it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Diagnostic -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill org"><div class="track-dot-sm"></div>Organizational · Primary Entry Product</div>
+          <div class="pcard-name">Growth Gap Diagnostic</div>
+          <div class="pcard-sub">Board-Level Capital Symmetry Analysis · Evidence-Graded · Stage Determination by Lowest-Scoring Domain</div>
+          <div class="pcard-price">$125,000 mid-enterprise · $150,000 large enterprise · $175,000–$200,000 complex/regulated</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Six-dimensional capital problem governed by one-dimensional financial instruments</div>
+              <div class="pain-item">Capital governance decisions made on organizational belief — not validated evidence — across most non-financial domains</div>
+              <div class="pain-item">CFO cannot see the full risk; CEO cannot justify the growth; cascade origin is invisible until it reaches financial impact</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the diagnostic delivers</div>
+            <ul class="cap-list">
+              <li>Capital Symmetry Stage determination — set by the lowest-scoring capital domain, not the average, revealing where the actual governance ceiling sits</li>
+              <li>Evidence quality audit per capital domain — what percentage of the board's capital governance decisions rest on validated knowledge versus untested organizational belief</li>
+              <li>Capital exposure heatmap with cascade pathway analysis — not just where erosion is occurring, but how fast it can propagate across domains given each conversion pathway's friction and time lag</li>
+              <li>Entropy force assessment — which active degradation forces are pushing the organization back toward financial-only governance</li>
+              <li>Governance gap analysis and board-ready briefing with stage-anchored recommendations</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Client time investment</div>
+            <ul class="cap-list">
+              <li>~10 hours executive time across 6 weeks</li>
+              <li>Intake · Calibration · Exposure review · Board briefing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">For the first time, see which capital domain is setting your governance ceiling — and how much of what your board believes about non-financial risk is actually untested assumption.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">The cascade pathway analysis answers the question financial models cannot: when human capital erosion starts, how fast does it reach the income statement — and what would it cost to interrupt it at each stage?</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONNECTOR -->
+<div class="connector">
+  <div class="connector-inner">
+    <div class="conn-line"></div>
+    <div class="conn-label">Exposure is now visible · Architecture must follow</div>
+    <div class="conn-line"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 3 ══ -->
+<div class="section section-dark">
+  <div class="inner">
+    <div class="stage-header">
+      <div>
+        <div class="stage-num-display">03</div>
+        <div class="section-tag">Stage 3 · Core Engine</div>
+        <div class="stage-name">Governance<br/>Architecture</div>
+        <div class="stage-name-sub">Install the system. Move from Stage 2 to Stage 4.</div>
+      </div>
+      <div class="stage-context">
+        <div class="context-body">Seeing the exposure is not enough. Governance architecture must be installed — the decision criteria, portfolio discipline, funding logic, and operating principles that make capital allocation structurally sound rather than politically driven. Critically, governance systems degrade by default: every organization has entropy forces actively pushing capital governance back toward financial-only measurement. The architecture installed at this stage must be designed from the outset to resist those forces, not assume they have been solved.</div>
+      </div>
+    </div>
+
+    <div class="product-grid pg-two">
+
+      <!-- CARD: Architect Intensive -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill people"><div class="track-dot-sm"></div>People · Level 2 Certification</div>
+          <div class="pcard-name">Serious Capital Architect Intensive</div>
+          <div class="pcard-sub">Formerly Leaders of Next · Certified Serious Capital Architect™</div>
+          <div class="pcard-price">$12,500 per participant · 5 days</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Performance system asked to produce innovation results it was never designed for</div>
+              <div class="pain-item">No governance architecture connecting capital allocation to portfolio discipline — visibility without management</div>
+              <div class="pain-item">Stop decisions made on politics and loss aversion rather than evidence — because kill criteria were never pre-specified</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">Capability developed</div>
+            <ul class="cap-list">
+              <li>Design the eight structural components of a Capital Symmetry governance system: development, decision, portfolio, capital allocation, step funding, learning, and behavioral architecture</li>
+              <li>Establish evidence-gated stop criteria before capital is committed — criteria designed under governance clarity, not constructed under loss aversion at the moment of termination</li>
+              <li>Implement Create / Protect / Liberate capital discipline with learning-return standards for liberation decisions</li>
+              <li>Design entropy-resistant governance — active mechanisms that prevent Stage 4 from drifting back toward Stage 2 by default</li>
+              <li>Structure portfolio decision authority so capital rebalancing is an active, evidence-driven process — not static annual planning</li>
+              <li>Build the governance infrastructure required for the Governor role to function under institutional pressure</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Included</div>
+            <ul class="cap-list">
+              <li>Credential: Certified Serious Capital Architect™</li>
+              <li>Next Lab Professional — 1-year membership ($999 value)</li>
+              <li>Completed Governance Architecture Blueprint across all eight structural components</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Architects pre-specify the governance system before capital is committed — including the stop criteria. Stopping an initiative when its assumptions are invalidated is a governance success, not an organizational failure.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Architects create the visibility infrastructure the CFO needs — and design the rebalancing mechanism that makes that visibility actionable. A portfolio you can see but cannot rebalance is not a governed portfolio.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Advisory Retainer -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill org"><div class="track-dot-sm"></div>Organizational · Recurring Advisory</div>
+          <div class="pcard-name">Serious Capital Architecture Advisory</div>
+          <div class="pcard-sub">Quarterly Governance Retainer · Stage Movement: 2 → 4 · Entropy Resistance: Ongoing</div>
+          <div class="pcard-price">$12,000–$30,000 / month · Quarterly cadence</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Governance discipline degrades by default — every organization has entropy forces actively pushing capital allocation back toward financial-only measurement</div>
+              <div class="pain-item">Capital liberation decisions made on political judgment rather than evidence — because learning-return standards were never defined</div>
+              <div class="pain-item">Board cannot see whether stated capital priorities match where capital actually flows</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the retainer installs and maintains</div>
+            <ul class="cap-list">
+              <li>Capital weighting calibration across all six capital forms — Create / Protect / Liberate discipline embedded in quarterly cadence</li>
+              <li>Quarterly learning-return review — not just what capital was deployed, but what evidence was generated per unit committed and whether liberation decisions are evidence-grounded</li>
+              <li>Strategy-allocation gap analysis — surfacing the delta between what the board states as capital priorities and where capital actually flows</li>
+              <li>Active entropy resistance — identifying and counteracting the forces that cause Capital Symmetry governance to degrade toward financial-only default between sessions</li>
+              <li>Board-ready capital exposure reporting with evidence quality indicators every quarter</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">The product being sold</div>
+            <ul class="cap-list">
+              <li>Stage movement: Stage 2 (Multi-Capital Aware) → Stage 4 (Symmetry Governed) in 12–18 months</li>
+              <li>Governance installation plus ongoing entropy resistance — not innovation consulting</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Capital Symmetry governance degrades by default. The retainer is not a consulting relationship — it is the active maintenance that prevents Stage 4 from drifting back toward Stage 2 under institutional pressure.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Every quarter: evidence of what capital was committed, what learning it generated, and whether stated priorities match observed allocation. The governance function that makes capital deployment defensible to a board or activist.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONNECTOR -->
+<div class="connector">
+  <div class="connector-inner">
+    <div class="conn-line"></div>
+    <div class="conn-label">Architecture is installed · Platform sustains it between sessions</div>
+    <div class="conn-line"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 4 ══ -->
+<div class="section section-alt">
+  <div class="inner">
+    <div class="stage-header">
+      <div>
+        <div class="stage-num-display">04</div>
+        <div class="section-tag">Stage 4 · Embed &amp; Sustain</div>
+        <div class="stage-name">Platform<br/>Governance</div>
+        <div class="stage-name-sub">Make governance continuous. Raise switching cost.</div>
+      </div>
+      <div class="stage-context">
+        <div class="context-body">Advisory sessions happen quarterly. Capital exposure drifts daily. The Capital Symmetry Dashboard, Capital Sentinel, and Next Lab Professional sustain the governance architecture between sessions — making portfolio drift visible in real time, monitoring the signal environment continuously across all six capital domains, and ensuring the board always has what it needs. Software moves Solve Next from advisor to infrastructure.</div>
+      </div>
+    </div>
+
+    <div class="product-grid pg-three">
+
+      <!-- CARD: Dashboard -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill platform"><div class="track-dot-sm"></div>Platform · Enterprise Software</div>
+          <div class="pcard-name">Capital Symmetry Dashboard</div>
+          <div class="pcard-sub">Governance Infrastructure · Single-tenant Year 1 · Multi-tenant Year 2+</div>
+          <div class="pcard-price">$20,000–$40,000 annual · Bundled with retainer Year 1</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Governance discipline degrades between advisory sessions — entropy forces operate continuously, not quarterly</div>
+              <div class="pain-item">Board can see capital exposure data but has no mechanism to surface when stated priorities diverge from observed allocation</div>
+              <div class="pain-item">Capital drift invisible until it reaches financial visibility — by which point the cascade has already propagated</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the platform provides</div>
+            <ul class="cap-list">
+              <li>Real-time capital exposure monitoring across all six forms — with cascade pathway risk flagged by domain</li>
+              <li>Strategy-allocation gap analysis — surfaces the delta between what leadership states as capital priorities and where capital actually flows, initiative by initiative</li>
+              <li>Evidence quality tracking — distinguishes governance decisions grounded in validated knowledge from those resting on organizational belief, by capital domain</li>
+              <li>Entropy force monitoring — flags governance degradation signals before they reach financial visibility, so the Governor can intervene</li>
+              <li>AI reasoning grounded in multi-capital logic — prohibited from reducing analysis to financial return alone or treating portfolio management as static annual planning</li>
+              <li>Board-ready reporting generated from live governance data</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Strategic role</div>
+            <ul class="cap-list">
+              <li>Makes Capital Symmetry governance continuous — not quarterly</li>
+              <li>Creates structural dependency — governance data and evidence history live in the platform</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">"Show me the capital map — and show me where what we say we prioritize differs from where our capital actually went." The question the Dashboard is designed to answer continuously.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">The board-facing reporting layer that surfaces the full governance picture — including how much of what the board believes about non-financial capital health is backed by evidence rather than assumption.</div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- CARD: Capital Sentinel -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill platform"><div class="track-dot-sm"></div>Platform · AI Signal Intelligence</div>
+          <div class="pcard-name">Capital Sentinel</div>
+          <div class="pcard-sub">Continuous Six-Domain Signal Monitoring · Growth Gap Curve · Live Alert Feed</div>
+          <div class="pcard-price" style="color:#34D399;">Live now · Entry scan free · Enterprise monitoring included with retainer</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Two modes — one system</div>
+            <div class="pain-list">
+              <div class="pain-item"><strong>Entry mode (P07):</strong> Free public-signal scan of any organization — generates a Growth Gap Curve, six-domain status assessment, and live alert feed. No self-reporting required. Designed to create urgency for the Diagnostic.</div>
+              <div class="pain-item"><strong>Enterprise mode (Stage 4):</strong> Continuous monitoring for organizations in the retainer engagement — integrates internal governance data with external signal intelligence to maintain real-time capital health visibility between advisory sessions.</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What Capital Sentinel produces</div>
+            <ul class="cap-list">
+              <li>Growth Gap Curve — financial performance index versus multi-capital health index, with Phase I / II / III progression and projected trajectory</li>
+              <li>Six-domain status grid — Human, Intellectual, Reputational, Political, Social, Financial — each with status, trend, signal count, cascade pathway, and intervention timing</li>
+              <li>Live alert feed — domain-tagged signal events with severity, source, and time-stamped detection</li>
+              <li>Capital Symmetry Stage estimate — derived from lowest-scoring domain, not average</li>
+              <li>Bridge and summary narrative — synthesized governance pattern in plain executive language</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Strategic role across the system</div>
+            <ul class="cap-list">
+              <li>At Stage 0: the outermost product-led entry — converts organizational curiosity into a finding that demands resolution via the Growth Gap Diagnostic</li>
+              <li>At Stage 4: the continuous signal intelligence layer that makes the Governor's entropy-resistance function possible between quarterly advisory sessions</li>
+              <li>AI behavioral contract enforced: prohibited from financial-only analysis, required to surface upstream capital erosion before financial impact</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Enter any organization and see what the financial statements don't show — the upstream erosion across human, intellectual, political, reputational, and social capital that determines whether financial strength is durable or compounding hidden fragility.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">The signal intelligence layer that makes proactive governance possible. Capital Sentinel surfaces the cascade pathway before it reaches the income statement — giving the CFO time to govern, not react.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Next Lab -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill platform"><div class="track-dot-sm"></div>Platform · Innovation Execution Software</div>
+          <div class="pcard-name">Next Lab Professional</div>
+          <div class="pcard-sub">Innovation Execution Environment · Included with Architect Intensive</div>
+          <div class="pcard-price">$999 annual · Included with Architect Intensive</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Innovation work disconnected from portfolio governance</div>
+              <div class="pain-item">No operating environment for disciplined opportunity development</div>
+              <div class="pain-item">Teams cannot apply framework tools without structured platform support</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the platform provides</div>
+            <ul class="cap-list">
+              <li>160+ Think Wrong drills — structured divergence and convergence</li>
+              <li>Innovation portfolio management and Next Cycle tracking</li>
+              <li>Sprint and session design for every Next Cycle stage</li>
+              <li>Templates for critical Next Cycle moments and innovation challenges</li>
+              <li>AI-assisted hypothesis testing and assumption validation</li>
+              <li>Portfolio visibility aligned with capital-building priorities</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Strategic role</div>
+            <ul class="cap-list">
+              <li>Execution layer beneath the Capital Symmetry Dashboard</li>
+              <li>Extends Governor and Activator capability into daily practice</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">Where innovation teams apply the discipline that Governors establish — from idea through disciplined development to capital decision.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Discovery-driven development built into the execution layer — so teams build certainty before consuming capital at scale.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONNECTOR -->
+<div class="connector">
+  <div class="connector-inner">
+    <div class="conn-line"></div>
+    <div class="conn-label">Platform embeds governance · Architecture track advances to design</div>
+    <div class="conn-line"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ STAGE 5 ══ -->
+<div class="section section-white">
+  <div class="inner">
+    <div class="stage-header">
+      <div>
+        <div class="stage-num-display">05</div>
+        <div class="section-tag">Stage 5 · Apex</div>
+        <div class="stage-name">Institutional<br/>Architecture</div>
+        <div class="stage-name-sub">Make governance permanent. Self-sustaining. Enduring.</div>
+      </div>
+      <div class="stage-context">
+        <div class="context-body">Results dependent on specific leaders are fragile. The Governor designation and the Year 2+ platform expansion create the conditions for Capital Symmetry Governance to become self-sustaining — embedded in formal governance processes, accountability structures, and institutional memory rather than in any individual's commitment. This is the destination: Enduring Enterprise Value.</div>
+      </div>
+    </div>
+
+    <div class="product-grid pg-two">
+
+      <!-- CARD: Governor Designation -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill people"><div class="track-dot-sm"></div>People · Level 3 · Earned Through Retainer</div>
+          <div class="pcard-name">Serious Capital Governor Designation</div>
+          <div class="pcard-sub">Apex Designation · Certified Serious Capital Governor™ · Earned Through Governance Practice</div>
+          <div class="pcard-price">No additional fee · Conferred through active retainer engagement · Stage evidence required</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Capital Symmetry governance degrades by default — Stage 4 is not a stable equilibrium without active institutional maintenance</div>
+              <div class="pain-item">Capital architecture designed but not operated — visibility without the authority and accountability to act on it</div>
+              <div class="pain-item">Stop decisions made under political pressure at the moment of failure — because no one pre-specified the evidence thresholds that would trigger them</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the Governor does</div>
+            <ul class="cap-list">
+              <li>Operates the governance system the Architect designed — monitors capital symmetry across all six domains and initiates rebalancing when evidence warrants it</li>
+              <li>Actively resists the entropy forces that cause Capital Symmetry governance to degrade toward financial-only default — Stage 4 is not self-sustaining without this role</li>
+              <li>Enforces pre-specified stop criteria under institutional pressure — stopping an initiative when its evidence threshold is not met is a governance success, not a failure</li>
+              <li>Arbitrates capital allocation tradeoffs across domains using evidence, not political weight</li>
+              <li>Institutionalises governance so the architecture survives leadership transitions — embedding it in formal board cadence, accountability structures, and compensation design</li>
+              <li>Ensures that visibility of capital exposure translates into action — a portfolio you can see but cannot rebalance is not governed</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">How the designation is earned</div>
+            <ul class="cap-list">
+              <li>Prerequisite: Certified Serious Capital Architect™ (Level 2)</li>
+              <li>Active participation in a live Serious Capital Architecture Advisory retainer</li>
+              <li>Demonstrated Capital Symmetry Stage movement with documented evidence</li>
+              <li>Designation conferred by Solve Next based on demonstrated governance practice — not attendance</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">The Governor is the role the architecture requires to function. Without it, the system is designed but not operated — and governance drifts back toward financial-only default under the first serious institutional pressure.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">Governors make evidence-grounded stop decisions before political pressure makes them impossible — and institutionalise the architecture so the next CFO has the same governance infrastructure available without rebuilding it under pressure.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Year 2 Platform -->
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="track-pill platform"><div class="track-dot-sm"></div>Platform · Year 2+ Roadmap</div>
+          <div class="pcard-name">Capital Symmetry Governance Platform</div>
+          <div class="pcard-sub">Multi-tenant · Simulation Layer · Benchmarking Database · Recursive Architecture</div>
+          <div class="pcard-price">$75,000–$150,000 annual enterprise license · Year 2+</div>
+        </div>
+        <div class="pcard-body">
+          <div>
+            <div class="block-head">Organizational pain addressed</div>
+            <div class="pain-list">
+              <div class="pain-item">Capital governance visible only at enterprise level — but exposure originates at initiative level and propagates before the enterprise view can detect it</div>
+              <div class="pain-item">AI deployment governed exclusively by financial return — no governance infrastructure for the capital system costs that accumulate in diffuse domains during AI scaling</div>
+              <div class="pain-item">No benchmarking — governance decisions made without cross-sector comparison of Capital Symmetry Stage trajectories</div>
+            </div>
+          </div>
+          <div>
+            <div class="block-head">What the platform adds in Year 2+</div>
+            <ul class="cap-list">
+              <li>Recursive governance: initiative → portfolio → business unit → enterprise roll-up — exposure is tracked at origin, not only at financial impact</li>
+              <li>AI governance layer with multi-capital reasoning — prohibited from financial-only analysis, required to surface gaps between stated capital priorities and observed allocation behavior at every level</li>
+              <li>Capital exposure simulation — model allocation scenarios and cascade pathways across all six domains before committing</li>
+              <li>Cross-client Capital Symmetry Stage benchmarking by sector — making governance maturity comparable and competitive</li>
+              <li>Enterprise-grade access: CEO cockpit / CFO risk view / Board synthesis layer with evidence quality indicators</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block-head">Strategic role</div>
+            <ul class="cap-list">
+              <li>Transitions Solve Next from advisory firm to governance infrastructure company</li>
+              <li>Enterprise recurring license creates acquisition-attractive revenue profile</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pcard-signals">
+          <div class="signal">
+            <span class="sig-badge ceo">CEO</span>
+            <div class="sig-text">The governance operating system for Enduring Enterprise Value — where the AI layer is prohibited from reducing analysis to financial return and required to surface where stated priorities diverge from actual capital flows.</div>
+          </div>
+          <div class="signal">
+            <span class="sig-badge cfo">CFO</span>
+            <div class="sig-text">From Stage 4 to Stage 5. The platform that makes Capital Symmetry governance self-sustaining across leadership transitions — embedded in institutional design, not dependent on individual commitment.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /product-grid -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ ESCALATION ══ -->
+<div class="section section-alt" style="border-bottom:none;">
+  <div class="inner">
+    <div class="escalation-box">
+      <div class="esc-kicker">The Escalation Question — Built Into Every Programme and Every Engagement</div>
+      <div class="esc-q">"Of the assumptions we surfaced — which ones, if they turned out to be wrong, would change a capital allocation decision that only your CFO or CEO can authorise?"</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ DESTINATION ══ -->
+<div class="section section-dark">
+  <div class="inner">
+    <div class="section-tag">The Destination</div>
+    <div class="section-title">Capital Symmetry.<br/>Stage 1 → Stage 5.</div>
+    <div class="divider"></div>
+    <div class="section-sub">The Capital Symmetry Stage is determined by the lowest-scoring capital domain — not the average. An organization with strong financial and human capital governance but no infrastructure for social or political capital is a Stage 1 organization with two exceptions. Most large enterprises cluster at Stage 1–2. The Growth Gap Diagnostic reveals which domain sets the ceiling. The retainer moves it. The Governor designation marks the point at which governance is self-sustaining — because governance systems degrade by default, and Stage 4 is not a stable equilibrium without the role that actively resists it.</div>
+    <div class="stage-cards">
+      <div class="stage-card">
+        <div class="sc-num">1</div>
+        <div class="sc-name">Financial Dominant</div>
+        <div class="sc-desc">Only financial capital actively governed. Non-financial erosion invisible until financial cascade begins.</div>
+        <div class="sc-tag">Entry — most enterprises here</div>
+      </div>
+      <div class="stage-card">
+        <div class="sc-num">2</div>
+        <div class="sc-name">Multi-Capital Aware</div>
+        <div class="sc-desc">Some non-financial awareness but reactive, inconsistent. Governance instruments lagging reality.</div>
+        <div class="sc-tag">Diagnostic entry</div>
+      </div>
+      <div class="stage-card">
+        <div class="sc-num">3</div>
+        <div class="sc-name">Exposure Visible</div>
+        <div class="sc-desc">Active governance architecture under construction. Retainer and platform embedding discipline.</div>
+        <div class="sc-tag">Retainer active</div>
+      </div>
+      <div class="stage-card">
+        <div class="sc-num">4</div>
+        <div class="sc-name">Symmetry Governed</div>
+        <div class="sc-desc">All six capitals actively monitored and governed. Board visibility established. Capital allocation disciplined.</div>
+        <div class="sc-tag">Target — 12 to 18 months</div>
+      </div>
+      <div class="stage-card active">
+        <div class="sc-num">5</div>
+        <div class="sc-name">Endurance Enabled</div>
+        <div class="sc-desc">Governance self-sustaining across all six capital domains. Architecture embedded in institutional design — survives leadership transitions because it no longer depends on individual commitment. Active entropy resistance is ongoing: this stage requires continuous maintenance, not passive holding.</div>
+        <div class="sc-tag">Governor Designation + Platform · The destination</div>
+      </div>
+    </div>
+    <div class="pullquote" style="margin-top:40px;">The growth gap is not visible in the financial statements until the cascade has already started. By then, what looks like a strategy problem is actually a governance failure — and it has been compounding for years.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ FOOTER ══ -->
+<footer class="footer">
+  <div>
+    <div class="footer-brand">Solve/<span>Next</span></div>
+    <div class="footer-tagline">Govern the decade.</div>
+  </div>
+  <div class="footer-right">
+    <div class="footer-contact-line">natalia@solvenext.com</div>
+    <div class="footer-contact-line">+1 415 209 5065</div>
+    <div class="footer-contact-line">solvenext.com</div>
+  </div>
+</footer>
+
+</body>
+</html>

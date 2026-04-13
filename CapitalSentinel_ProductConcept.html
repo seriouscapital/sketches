@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital Sentinel — SolveNext</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0908;
+  --surface: #111210;
+  --surface2: #181816;
+  --surface3: #1e1e1c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --gold: #b8943f;
+  --gl: #d4aa5a;
+  --muted: #6a6860;
+  --muted2: #888580;
+  --text: #e8e5df;
+  --text2: #b0ada6;
+  --stable: #2d7a6e;
+  --stable-bg: rgba(45,122,110,0.1);
+  --stable-border: rgba(45,122,110,0.25);
+  --watch: #c07d2a;
+  --watch-bg: rgba(192,125,42,0.1);
+  --watch-border: rgba(192,125,42,0.25);
+  --alert: #c44d26;
+  --alert-bg: rgba(196,77,38,0.1);
+  --alert-border: rgba(196,77,38,0.3);
+  --urgent: #a01515;
+  --urgent-bg: rgba(160,21,21,0.12);
+  --urgent-border: rgba(160,21,21,0.35);
+  --human: #4a7fb5;
+  --intellectual: #7b6ab5;
+  --reputational: #b5516a;
+  --political: #b58a3a;
+  --social: #3a9b6a;
+  --financial: #5a9eb5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--ink); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 300; overflow: hidden; }
+
+/* ─ SETUP SCREEN ─ */
+#setup {
+  position: fixed; inset: 0; background: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 100; transition: opacity 0.5s, transform 0.5s;
+}
+#setup.hidden { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+.setup-inner { width: 100%; max-width: 520px; padding: 2rem; }
+.setup-logo { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .25em; color: var(--gold); text-transform: uppercase; margin-bottom: 3rem; display: flex; align-items: center; gap: .75rem; }
+.setup-logo::before { content: ''; display: block; width: 1.5rem; height: 1px; background: var(--gold); }
+.setup-title { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--text); line-height: 1.05; margin-bottom: .75rem; }
+.setup-title em { font-style: italic; color: var(--gl); }
+.setup-sub { font-size: .88rem; color: var(--muted2); line-height: 1.65; margin-bottom: 2.5rem; }
+.setup-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-row { display: flex; flex-direction: column; gap: .4rem; }
+.form-label { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; }
+.form-input, .form-select {
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text); padding: .75rem 1rem; font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 300;
+  outline: none; transition: border-color .2s;
+  border-radius: 2px;
+}
+.form-input:focus, .form-select:focus { border-color: rgba(184,148,63,.5); }
+.form-select option { background: var(--surface2); }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.setup-btn {
+  background: transparent; border: 1px solid rgba(184,148,63,.4);
+  color: var(--gl); font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .15em;
+  text-transform: uppercase; padding: .9rem 1.5rem; cursor: pointer; transition: all .25s;
+  display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: .5rem;
+}
+.setup-btn:hover { background: rgba(184,148,63,.1); border-color: var(--gold); }
+.setup-note { font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .08em; color: var(--muted); margin-top: 1.5rem; text-align: center; line-height: 1.7; }
+
+/* ─ MAIN APP ─ */
+#app { height: 100%; display: flex; flex-direction: column; opacity: 0; transition: opacity .5s; }
+#app.visible { opacity: 1; }
+
+/* ─ HEADER ─ */
+.header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: .75rem 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-shrink: 0;
+}
+.header-logo { font-family: 'DM Mono', monospace; font-size: .6rem; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; }
+.header-sep { width: 1px; height: 1.5rem; background: var(--border2); }
+.header-org { display: flex; flex-direction: column; gap: .15rem; }
+.header-org-name { font-size: .88rem; font-weight: 500; color: var(--text); }
+.header-org-meta { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .1em; color: var(--muted); }
+.header-spacer { flex: 1; }
+.scan-pulse { display: flex; align-items: center; gap: .6rem; }
+.scan-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--stable); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.2)} }
+.scan-label { font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .12em; color: var(--muted2); text-transform: uppercase; }
+.scan-time { font-family: 'DM Mono', monospace; font-size: .56rem; color: var(--muted); margin-left: .25rem; }
+.header-stage { display: flex; align-items: center; gap: .75rem; background: var(--surface3); border: 1px solid var(--border); padding: .4rem .85rem; }
+.stage-lbl { font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; }
+.stage-val { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--watch); font-weight: 500; }
+.header-reset { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; cursor: pointer; transition: color .2s; background: none; border: none; }
+.header-reset:hover { color: var(--gold); }
+
+/* ─ MAIN LAYOUT ─ */
+.body { flex: 1; display: grid; grid-template-columns: 1fr 340px; overflow: hidden; }
+
+/* ─ LEFT: DOMAINS ─ */
+.domains-area { overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+.domains-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+.domain-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 1.25rem; cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+}
+.domain-card:hover { background: var(--surface2); border-color: var(--border2); }
+.domain-card.expanded { border-color: var(--border2); background: var(--surface2); }
+.domain-card.stable { border-left: 3px solid var(--stable); }
+.domain-card.watch { border-left: 3px solid var(--watch); }
+.domain-card.alert { border-left: 3px solid var(--alert); }
+.domain-card.urgent { border-left: 3px solid var(--urgent); }
+.dc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .75rem; }
+.dc-name { font-family: 'DM Mono', monospace; font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted2); }
+.dc-status { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; padding: .18rem .45rem; border-radius: 1px; }
+.dc-status.stable { color: var(--stable); background: var(--stable-bg); border: 1px solid var(--stable-border); }
+.dc-status.watch { color: var(--watch); background: var(--watch-bg); border: 1px solid var(--watch-border); }
+.dc-status.alert { color: var(--alert); background: var(--alert-bg); border: 1px solid var(--alert-border); }
+.dc-status.urgent { color: var(--urgent); background: var(--urgent-bg); border: 1px solid var(--urgent-border); }
+.dc-domain { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; line-height: 1.1; }
+.dc-meta { display: flex; align-items: center; justify-content: space-between; }
+.dc-signals { font-family: 'DM Mono', monospace; font-size: .58rem; color: var(--muted); }
+.dc-lead { font-family: 'DM Mono', monospace; font-size: .56rem; color: var(--muted); text-align: right; }
+.dc-trend { font-size: 1rem; margin-top: .5rem; }
+.dc-trend.up { color: var(--stable); }
+.dc-trend.down { color: var(--alert); }
+.dc-trend.flat { color: var(--muted); }
+
+/* ─ DOMAIN DETAIL ─ */
+.domain-detail { background: var(--surface2); border: 1px solid var(--border2); margin-top: .5rem; padding: 1.25rem; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.dd-head { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .18em; color: var(--gold); text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: .75rem; }
+.dd-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.signal-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.25rem; }
+.signal-item { background: var(--surface); border: 1px solid var(--border); padding: .85rem 1rem; }
+.si-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .35rem; }
+.si-source { font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.si-sev { font-family: 'DM Mono', monospace; font-size: .52rem; padding: .15rem .35rem; }
+.si-sev.watch { color: var(--watch); background: var(--watch-bg); }
+.si-sev.alert { color: var(--alert); background: var(--alert-bg); }
+.si-sev.stable { color: var(--stable); background: var(--stable-bg); }
+.si-text { font-size: .82rem; color: var(--text2); line-height: 1.55; }
+.si-text strong { color: var(--text); font-weight: 500; }
+.dd-cascade { background: var(--surface); border: 1px solid var(--border); padding: 1rem; margin-bottom: 1.25rem; }
+.dd-cascade-lbl { font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .15em; color: var(--watch); text-transform: uppercase; margin-bottom: .6rem; }
+.cascade-path { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.cp-node { font-family: 'DM Mono', monospace; font-size: .6rem; padding: .2rem .5rem; border-radius: 1px; }
+.cp-node.origin { color: var(--alert); background: var(--alert-bg); border: 1px solid var(--alert-border); }
+.cp-node.next { color: var(--watch); background: var(--watch-bg); border: 1px solid var(--watch-border); }
+.cp-node.final { color: var(--muted); background: var(--surface); border: 1px solid var(--border); }
+.cp-arr { color: var(--muted); font-size: .7rem; }
+.dd-lead-box { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+.dl-item { flex: 1; background: var(--surface); border: 1px solid var(--border); padding: .75rem; }
+.dl-lbl { font-family: 'DM Mono', monospace; font-size: .52rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; margin-bottom: .4rem; }
+.dl-val { font-size: .85rem; color: var(--text); font-weight: 400; }
+.dl-val.warn { color: var(--watch); }
+.dd-cta { background: transparent; border: 1px solid rgba(184,148,63,.35); color: var(--gl); font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; padding: .75rem 1rem; cursor: pointer; transition: all .2s; width: 100%; text-align: center; }
+.dd-cta:hover { background: rgba(184,148,63,.1); border-color: var(--gold); }
+
+/* ─ BRIDGE BAR ─ */
+.bridge-bar {
+  background: var(--surface2); border: 1px solid rgba(184,148,63,.15);
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;
+  border-top: 1px solid rgba(184,148,63,.2);
+}
+.bridge-icon { font-size: .9rem; flex-shrink: 0; color: var(--gold); }
+.bridge-text { flex: 1; }
+.bridge-headline { font-size: .82rem; font-weight: 500; color: var(--text); margin-bottom: .2rem; }
+.bridge-sub { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .08em; color: var(--muted); }
+.bridge-btn { background: transparent; border: 1px solid rgba(184,148,63,.4); color: var(--gl); font-family: 'DM Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; padding: .55rem 1rem; cursor: pointer; transition: all .2s; flex-shrink: 0; }
+.bridge-btn:hover { background: rgba(184,148,63,.1); }
+
+/* ─ RIGHT: ALERTS ─ */
+.alerts-area { border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.alerts-header { padding: .9rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+.ah-title { font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .18em; color: var(--muted2); text-transform: uppercase; }
+.ah-count { font-family: 'DM Mono', monospace; font-size: .6rem; color: var(--alert); background: var(--alert-bg); border: 1px solid var(--alert-border); padding: .15rem .45rem; }
+.alerts-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.atab { flex: 1; padding: .65rem; font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-align: center; cursor: pointer; transition: all .2s; border-bottom: 2px solid transparent; }
+.atab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.alerts-feed { flex: 1; overflow-y: auto; padding: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+.alert-item { background: var(--surface); border: 1px solid var(--border); padding: .85rem 1rem; cursor: pointer; transition: all .15s; }
+.alert-item:hover { background: var(--surface2); border-color: var(--border2); }
+.ai-head { display: flex; align-items: center; gap: .5rem; margin-bottom: .4rem; }
+.ai-badge { font-family: 'DM Mono', monospace; font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; padding: .15rem .4rem; flex-shrink: 0; }
+.ai-badge.alert { color: var(--alert); background: var(--alert-bg); border: 1px solid var(--alert-border); }
+.ai-badge.watch { color: var(--watch); background: var(--watch-bg); border: 1px solid var(--watch-border); }
+.ai-badge.stable { color: var(--stable); background: var(--stable-bg); border: 1px solid var(--stable-border); }
+.ai-badge.info { color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--border); }
+.ai-domain { font-family: 'DM Mono', monospace; font-size: .52rem; letter-spacing: .1em; text-transform: uppercase; }
+.ai-domain.human { color: var(--human); }
+.ai-domain.intellectual { color: var(--intellectual); }
+.ai-domain.reputational { color: var(--reputational); }
+.ai-domain.political { color: var(--political); }
+.ai-domain.social { color: var(--social); }
+.ai-domain.financial { color: var(--financial); }
+.ai-time { font-family: 'DM Mono', monospace; font-size: .52rem; color: var(--muted); margin-left: auto; }
+.ai-text { font-size: .8rem; color: var(--text2); line-height: 1.5; }
+.ai-text strong { color: var(--text); font-weight: 500; }
+.ai-source { font-family: 'DM Mono', monospace; font-size: .52rem; color: var(--muted); margin-top: .3rem; }
+.alerts-footer { padding: .85rem 1.25rem; border-top: 1px solid var(--border); flex-shrink: 0; }
+.af-summary { font-size: .8rem; color: var(--text2); line-height: 1.55; }
+.af-summary strong { color: var(--text); }
+.af-cta { display: flex; gap: .5rem; margin-top: .75rem; }
+.af-btn { flex: 1; background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; padding: .6rem .5rem; cursor: pointer; transition: all .2s; text-align: center; }
+.af-btn:hover { border-color: var(--gold); color: var(--gold); }
+.af-btn.primary { border-color: rgba(184,148,63,.4); color: var(--gl); }
+.af-btn.primary:hover { background: rgba(184,148,63,.1); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border: 1px solid var(--border2); width: 560px; max-height: 80vh; overflow-y: auto; animation: mSlide .25s ease; }
+@keyframes mSlide { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-head { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text); }
+.modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: .25rem; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 1.5rem; }
+.modal-section { margin-bottom: 1.5rem; }
+.ms-label { font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .18em; color: var(--gold); text-transform: uppercase; margin-bottom: .6rem; display: flex; align-items: center; gap: .5rem; }
+.ms-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.ms-text { font-size: .87rem; color: var(--text2); line-height: 1.65; }
+.ms-text strong { color: var(--text); font-weight: 500; }
+.ms-text p { margin-bottom: .5rem; }
+.ms-text p:last-child { margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup">
+  <div class="setup-inner">
+    <div class="setup-logo">Capital Sentinel · SolveNext</div>
+    <h1 class="setup-title">Monitor the signals<br>financial reports <em>miss.</em></h1>
+    <p class="setup-sub">Capital Sentinel continuously scans publicly available signals across all six capital domains — with enough lead time to govern before erosion reaches your P&L.</p>
+    <div class="setup-form">
+      <div class="form-row">
+        <div class="form-label">Organization Name</div>
+        <input class="form-input" id="orgName" type="text" placeholder="Meridian Financial Group" value="Meridian Financial Group">
+      </div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <div class="form-label">Industry</div>
+          <select class="form-select" id="industry">
+            <option value="fs">Financial Services</option>
+            <option value="tech">Technology</option>
+            <option value="hc">Healthcare</option>
+            <option value="energy">Energy</option>
+            <option value="consumer">Consumer</option>
+            <option value="industrial">Industrial</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Organization Type</div>
+          <select class="form-select" id="subtype">
+            <option>Commercial Bank</option>
+            <option>Asset Management</option>
+            <option>Insurance</option>
+            <option>Fintech</option>
+          </select>
+        </div>
+      </div>
+      <button class="setup-btn" onclick="startScan()">
+        Initialize Scan &#8594;
+      </button>
+    </div>
+    <div class="setup-note">
+      Scans publicly available signals only — no internal data required.<br>
+      LinkedIn · Glassdoor · SEC/Regulatory filings · News sentiment · Patent activity · Earnings transcripts
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">Capital Sentinel</div>
+    <div class="header-sep"></div>
+    <div class="header-org">
+      <div class="header-org-name" id="hOrgName">Meridian Financial Group</div>
+      <div class="header-org-meta" id="hOrgMeta">Financial Services · Commercial Bank · US</div>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="scan-pulse">
+      <div class="scan-dot"></div>
+      <div class="scan-label">Live Scan</div>
+      <div class="scan-time" id="scanTime"></div>
+    </div>
+    <div class="header-sep"></div>
+    <div class="header-stage">
+      <div class="stage-lbl">Est. Stage</div>
+      <div class="stage-val">2 — Multi-Capital Aware</div>
+    </div>
+    <div class="header-sep"></div>
+    <button class="header-reset" onclick="resetToSetup()">← Change Org</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- LEFT: DOMAINS -->
+    <div class="domains-area">
+      <div class="domains-grid" id="domainsGrid">
+        <!-- injected by JS -->
+      </div>
+      <div class="bridge-bar">
+        <div class="bridge-icon">◈</div>
+        <div class="bridge-text">
+          <div class="bridge-headline">This signal pattern warrants deeper analysis</div>
+          <div class="bridge-sub">Human and Reputational signals showing correlated movement. Cascade risk to Intellectual and Political domains within 12–18 months without intervention.</div>
+        </div>
+        <button class="bridge-btn" onclick="showModal('briefing')">Request Briefing →</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: ALERTS -->
+    <div class="alerts-area">
+      <div class="alerts-header">
+        <div class="ah-title">Signal Feed</div>
+        <div class="ah-count" id="alertCount">3 Active</div>
+      </div>
+      <div class="alerts-tabs">
+        <div class="atab active">All Signals</div>
+        <div class="atab">Alerts Only</div>
+        <div class="atab">Weekly Digest</div>
+      </div>
+      <div class="alerts-feed" id="alertsFeed">
+        <!-- injected by JS -->
+      </div>
+      <div class="alerts-footer">
+        <div class="af-summary">
+          <strong>Summary:</strong> 3 active alerts across 2 capital domains. Financial capital shows stable lagging indicators — but upstream signals suggest Phase I erosion may be underway in Human and Reputational domains. <strong>Lead time to financial translation: 12–24 months</strong> if current signal patterns continue without governance intervention.
+        </div>
+        <div class="af-cta">
+          <button class="af-btn" onclick="showModal('digest')">Weekly Digest</button>
+          <button class="af-btn primary" onclick="showModal('briefing')">Request Deep Analysis</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const domains = [
+  {
+    id: 'human', name: 'Human Capital', status: 'watch', signals: 2,
+    lead: '12–36 month lead', trend: 'down', color: '#4a7fb5',
+    phase: 'Phase I — Accumulation',
+    description: 'Talent erosion initiates most cascade sequences. Upstream trigger for Intellectual Capital deterioration within 12–24 months if uncorrected.',
+    signalList: [
+      { source: 'LinkedIn', sev: 'watch', text: '<strong>Senior departure velocity elevated.</strong> 14 VP+ departures detected in trailing 90 days vs. 7 in prior period — a 100% increase. Pattern includes 3 engineering directors and 2 product VPs. Institutional knowledge concentration risk rising.' },
+      { source: 'Glassdoor / Indeed', sev: 'watch', text: '<strong>Employee rating trending down.</strong> Average rating declined from 3.8 to 3.4 over 3 consecutive quarters. Review NLP shows increasing frequency of terms: "cost-cutting," "leadership opacity," and "reduced investment." Positive cultural language declining.' },
+      { source: 'Earnings Transcript (Q3)', sev: 'alert', text: '<strong>Talent language shifted to defensive framing.</strong> NLP analysis of last 3 earnings calls shows transition from "investing in our people" to "optimizing workforce efficiency." Confidence score: 87%. Historical pattern: this shift precedes structured reduction events by 1–2 quarters.' },
+      { source: 'Job Posting Analysis', sev: 'watch', text: '<strong>Defensive skill demand increasing.</strong> 68% of new postings are backfill or efficiency roles vs. 42% in prior year period. Forward-looking skill postings (AI, growth, product) declined 32%. Organizational posture signal: increasingly defensive.' }
+    ],
+    cascade: ['Human Capital', 'Intellectual Capital', 'Reputational', 'Financial'],
+    cascadeStart: 0,
+    intervention: '$1× at Phase I · $5× at Phase II · $20× at Phase III · $100×+ at Phase IV',
+    actionLabel: 'Capital Exposure Briefing — 90 minutes, no internal data required'
+  },
+  {
+    id: 'intellectual', name: 'Intellectual Capital', status: 'stable', signals: 0,
+    lead: '18–48 month lead', trend: 'flat', color: '#7b6ab5',
+    phase: 'Stable — No Phase I signals detected',
+    description: 'R&D pipeline and capability development signals currently within normal range. No immediate governance action required. Monitor Human Capital — deterioration typically precedes Intellectual Capital erosion by 12–24 months.',
+    signalList: [
+      { source: 'USPTO Patent Monitor', sev: 'stable', text: '<strong>Patent filing velocity normal.</strong> Trailing 4-quarter filing rate consistent with 3-year baseline. Technology category distribution stable — no defensive category shift detected.' },
+      { source: 'Earnings Transcript', sev: 'stable', text: '<strong>Pipeline language intact.</strong> Product and capability language remains forward-looking in recent earnings. Innovation mentions stable. No defensive framing detected.' }
+    ],
+    cascade: ['Intellectual Capital', 'Reputational Capital', 'Financial'],
+    cascadeStart: 0,
+    intervention: 'No current intervention required. Human Capital monitoring recommended as leading upstream signal.',
+    actionLabel: 'Set quarterly alert threshold for R&D intensity and patent velocity'
+  },
+  {
+    id: 'reputational', name: 'Reputational Capital', status: 'alert', signals: 3,
+    lead: '6–12 month lead', trend: 'down', color: '#b5516a',
+    phase: 'Phase I → Phase II — Pattern active',
+    description: 'Mid-cascade accelerant. Sentiment erosion precedes revenue impact by 6–12 months. Fastest-moving capital domain. Current pattern shows correlated decline across 3 independent signal sources.',
+    signalList: [
+      { source: 'News Sentiment (90-day)', sev: 'alert', text: '<strong>3 consecutive quarters of sentiment decline.</strong> Coverage shifted from growth/innovation framing to risk/regulatory framing. Volume stable but tone ratio (positive:negative) declined from 3.2:1 to 1.8:1. 6 major outlet stories in trailing 30 days with regulatory framing.' },
+      { source: 'Analyst Coverage NLP', sev: 'alert', text: '<strong>Analyst language shifting.</strong> 4 of 6 covering analysts transitioned from "growth" to "value/defensive" framing in last 2 quarters. Research note language trend: increasing frequency of "headwinds," "uncertain," and "awaiting clarity." Historically precedes multiple compression by 2–3 quarters.' },
+      { source: 'Customer Review Platforms (12 sources)', sev: 'watch', text: '<strong>Aggregate customer sentiment declining.</strong> Cross-platform rating composite declined 0.4 points over 3 quarters. Review NLP shows increased "service quality" and "process" complaints — typical pattern when cost-cutting affects customer-facing quality investment.' }
+    ],
+    cascade: ['Reputational Capital', 'Political Capital', 'Social Capital', 'Financial'],
+    cascadeStart: 0,
+    intervention: 'Phase I/II boundary. 6–12 month window to financial translation. Governance intervention urgency: HIGH.',
+    actionLabel: 'Capital Exposure Briefing to map internal drivers of external signal deterioration'
+  },
+  {
+    id: 'political', name: 'Political Capital', status: 'watch', signals: 2,
+    lead: '18–60 month lead', trend: 'down', color: '#b58a3a',
+    phase: 'Phase I — Early Accumulation',
+    description: 'Erodes gradually, collapses suddenly at threshold. Typically 18–60 months lead time, but AI-era acceleration compresses this. Current signals suggest early-stage supervisory tone shift.',
+    signalList: [
+      { source: 'CFPB Regulatory Monitor', sev: 'watch', text: '<strong>Inquiry frequency increasing.</strong> 2 new CFPB inquiry letters detected in current quarter vs. 0 in prior 2 quarters. Pattern type: general inquiry (not enforcement) — consistent with Phase I supervisory attention increase. Historical correlation: general inquiries 18–24 months before formal action.' },
+      { source: 'Earnings Transcript NLP', sev: 'watch', text: '<strong>Regulatory language now dominates earnings discussion.</strong> Compliance and regulatory risk mentioned 4.2× more frequently than product innovation in Q3 vs. Q1. Framing shifted from "we work constructively with regulators" to "we are monitoring developments" — adversarial tone signal.' }
+    ],
+    cascade: ['Political Capital', 'Reputational Capital', 'Social Capital', 'Financial'],
+    cascadeStart: 0,
+    intervention: 'Phase I accumulation. 18–60 month window. Current intervention cost: 1×. Deferral cost trajectory: exponential.',
+    actionLabel: 'Capital Exposure Review — regulatory exposure mapping included'
+  },
+  {
+    id: 'social', name: 'Social Capital', status: 'stable', signals: 0,
+    lead: '24–60 month lead', trend: 'flat', color: '#3a9b6a',
+    phase: 'Stable — No Phase I signals detected',
+    description: 'Network and ecosystem trust. The hardest to score and most silently depleted. Currently no signals of partnership deterioration or ecosystem fragmentation. Monitor Reputational Capital as leading indicator.',
+    signalList: [
+      { source: 'Partnership Monitor (Press/News)', sev: 'stable', text: '<strong>Partnership announcements stable.</strong> No significant partnership termination signals detected. New partnership activity within normal range. Ecosystem actor behavior shows no alternative-seeking pattern.' }
+    ],
+    cascade: ['Social Capital', 'Reputational Capital', 'Political Capital', 'Financial'],
+    cascadeStart: 0,
+    intervention: 'No current intervention required. Monitor as downstream of Reputational and Political deterioration.',
+    actionLabel: 'Configure quarterly partnership activity alerts'
+  },
+  {
+    id: 'financial', name: 'Financial Capital', status: 'stable', signals: 1,
+    lead: 'Lagging indicator', trend: 'flat', color: '#5a9eb5',
+    phase: '⚠ Stable — but this is the lagging signal',
+    description: 'Financial capital is the LAST to show damage. A stable financial signal does not indicate organizational health — it indicates that upstream deterioration has not yet reached financial translation. Lead time from Phase I to financial impact: 12–60 months.',
+    signalList: [
+      { source: '10-K / Earnings Analysis', sev: 'watch', text: '<strong>R&D/Revenue ratio at 4-quarter low.</strong> R&D intensity declined from 8.2% to 7.1% of revenue over 4 quarters. This is a sub-signal within Financial Capital — one that correlates with Intellectual Capital deterioration 18–36 months ahead. Revenue and margin currently strong. Note: strong financial metrics are expected at this stage of cascade accumulation.' }
+    ],
+    cascade: ['Financial Capital is the cascade endpoint, not the origin'],
+    cascadeStart: 0,
+    intervention: '⚠ Warning: Governing on financial metrics alone means governing the last link in the chain. Phase I signals in Human and Reputational domains suggest cascade accumulation is already underway.',
+    actionLabel: 'Capital Exposure Diagnostic — 6 weeks, board-ready output, internal + external signal synthesis'
+  }
+];
+
+const alertData = [
+  { badge: 'alert', domain: 'reputational', domainLabel: 'Reputational', time: '2h ago', text: '<strong>Media sentiment pattern confirmed</strong> — 3 consecutive quarters of tone shift detected across 6 major outlets. Positive:negative ratio now 1.8:1, down from 3.2:1 twelve months ago.', source: 'News Sentiment Monitor' },
+  { badge: 'watch', domain: 'human', domainLabel: 'Human', time: '6h ago', text: '<strong>Senior departure velocity elevated.</strong> 14 VP+ departures in trailing 90 days — 100% above 12-month baseline. Engineering and product domains disproportionately represented.', source: 'LinkedIn Monitor' },
+  { badge: 'alert', domain: 'reputational', domainLabel: 'Reputational', time: '1d ago', text: '<strong>Analyst language shift detected.</strong> 4 of 6 covering analysts have transitioned to value/defensive framing. Research note NLP shows 40% increase in risk-related terminology over 2 quarters.', source: 'Analyst Coverage NLP' },
+  { badge: 'watch', domain: 'political', domainLabel: 'Political', time: '2d ago', text: '<strong>Regulatory inquiry frequency increased.</strong> 2 new CFPB inquiries this quarter vs. 0 in prior 2 quarters. Phase I supervisory attention signal. Historical lead: 18–24 months to formal action.', source: 'CFPB Regulatory Monitor' },
+  { badge: 'watch', domain: 'human', domainLabel: 'Human', time: '3d ago', text: '<strong>Earnings call talent language shifted to defensive framing.</strong> NLP analysis detects transition from investment to optimization language across Q1–Q3. Confidence score: 87%.', source: 'Earnings Transcript NLP' },
+  { badge: 'info', domain: 'financial', domainLabel: 'Financial', time: '5d ago', text: '<strong>R&D intensity at 4-quarter low</strong> (7.1% of revenue, down from 8.2%). Financial metrics stable. This is a lagging sub-signal — upstream capital signals currently carry higher governance weight.', source: '10-K Analysis' },
+  { badge: 'watch', domain: 'reputational', domainLabel: 'Reputational', time: '6d ago', text: '<strong>Customer review aggregate declining.</strong> Cross-platform composite down 0.4 points over 3 quarters. Service quality complaints increasing — consistent with cost-optimization affecting customer-facing investment.', source: 'Customer Review Monitor (12 platforms)' },
+  { badge: 'stable', domain: 'intellectual', domainLabel: 'Intellectual', time: '1w ago', text: '<strong>Patent velocity normal.</strong> Trailing 4-quarter filing rate within baseline. Technology category distribution stable. No defensive category shift detected.', source: 'USPTO Patent Monitor' }
+];
+
+const modalContent = {
+  briefing: {
+    title: 'Request a Capital Exposure Briefing',
+    body: `
+      <div class="modal-section">
+        <div class="ms-label">What This Is</div>
+        <div class="ms-text"><p>A prepared 90-minute facilitated conversation based on what Capital Sentinel has detected for <strong>Meridian Financial Group</strong>. We arrive with a one-page <strong>Preliminary Exposure Hypothesis</strong> — the internal drivers most likely producing the external signal patterns you're seeing.</p><p>No internal data required. No budget commitment. The hypothesis is what converts curiosity into a mandate.</p></div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-label">What Sentinel Has Found</div>
+        <div class="ms-text"><p><strong>Human Capital (Watch):</strong> Senior departure velocity +100%, Glassdoor declining, earnings language shifting to defensive framing.</p><p><strong>Reputational Capital (Alert):</strong> 3 independent signal sources showing correlated decline — media tone, analyst language, and customer platforms moving in the same direction simultaneously.</p><p><strong>Political Capital (Watch):</strong> Early-stage regulatory inquiry increase. Phase I supervisory attention signal.</p><p>Financial metrics are currently <strong>stable</strong> — which is expected at this phase. Lead time: 12–24 months to financial translation if current patterns continue without governance intervention.</p></div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-label">The Governing Question</div>
+        <div class="ms-text"><p>Are these signals independent events — or are they the Phase I accumulation of a capital cascade that will reach your P&L in 12–24 months?</p><p>The Capital Exposure Briefing answers that question in 90 minutes. The Capital Exposure Diagnostic gives you the full architecture to govern the answer.</p></div>
+      </div>
+      <div class="modal-section" style="background:var(--surface2);border:1px solid var(--border);padding:1rem;">
+        <div class="ms-label">Briefing Details</div>
+        <div class="ms-text"><p><strong>Format:</strong> 60–90 minute facilitated conversation</p><p><strong>Deliverable:</strong> Two-page Preliminary Exposure Hypothesis left with you</p><p><strong>Data Required:</strong> None — we work from public signals</p><p><strong>Price:</strong> Complimentary for organizations where Sentinel has detected active alert patterns</p></div>
+      </div>
+    `
+  },
+  digest: {
+    title: 'Weekly Capital Intelligence Digest',
+    body: `
+      <div class="modal-section">
+        <div class="ms-label">This Week — Meridian Financial Group</div>
+        <div class="ms-text"><p>Capital Sentinel detected <strong>7 signal movements</strong> across 4 of 6 capital domains this week. The most significant development: a confirmation of the correlated Reputational + Human signal pattern that began appearing 6 weeks ago.</p></div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-label">Signal Summary</div>
+        <div class="ms-text">
+          <p><strong>Reputational Capital (Alert):</strong> Analyst language shift now confirmed across 4 of 6 covering analysts. Combined with media sentiment decline, this moves the Reputational domain from Watch to Alert. This domain has a 6–12 month lead time to financial translation.</p>
+          <p><strong>Human Capital (Watch — sustained):</strong> Senior departure velocity remains elevated. No new escalation this week, but pattern is holding. Glassdoor rating decline continued for 3rd consecutive quarter. Watch status sustained.</p>
+          <p><strong>Political Capital (Watch — new):</strong> Second CFPB inquiry letter detected. Upgraded from Stable to Watch. Phase I supervisory attention pattern — 18–24 month typical lead time.</p>
+          <p><strong>Financial, Intellectual, Social Capital (Stable):</strong> No significant signal movements. Financial stability is expected at this cascade phase — it does not indicate that upstream signals should be dismissed.</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-label">Governing Interpretation</div>
+        <div class="ms-text"><p>Three capital domains are now showing Phase I accumulation signals. The correlation across Human, Reputational, and Political domains is the structural pattern described in Growth Gap research as <strong>multi-domain convergence</strong> — the point at which independent signals begin to look less like isolated events and more like evidence of an underlying governance gap.</p><p><strong>Recommended action:</strong> This pattern warrants a structured internal governance review within the next 60–90 days.</p></div>
+      </div>
+    `
+  }
+};
+
+// ── RENDER ──
+let expanded = null;
+
+function renderDomains() {
+  const grid = document.getElementById('domainsGrid');
+  grid.innerHTML = '';
+  domains.forEach(d => {
+    const card = document.createElement('div');
+    card.className = `domain-card ${d.status}`;
+    card.id = 'card-' + d.id;
+    card.onclick = () => toggleDomain(d.id);
+    card.innerHTML = `
+      <div class="dc-head">
+        <div class="dc-name">${d.id.charAt(0).toUpperCase() + d.id.slice(1)}</div>
+        <div class="dc-status ${d.status}">${d.status}</div>
+      </div>
+      <div class="dc-domain">${d.name}</div>
+      <div class="dc-meta">
+        <div class="dc-signals">${d.signals > 0 ? d.signals + ' signal' + (d.signals>1?'s':'') + ' active' : 'No active signals'}</div>
+        <div class="dc-lead">${d.lead}</div>
+      </div>
+      <div class="dc-trend ${d.trend}">${d.trend === 'down' ? '↘ Deteriorating' : d.trend === 'up' ? '↗ Improving' : '→ Stable'}</div>
+    `;
+    grid.appendChild(card);
+
+    // Detail panel (initially hidden)
+    const detail = document.createElement('div');
+    detail.id = 'detail-' + d.id;
+    detail.style.display = 'none';
+    detail.style.gridColumn = 'span 3';
+    detail.innerHTML = buildDetail(d);
+    grid.appendChild(detail);
+  });
+}
+
+function buildDetail(d) {
+  const signals = d.signalList.map(s => `
+    <div class="signal-item">
+      <div class="si-head">
+        <div class="si-source">${s.source}</div>
+        <div class="si-sev ${s.sev}">${s.sev.toUpperCase()}</div>
+      </div>
+      <div class="si-text">${s.text}</div>
+    </div>
+  `).join('');
+
+  const cascade = d.id === 'financial' ? 
+    `<div class="cp-node final">Financial is the endpoint — not the origin</div>` :
+    d.cascade.map((c, i) => `
+      ${i > 0 ? '<div class="cp-arr">→</div>' : ''}
+      <div class="cp-node ${i === 0 ? 'origin' : i < d.cascade.length - 1 ? 'next' : 'final'}">${c}</div>
+    `).join('');
+
+  return `
+    <div class="domain-detail">
+      <div class="dd-head">Signal Details — ${d.name}</div>
+      <div class="signal-list">${signals}</div>
+      <div class="dd-cascade">
+        <div class="dd-cascade-lbl">Cascade Risk Pathway</div>
+        <div class="cascade-path">${cascade}</div>
+      </div>
+      <div class="dd-lead-box">
+        <div class="dl-item">
+          <div class="dl-lbl">Phase</div>
+          <div class="dl-val ${d.status !== 'stable' ? 'warn' : ''}">${d.phase}</div>
+        </div>
+        <div class="dl-item">
+          <div class="dl-lbl">Intervention Cost</div>
+          <div class="dl-val warn">${d.id === 'financial' ? 'Phase IV — maximum cost' : '1× now vs 100×+ at Phase IV'}</div>
+        </div>
+      </div>
+      <button class="dd-cta" onclick="showModal('briefing')">Request Capital Exposure Briefing → 90 minutes · No data required · Complimentary</button>
+    </div>
+  `;
+}
+
+function toggleDomain(id) {
+  if (expanded === id) {
+    document.getElementById('detail-' + id).style.display = 'none';
+    document.getElementById('card-' + id).classList.remove('expanded');
+    expanded = null;
+  } else {
+    if (expanded) {
+      document.getElementById('detail-' + expanded).style.display = 'none';
+      document.getElementById('card-' + expanded).classList.remove('expanded');
+    }
+    document.getElementById('detail-' + id).style.display = 'block';
+    document.getElementById('card-' + id).classList.add('expanded');
+    expanded = id;
+    setTimeout(() => {
+      document.getElementById('detail-' + id).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+}
+
+function renderAlerts() {
+  const feed = document.getElementById('alertsFeed');
+  feed.innerHTML = alertData.map(a => `
+    <div class="alert-item" onclick="showModal('briefing')">
+      <div class="ai-head">
+        <div class="ai-badge ${a.badge}">${a.badge.toUpperCase()}</div>
+        <div class="ai-domain ${a.domain}">${a.domainLabel}</div>
+        <div class="ai-time">${a.time}</div>
+      </div>
+      <div class="ai-text">${a.text}</div>
+      <div class="ai-source">${a.source}</div>
+    </div>
+  `).join('');
+}
+
+// ── MODALS ──
+function showModal(key) {
+  const mc = modalContent[key];
+  if (!mc) return;
+  document.getElementById('modalTitle').textContent = mc.title;
+  document.getElementById('modalBody').innerHTML = mc.body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay') && !e.currentTarget.classList.contains('modal-close')) return;
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ── SETUP / SCAN ──
+function startScan() {
+  const name = document.getElementById('orgName').value || 'Organization';
+  const industry = document.getElementById('industry');
+  const sub = document.getElementById('subtype');
+  document.getElementById('hOrgName').textContent = name;
+  document.getElementById('hOrgMeta').textContent = industry.options[industry.selectedIndex].text + ' · ' + sub.value + ' · US';
+  document.getElementById('setup').classList.add('hidden');
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  setTimeout(() => app.classList.add('visible'), 50);
+  updateScanTime();
+  setInterval(updateScanTime, 60000);
+}
+
+function resetToSetup() {
+  document.getElementById('app').classList.remove('visible');
+  setTimeout(() => {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('setup').classList.remove('hidden');
+  }, 400);
+}
+
+function updateScanTime() {
+  const now = new Date();
+  document.getElementById('scanTime').textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+// ── INIT ──
+renderDomains();
+renderAlerts();
+</script>
+</body>
+</html>

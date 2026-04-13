@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital Exposure Map — Meridian Financial Group</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f2f1ec;color:#1a1a1a;font-size:14px;line-height:1.6}
+
+/* Layout */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:#1a1a2e;padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.main{padding:32px 40px;max-width:860px}
+
+/* Sidebar */
+.sb-logo{padding:0 20px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:16px}
+.sb-logo-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.9);letter-spacing:.08em;text-transform:uppercase}
+.sb-logo-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-section{padding:0 12px;margin-bottom:8px}
+.sb-section-head{font-size:9px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;padding:0 8px;margin-bottom:6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .12s}
+.sb-item:hover{background:rgba(255,255,255,.07)}
+.sb-item.active{background:rgba(59,139,221,.25)}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-text{font-size:12px;color:rgba(255,255,255,.75);line-height:1.3}
+.sb-item.active .sb-text{color:#fff}
+.sb-divider{height:1px;background:rgba(255,255,255,.08);margin:12px 12px}
+.sb-meta{padding:16px 20px 0;border-top:1px solid rgba(255,255,255,.08);margin-top:auto}
+.sb-meta-row{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:3px}
+
+/* Page header */
+.page-eyebrow{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.page-title{font-size:24px;font-weight:600;color:#1a1a2e;margin-bottom:4px;line-height:1.2}
+.page-sub{font-size:13px;color:#666;margin-bottom:28px}
+
+/* Section */
+.section{display:none}
+.section.active{display:block}
+.section-head{font-size:16px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+.section-desc{font-size:13px;color:#666;margin-bottom:20px;line-height:1.5}
+
+/* Stage card */
+.stage-card{background:#fff;border:1px solid #e0dfd8;border-radius:10px;padding:20px 24px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start}
+.stage-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.stage-name{font-size:18px;font-weight:600;color:#1a1a2e;margin-bottom:8px}
+.stage-desc{font-size:12px;color:#555;line-height:1.5}
+.stage-bar{display:flex;gap:4px;margin-top:12px}
+.stage-seg{height:6px;flex:1;border-radius:2px}
+.stage-num{font-size:40px;font-weight:700;color:#2E5090;line-height:1}
+.stage-num-label{font-size:10px;color:#888;text-align:center;margin-top:4px}
+
+/* Finding summary */
+.finding-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.finding-card{background:#fff;border:1px solid #e0dfd8;border-radius:8px;padding:14px 16px}
+.fc-num{font-size:9px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.fc-title{font-size:12px;font-weight:600;color:#1a1a2e;margin-bottom:5px;line-height:1.3}
+.fc-psc{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.psc-chip{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:500}
+.fc-domain{font-size:10px;color:#888}
+.fc-phase{font-size:10px;padding:2px 7px;border-radius:3px;margin-top:6px;display:inline-block;font-weight:500}
+
+/* Capital map */
+.cap-map{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.cap-row{background:#fff;border:1px solid #e0dfd8;border-radius:8px;padding:14px 18px;cursor:pointer;transition:border-color .15s}
+.cap-row:hover{border-color:#85B7EB}
+.cap-row.expanded{border-color:#2E5090}
+.cap-row-top{display:grid;grid-template-columns:180px 1fr 100px 90px;gap:12px;align-items:center}
+.cap-name{font-size:13px;font-weight:600;color:#1a1a2e}
+.cap-role{font-size:10px;color:#888;margin-top:1px}
+.cap-bar-wrap{display:flex;flex-direction:column;gap:4px}
+.cap-bar-track{height:5px;background:#f0f0ee;border-radius:3px;overflow:hidden}
+.cap-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.cap-phase-badge{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:600;text-align:center;white-space:nowrap}
+.cap-lead{font-size:10px;color:#888;text-align:right}
+.cap-detail{margin-top:12px;padding-top:12px;border-top:1px solid #f0f0ee;display:none;grid-template-columns:1fr 1fr;gap:16px}
+.cap-row.expanded .cap-detail{display:grid}
+.cd-head{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.cd-signal{font-size:11px;color:#444;padding:3px 0;border-bottom:1px solid #f5f5f3;line-height:1.4}
+.cd-signal:last-child{border-bottom:none}
+.cd-signal.sig-warn::before{content:"→ ";color:#B07A14}
+.cd-signal.sig-ok::before{content:"✓ ";color:#2E7D4F}
+
+/* Problem sections */
+.problem-block{background:#fff;border:1px solid #e0dfd8;border-radius:10px;margin-bottom:16px;overflow:hidden}
+.pb-header{padding:16px 20px 14px;border-bottom:1px solid #f0f0ee;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
+.pb-num{font-size:9px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.pb-title{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+.pb-phase{font-size:11px;padding:3px 10px;border-radius:4px;font-weight:500;white-space:nowrap}
+.pb-body{padding:16px 20px}
+.pb-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
+.pb-col-head{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.pb-from{padding:10px 14px;border-radius:6px;background:#FEF4F4;border-left:3px solid #E24B4A}
+.pb-to{padding:10px 14px;border-radius:6px;background:#F0F9F4;border-left:3px solid #3B9E6A}
+.from-to-text{font-size:12px;color:#444;line-height:1.5}
+.pb-steps-head{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.pb-steps{display:flex;flex-direction:column;gap:6px}
+.step-row{display:flex;gap:10px;align-items:flex-start}
+.step-num{width:20px;height:20px;border-radius:50%;background:#2E5090;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:#444;line-height:1.5;padding-top:1px}
+
+/* Action plan */
+.action-horizon{margin-bottom:20px}
+.ah-head{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+.ah-sub{font-size:12px;color:#888;margin-bottom:10px}
+.action-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.action-card{border:1px solid #e0dfd8;border-radius:7px;padding:12px 14px;background:#fff}
+.ac-owner{font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.ac-action{font-size:12px;font-weight:500;color:#1a1a2e;margin-bottom:5px;line-height:1.4}
+.ac-outcome{font-size:11px;color:#666;line-height:1.4}
+.ac-domain{font-size:10px;padding:2px 7px;border-radius:3px;display:inline-block;margin-top:5px;font-weight:500}
+.divider{height:1px;background:#e8e7e0;margin:24px 0}
+.confidential-bar{background:#1a1a2e;color:rgba(255,255,255,.4);font-size:10px;text-align:center;padding:8px;margin-top:40px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">Capital Exposure Map</div>
+    <div class="sb-logo-sub">Meridian Financial Group</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-head">Report sections</div>
+    <div class="sb-item active" onclick="show('summary')">
+      <div class="sb-dot" style="background:#378ADD"></div>
+      <div class="sb-text">Executive summary</div>
+    </div>
+    <div class="sb-item" onclick="show('capitals')">
+      <div class="sb-dot" style="background:#9FE1CB"></div>
+      <div class="sb-text">Capital health map</div>
+    </div>
+    <div class="sb-item" onclick="show('findings')">
+      <div class="sb-dot" style="background:#F09977"></div>
+      <div class="sb-text">Active problem findings</div>
+    </div>
+    <div class="sb-item" onclick="show('actions')">
+      <div class="sb-dot" style="background:#C0DD97"></div>
+      <div class="sb-text">90-day governance actions</div>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-section-head">Active problems</div>
+    <div class="sb-item" onclick="show('findings')">
+      <div class="sb-dot" style="background:#F09977"></div>
+      <div class="sb-text">01 — AI governance gap</div>
+    </div>
+    <div class="sb-item" onclick="show('findings')">
+      <div class="sb-dot" style="background:#F09977"></div>
+      <div class="sb-text">02 — Human capital snowmelt</div>
+    </div>
+    <div class="sb-item" onclick="show('findings')">
+      <div class="sb-dot" style="background:#FAEEDA;color:#633806"></div>
+      <div class="sb-text">07 — Political capital neglect</div>
+    </div>
+  </div>
+
+  <div class="sb-meta">
+    <div class="sb-meta-row">Diagnostic completed: April 2026</div>
+    <div class="sb-meta-row">Prepared by: Solve Next</div>
+    <div class="sb-meta-row">Confidential — Board distribution only</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="page-eyebrow">Solve Next · Growth Gap Diagnostic</div>
+  <div class="page-title">Capital Exposure Map</div>
+  <div class="page-sub">Meridian Financial Group · Six-week diagnostic engagement · April 2026</div>
+
+  <!-- SECTION: SUMMARY -->
+  <div class="section active" id="section-summary">
+    <div class="section-head">Executive summary</div>
+    <div class="section-desc">This report presents the findings of a six-week Growth Gap Diagnostic conducted with the executive leadership team of Meridian Financial Group. The diagnostic assessed capital health across all six capital domains, determined the organization's governance maturity stage, identified active cascade phases per domain, and produced governance action priorities for the board.</div>
+
+    <div class="stage-card">
+      <div>
+        <div class="stage-label">Capital Symmetry Stage</div>
+        <div class="stage-name">Stage 2 — Emerging Capital Awareness</div>
+        <div class="stage-desc">Financial capital is governed with discipline and sophistication. Three of the five non-financial capital domains show Phase I or Phase II accumulation signals. No single domain has yet reached Phase III threshold — but two are within 12–18 months of financial translation unless governance action is taken. The organization is financially strong. Its governance architecture is governing approximately 10% of what determines that strength.</div>
+        <div class="stage-bar">
+          <div class="stage-seg" style="background:#378ADD"></div>
+          <div class="stage-seg" style="background:#2E5090"></div>
+          <div class="stage-seg" style="background:#e0dfd8"></div>
+          <div class="stage-seg" style="background:#e0dfd8"></div>
+          <div class="stage-seg" style="background:#e0dfd8"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span style="font-size:9px;color:#888">Stage 1 · Financial dominant</span>
+          <span style="font-size:9px;color:#888">Stage 5 · Endurance enabled</span>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div class="stage-num">2</div>
+        <div class="stage-num-label">of 5</div>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-bottom:12px">Three active problems identified</div>
+    <div class="finding-grid">
+      <div class="finding-card" style="border-top:3px solid #D85A30">
+        <div class="fc-num">Problem 01</div>
+        <div class="fc-title">AI deployed into ungoverned capital system</div>
+        <div class="fc-psc">
+          <span class="psc-chip" style="background:#FCEBEB;color:#A32D2D">Prevalent</span>
+          <span class="psc-chip" style="background:#FAEEDA;color:#633806">Severe</span>
+          <span class="psc-chip" style="background:#EAF3DE;color:#27500A">Costly</span>
+        </div>
+        <div class="fc-domain">Intellectual · Human · Political capital</div>
+        <div class="fc-phase" style="background:#EEEDFE;color:#3C3489">Phase I accumulation</div>
+      </div>
+      <div class="finding-card" style="border-top:3px solid #D85A30">
+        <div class="fc-num">Problem 02</div>
+        <div class="fc-title">Human capital snowmelt in technology and risk functions</div>
+        <div class="fc-psc">
+          <span class="psc-chip" style="background:#FCEBEB;color:#A32D2D">Prevalent</span>
+          <span class="psc-chip" style="background:#FAEEDA;color:#633806">Severe</span>
+          <span class="psc-chip" style="background:#EAF3DE;color:#27500A">Costly</span>
+        </div>
+        <div class="fc-domain">Human → Intellectual capital cascade</div>
+        <div class="fc-phase" style="background:#FBEAF0;color:#72243E">Phase II propagation</div>
+      </div>
+      <div class="finding-card" style="border-top:3px solid #BA7517">
+        <div class="fc-num">Problem 07</div>
+        <div class="fc-title">Political capital neglect under AI regulatory pressure</div>
+        <div class="fc-psc">
+          <span class="psc-chip" style="background:#FCEBEB;color:#A32D2D">Prevalent</span>
+          <span class="psc-chip" style="background:#FAEEDA;color:#633806">Severe</span>
+          <span class="psc-chip" style="background:#EAF3DE;color:#27500A">Costly</span>
+        </div>
+        <div class="fc-domain">Political capital, 18–60 month lead time</div>
+        <div class="fc-phase" style="background:#FAEEDA;color:#633806">Phase I — crystallising</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-head" style="margin-bottom:8px">Primary finding</div>
+    <div style="background:#fff;border:1px solid #e0dfd8;border-left:4px solid #2E5090;border-radius:8px;padding:16px 20px;font-size:13px;color:#333;line-height:1.65">
+      Meridian's financial capital is strong and will remain so in the near term. The growth gap is visible in three capital domains — human, intellectual, and political — where erosion has been accumulating without governance visibility for an estimated 18–36 months. The AI deployment program approved in Q3 2024 is the primary accelerant: it is creating intellectual capital dependency, consuming human capital in functions where institutional knowledge loss is not being governed, and accumulating political capital exposure in the EU and UK markets where regulatory frameworks are actively crystallising. The corrective cost of addressing these conditions at their current Phase I and II stage is approximately one-tenth of what it will cost if allowed to reach Phase III threshold — which, at current trajectory, is 12–18 months away in the human capital domain.
+    </div>
+  </div>
+
+  <!-- SECTION: CAPITALS -->
+  <div class="section" id="section-capitals">
+    <div class="section-head">Capital health map</div>
+    <div class="section-desc">Each capital domain is assessed for current phase, trajectory, and leading signals. Click any domain to expand signals. Financial capital is the output layer — it is last to show damage. The five leading capitals above it are the governance priority.</div>
+
+    <div class="cap-map">
+
+      <!-- Human -->
+      <div class="cap-row" onclick="toggleCap(this)">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name">Human capital</div>
+            <div class="cap-role">Upstream cascade trigger — 12–36 month lead</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:38%;background:#E24B4A"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#FBEAF0;color:#72243E">Phase II · Propagating</div>
+          <div class="cap-lead">Lead: 12–36 mo</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Erosion signals detected</div>
+            <div class="cd-signal sig-warn">Regretted attrition in technology +31% year-on-year, concentrated in engineers with 5+ years institutional knowledge</div>
+            <div class="cd-signal sig-warn">Offer rejection rate in quantitative risk roles increased from 18% to 41% in 18 months</div>
+            <div class="cd-signal sig-warn">Engagement declining in risk and compliance functions — two consecutive quarterly pulse surveys below threshold</div>
+            <div class="cd-signal sig-warn">Time-to-fill for senior technology roles extended from 8 to 19 weeks — knowledge loss not being recovered at hiring pace</div>
+          </div>
+          <div>
+            <div class="cd-head">Governance infrastructure gap</div>
+            <div class="cd-signal sig-warn">No formal regretted attrition tracking — total attrition only, which masks the specialist concentration</div>
+            <div class="cd-signal sig-warn">No designated governance owner for human capital health with board-level reporting authority</div>
+            <div class="cd-signal sig-warn">Learning and development budget reduced 22% in FY2024 margin improvement programme — not yet reversed</div>
+            <div class="cd-signal sig-ok">Compensation benchmarking completed Q4 2024 — findings not yet actioned</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intellectual -->
+      <div class="cap-row" onclick="toggleCap(this)">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name">Intellectual capital</div>
+            <div class="cap-role">Second in cascade — 18–48 month lead</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:52%;background:#EF9F27"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#FAEEDA;color:#633806">Phase I · Accumulating</div>
+          <div class="cap-lead">Lead: 18–48 mo</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Accumulation signals</div>
+            <div class="cd-signal sig-warn">AI model dependency emerging in customer service and credit decisioning — human override capability not formally maintained</div>
+            <div class="cd-signal sig-warn">Three senior engineers who built core risk platform departed in 18 months — encoding of their knowledge not completed before departure</div>
+            <div class="cd-signal sig-warn">Proprietary advantage in regulatory technology thinning — two specialist firms now matching capability Meridian built over seven years</div>
+            <div class="cd-signal sig-ok">R&D investment as % of revenue stable — but allocation to forward-looking capability reduced vs defensive modernisation</div>
+          </div>
+          <div>
+            <div class="cd-head">Governance infrastructure gap</div>
+            <div class="cd-signal sig-warn">No explicit governance boundary between AI-assisted and human-judgment tasks in critical decisioning systems</div>
+            <div class="cd-signal sig-warn">No intellectual capital impact assessment in AI deployment decisions — financial ROI only</div>
+            <div class="cd-signal sig-warn">No board-level visibility of intellectual capital trajectory — treated as operational, not governance</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reputational -->
+      <div class="cap-row" onclick="toggleCap(this)">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name">Reputational capital</div>
+            <div class="cap-role">Mid-cascade accelerant — 12–36 month lead</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:68%;background:#639922"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#EAF3DE;color:#27500A">Stable · Monitor</div>
+          <div class="cap-lead">Lead: 12–36 mo</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Current condition</div>
+            <div class="cd-signal sig-ok">NPS trajectory stable — Q1 2026 reading in line with three-year average</div>
+            <div class="cd-signal sig-ok">Customer retention rates consistent — no material deterioration in prior 12 months</div>
+            <div class="cd-signal sig-warn">Employer brand declining on Glassdoor and LinkedIn — driven by technology function sentiment. Not yet affecting customer-facing reputation</div>
+            <div class="cd-signal sig-warn">One minor AI model error event in Q4 2025 managed quietly. Not yet externally visible. No post-incident governance review conducted.</div>
+          </div>
+          <div>
+            <div class="cd-head">Watch conditions</div>
+            <div class="cd-signal sig-warn">No formal reputational capital trajectory monitoring — incidents managed reactively, cumulative direction not governed</div>
+            <div class="cd-signal sig-warn">AI deployment decisions do not include reputational capital impact assessment or model failure response architecture</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Political -->
+      <div class="cap-row" onclick="toggleCap(this)">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name">Political capital</div>
+            <div class="cap-role">Regulatory relationships — 18–60 month lead</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:44%;background:#EF9F27"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#FAEEDA;color:#633806">Phase I · Crystallising</div>
+          <div class="cap-lead">Lead: 18–60 mo</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Exposure accumulating</div>
+            <div class="cd-signal sig-warn">EU AI Act obligations materialise Q1 2027. Current AI deployment in consumer credit and insurance pricing products creates high-risk classification exposure not yet formally assessed</div>
+            <div class="cd-signal sig-warn">FCA supervisory tone shifting in two direct engagements in 2025 — more pointed, less collaborative. Not yet escalated internally</div>
+            <div class="cd-signal sig-warn">Government affairs capacity has not increased proportionally with AI deployment pace — last headcount review 2022</div>
+          </div>
+          <div>
+            <div class="cd-head">Governance infrastructure gap</div>
+            <div class="cd-signal sig-warn">No formal political capital assessment by jurisdiction — single global government affairs function without differentiated market analysis</div>
+            <div class="cd-signal sig-warn">AI deployment decisions include no political capital impact assessment — financial ROI and operational compliance only</div>
+            <div class="cd-signal sig-ok">UK regulatory relationship well-maintained historically — reserve exists but is being drawn on without replenishment</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social -->
+      <div class="cap-row" onclick="toggleCap(this)">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name">Social capital</div>
+            <div class="cap-role">Ecosystem and partnership trust — 24–60 month lead</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:74%;background:#1D9E75"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#EAF3DE;color:#27500A">Stable</div>
+          <div class="cap-lead">Lead: 24–60 mo</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Current condition</div>
+            <div class="cd-signal sig-ok">Key institutional partnerships stable — three long-term alliance relationships renewed without material renegotiation in 2025</div>
+            <div class="cd-signal sig-ok">Industry association standing strong — active in two working groups relevant to AI governance</div>
+          </div>
+          <div>
+            <div class="cd-head">Watch</div>
+            <div class="cd-signal sig-warn">AI workforce displacement affecting 340 roles in 2025. Community and workforce relations not formally assessed as capital domain</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial -->
+      <div class="cap-row" onclick="toggleCap(this)" style="border-color:#B4B2A9">
+        <div class="cap-row-top">
+          <div>
+            <div class="cap-name" style="color:#5F5E5A">Financial capital</div>
+            <div class="cap-role" style="color:#999">Output layer — lagging indicator</div>
+          </div>
+          <div class="cap-bar-wrap">
+            <div style="font-size:10px;color:#888;margin-bottom:3px">Health trajectory</div>
+            <div class="cap-bar-track" style="width:200px">
+              <div class="cap-bar-fill" style="width:82%;background:#888780"></div>
+            </div>
+          </div>
+          <div class="cap-phase-badge" style="background:#F1EFE8;color:#444441">Output layer</div>
+          <div class="cap-lead" style="color:#aaa">Lagging</div>
+        </div>
+        <div class="cap-detail">
+          <div>
+            <div class="cd-head">Current financial condition</div>
+            <div class="cd-signal sig-ok">Revenue £4.2B — up 8% year-on-year. Operating margin 24.1%, within guidance range</div>
+            <div class="cd-signal sig-ok">Cost of capital stable. Credit rating maintained at A2. No material covenant events</div>
+            <div class="cd-signal sig-warn">Margin improvement achieved partly through L&D and headcount reductions that are consuming human capital not reflected in financial metrics</div>
+          </div>
+          <div>
+            <div class="cd-head">The governance implication</div>
+            <div class="cd-signal sig-warn">Financial capital is the last domain to show damage. Current strength does not indicate substrate health. The Growth Gap condition is active: financial output is strong while the leading capital domains that produce it are eroding.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: FINDINGS -->
+  <div class="section" id="section-findings">
+    <div class="section-head">Active problem findings</div>
+    <div class="section-desc">Three problems were confirmed as active through the diagnostic investigation. Each is documented with the current state that should produce dissatisfaction, the governed state that Capital Symmetry Governance makes possible, and the major steps that connect them.</div>
+
+    <!-- Problem 01 -->
+    <div class="problem-block">
+      <div class="pb-header">
+        <div>
+          <div class="pb-num">Problem 01 · Prevalent · Severe · Costly</div>
+          <div class="pb-title">AI deployed into an ungoverned capital system</div>
+          <div style="font-size:12px;color:#666;margin-top:4px">Domains affected: Intellectual capital · Human capital · Political capital</div>
+        </div>
+        <div class="pb-phase" style="background:#EEEDFE;color:#3C3489">Phase I accumulation</div>
+      </div>
+      <div class="pb-body">
+        <div class="pb-cols">
+          <div>
+            <div class="pb-col-head">Current state — dissatisfaction is warranted</div>
+            <div class="pb-from">
+              <div class="from-to-text">The AI deployment programme was approved on a financial return model. That model projected 60% reduction in cost-per-interaction within 18 months. It did not include a capital cost assessment across the five non-financial domains. The human capital consumed as roles were automated — including engineers with 5+ years of system knowledge — departed before knowledge transfer was complete. The intellectual capital dependency now created means the organisation cannot fully evaluate, correct, or override its own AI systems without the people it no longer employs. The political capital exposure in the EU and UK from deployments in high-risk AI Act categories has not been formally assessed. No single governance instrument connects these three conditions.</div>
+            </div>
+          </div>
+          <div>
+            <div class="pb-col-head">Governed state — what Capital Symmetry Governance makes possible</div>
+            <div class="pb-to">
+              <div class="from-to-text">Before any significant AI initiative is approved, a multi-capital impact assessment is a required governance input. Human capital: which capabilities are being replaced versus augmented, and what is the knowledge transfer plan? Intellectual capital: what dependency is being created, and how is the organisation's capacity to govern, evaluate, and override its AI systems being maintained? Political capital: what regulatory exposure is being accumulated in each jurisdiction, and what proactive engagement is proportional to the stakes? The deployment decision is made with full capital visibility. The organisation deploys faster over time because it deploys with confidence rather than concealed exposure.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-steps-head">Major steps the diagnostic recommends</div>
+        <div class="pb-steps">
+          <div class="step-row"><div class="step-num">1</div><div class="step-text">Map the current AI deployment portfolio against the six capital domains — for each active initiative, identify which capitals are being consumed, which are being built, and which are exposed without governance.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text">Assess the intellectual capital governance gap: designate a governance owner for the boundary between AI-assisted and human-judgment tasks; assess model dependency in credit decisioning and customer service as the most acute current exposure points.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text">Commission a jurisdiction-by-jurisdiction political capital assessment for EU and UK AI Act obligations materialising Q1 2027 — treat this as a capital investment decision, not a compliance project.</div></div>
+          <div class="step-row"><div class="step-num">4</div><div class="step-text">Establish a multi-capital impact gate for AI deployments above a defined scope threshold, with a required assessment before deployment authority is invoked — not after.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 02 -->
+    <div class="problem-block">
+      <div class="pb-header">
+        <div>
+          <div class="pb-num">Problem 02 · Prevalent · Severe · Costly</div>
+          <div class="pb-title">Human capital snowmelt in technology and risk functions</div>
+          <div style="font-size:12px;color:#666;margin-top:4px">Domains: Human capital → Intellectual capital cascade in progress</div>
+        </div>
+        <div class="pb-phase" style="background:#FBEAF0;color:#72243E">Phase II propagation</div>
+      </div>
+      <div class="pb-body">
+        <div class="pb-cols">
+          <div>
+            <div class="pb-col-head">Current state — dissatisfaction is warranted</div>
+            <div class="pb-from">
+              <div class="from-to-text">Total attrition is within the range the board considers acceptable. Regretted attrition — the departures the organisation would have prevented — is running at 31% above prior year in technology, concentrated in engineers with 5 or more years of institutional knowledge. Three of the four engineers who built Meridian's core risk platform have departed in 18 months. The knowledge embedded in that platform is not fully documented. The L&D budget was reduced by 22% in the FY2024 margin improvement programme. The compensation benchmarking completed Q4 2024 identified a 15–28% gap to market in senior technology roles. That finding has not been actioned. The governance system describes this as a manageable HR situation. It is a Phase II capital cascade in progress.</div>
+            </div>
+          </div>
+          <div>
+            <div class="pb-col-head">Governed state — what Capital Symmetry Governance makes possible</div>
+            <div class="pb-to">
+              <div class="from-to-text">Human capital is governed as a leading indicator with the same institutional rigor as financial capital. Regretted attrition is tracked separately from total attrition, with a designated governance owner and board-level reporting cadence. The conditions that predict regretted attrition — specialist engagement, compensation competitiveness, psychological safety signals, institutional knowledge concentration — are monitored quarterly. When those conditions deteriorate, the governance system produces a signal that routes to decision authority before the departure occurs. Human capital investment decisions — including L&D and compensation — are evaluated as capital building decisions with explicit cascade cost modelling, not as cost lines competing against near-term financial thresholds.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-steps-head">Major steps the diagnostic recommends</div>
+        <div class="pb-steps">
+          <div class="step-row"><div class="step-num">1</div><div class="step-text">Separate regretted attrition from total attrition immediately and report it as a formal governance metric with quarterly board visibility — this single action changes what the governance system can see.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text">Commission an institutional knowledge risk assessment for the core risk platform and the AI deployment architecture: identify where critical knowledge is concentrated in individuals rather than embedded in systems, and assess the replacement timeline if those individuals depart.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text">Act on the Q4 2024 compensation benchmarking findings within 90 days — the cost of inaction in the 12 months since that finding is already visible in the attrition pattern.</div></div>
+          <div class="step-row"><div class="step-num">4</div><div class="step-text">Restore and ring-fence the L&D investment — evaluate restoration as a capital building decision (cascade cost avoided) rather than a budget cost (overhead).</div></div>
+          <div class="step-row"><div class="step-num">5</div><div class="step-text">Designate a human capital governance owner with explicit authority to escalate to board level when regretted attrition in any critical domain exceeds a defined threshold.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 07 -->
+    <div class="problem-block">
+      <div class="pb-header">
+        <div>
+          <div class="pb-num">Problem 07 · Prevalent · Severe · Costly</div>
+          <div class="pb-title">Political capital neglect under AI regulatory pressure</div>
+          <div style="font-size:12px;color:#666;margin-top:4px">Domain: Political capital — 18–60 month lead time to regulatory crystallisation</div>
+        </div>
+        <div class="pb-phase" style="background:#FAEEDA;color:#633806">Phase I — crystallising</div>
+      </div>
+      <div class="pb-body">
+        <div class="pb-cols">
+          <div>
+            <div class="pb-col-head">Current state — dissatisfaction is warranted</div>
+            <div class="pb-from">
+              <div class="from-to-text">Meridian has deployed AI in consumer credit decisioning and insurance pricing — both product categories classified as high-risk under the EU AI Act, with conformity assessment obligations materialising Q1 2027. The current assessment of EU AI Act readiness has not been formally completed. The government affairs function has not grown proportionally to deployment pace since its last resourcing review in 2022. Two direct FCA supervisory engagements in 2025 shifted in tone — more pointed, less collaborative — and that shift has not been formally escalated or assessed as a political capital signal. The organisation has a historically strong UK regulatory relationship. It is drawing on that reserve without replenishing it.</div>
+            </div>
+          </div>
+          <div>
+            <div class="pb-col-head">Governed state — what Capital Symmetry Governance makes possible</div>
+            <div class="pb-to">
+              <div class="from-to-text">Political capital is governed as a leading indicator with a designated governance owner, a defined monitoring cadence, and a signal routing mechanism that connects regulatory environment changes to allocation decisions in advance of crystallisation. The specific leading indicators tracked — FCA supervisory tone, EU AI Act compliance trajectory, policy consultation participation, cross-jurisdictional regulatory development — are reviewed at executive and board level on a governance cadence that provides meaningful lead time before enforcement. AI deployment decisions include a political capital impact assessment in each jurisdiction where the deployment is material. The organisation that invests in political capital on the same cadence it invests in financial capital retains its operating model when the regulatory environment crystallises.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-steps-head">Major steps the diagnostic recommends</div>
+        <div class="pb-steps">
+          <div class="step-row"><div class="step-num">1</div><div class="step-text">Commission an EU AI Act conformity assessment for the consumer credit and insurance pricing AI deployments within 60 days — Q1 2027 is 11 months away and the conformity assessment process takes 4–6 months minimum.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text">Formally assess the FCA supervisory tone shift from the 2025 engagements as a political capital signal — present findings to board within 30 days with a proposed proactive engagement response.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text">Review government affairs capacity against current AI deployment footprint — the 2022 resourcing model predates the AI programme and is not proportional to the political capital investment required.</div></div>
+          <div class="step-row"><div class="step-num">4</div><div class="step-text">Establish a quarterly political capital signal governance cadence with board-level reporting — define which leading indicators are tracked in each jurisdiction, at what frequency, and what threshold triggers executive escalation.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: ACTIONS -->
+  <div class="section" id="section-actions">
+    <div class="section-head">90-day governance actions</div>
+    <div class="section-desc">The following actions are sequenced by urgency and corrective cost leverage. Actions in the first 30 days address the conditions closest to Phase III threshold. Actions in days 31–90 build the governance infrastructure that makes the diagnostic's findings actionable on an ongoing basis.</div>
+
+    <div class="action-horizon">
+      <div class="ah-head">Days 1–30 · Immediate threshold actions</div>
+      <div class="ah-sub">These actions address conditions at or near Phase III threshold. Delay compounds corrective cost.</div>
+      <div class="action-cards">
+        <div class="action-card" style="border-left:3px solid #E24B4A">
+          <div class="ac-owner">CEO + CHRO</div>
+          <div class="ac-action">Commission institutional knowledge risk assessment for core risk platform</div>
+          <div class="ac-outcome">Identify where critical knowledge is concentrated in individuals who have departed or are at risk of departing. Produces a specific list of knowledge gaps and a transfer plan.</div>
+          <div class="ac-domain" style="background:#FBEAF0;color:#72243E">Human capital · Phase II</div>
+        </div>
+        <div class="action-card" style="border-left:3px solid #E24B4A">
+          <div class="ac-owner">CFO + CHRO</div>
+          <div class="ac-action">Act on Q4 2024 compensation benchmarking within 45 days</div>
+          <div class="ac-outcome">The 15–28% compensation gap to market in senior technology roles is the primary mechanical driver of current regretted attrition. The finding is 5 months old. Every month of inaction is a departure decision the organisation has not yet seen.</div>
+          <div class="ac-domain" style="background:#FBEAF0;color:#72243E">Human capital · Phase II</div>
+        </div>
+        <div class="action-card" style="border-left:3px solid #E24B4A">
+          <div class="ac-owner">CTO + General Counsel</div>
+          <div class="ac-action">Commission EU AI Act conformity assessment — consumer credit and insurance pricing</div>
+          <div class="ac-outcome">Q1 2027 obligations materialise in 11 months. Conformity assessment takes 4–6 months minimum. Beginning now gives the organisation time to remediate before enforcement, not after.</div>
+          <div class="ac-domain" style="background:#FAEEDA;color:#633806">Political capital · Phase I</div>
+        </div>
+        <div class="action-card" style="border-left:3px solid #E24B4A">
+          <div class="ac-owner">CEO + Board Chair</div>
+          <div class="ac-action">Present FCA supervisory tone assessment to board</div>
+          <div class="ac-outcome">The 2025 engagement tone shift has not been escalated. Formal board visibility produces accountability and a proactive response design — before the regulatory relationship reaches adversarial threshold.</div>
+          <div class="ac-domain" style="background:#FAEEDA;color:#633806">Political capital · Phase I</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-horizon">
+      <div class="ah-head">Days 31–60 · Governance infrastructure</div>
+      <div class="ah-sub">These actions install the measurement and routing mechanisms that make capital health governable on an ongoing basis.</div>
+      <div class="action-cards">
+        <div class="action-card">
+          <div class="ac-owner">CHRO</div>
+          <div class="ac-action">Implement formal regretted attrition tracking — separate from total attrition</div>
+          <div class="ac-outcome">This single governance change makes the human capital signal system legible. Without it, the board will continue governing a total attrition number that masks the specialist concentration where cascade risk is live.</div>
+          <div class="ac-domain" style="background:#FBEAF0;color:#72243E">Human capital</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">CTO</div>
+          <div class="ac-action">Establish the AI intellectual capital governance boundary</div>
+          <div class="ac-outcome">Define which decisions in credit, insurance, and customer service require human judgment rather than AI output. Document how the organisation maintains the capacity to evaluate, correct, and override its AI systems. Assign a governance owner.</div>
+          <div class="ac-domain" style="background:#EEEDFE;color:#3C3489">Intellectual capital</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">CEO + CFO</div>
+          <div class="ac-action">Design the multi-capital impact gate for AI deployments</div>
+          <div class="ac-outcome">Define the scope threshold above which a multi-capital assessment is a required governance input before deployment authority is invoked. Specify the five assessment questions, the required governance owner input, and the board reporting format.</div>
+          <div class="ac-domain" style="background:#E6F1FB;color:#0C447C">All six capitals</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">CFO + CHRO</div>
+          <div class="ac-action">Restore L&D budget — model as capital building, not overhead</div>
+          <div class="ac-outcome">Present the restoration decision to the board using cascade cost modelling: what does the 22% reduction cost at Phase II compared to the cost of restoration? The financial case is stronger than the cost line suggests.</div>
+          <div class="ac-domain" style="background:#FBEAF0;color:#72243E">Human capital</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-horizon">
+      <div class="ah-head">Days 61–90 · Governance cadence installation</div>
+      <div class="ah-sub">These actions establish the ongoing governance rhythm that sustains capital health visibility between advisory sessions.</div>
+      <div class="action-cards">
+        <div class="action-card">
+          <div class="ac-owner">CEO + Board</div>
+          <div class="ac-action">Designate capital governance owners for each domain</div>
+          <div class="ac-outcome">Each capital domain requires a designated governance owner with explicit board-level reporting authority. Human capital: CHRO. Intellectual capital: CTO. Reputational capital: CCO. Political capital: General Counsel / Government Affairs. Financial capital: CFO.</div>
+          <div class="ac-domain" style="background:#E6F1FB;color:#0C447C">All six capitals</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">Board Chair + CEO</div>
+          <div class="ac-action">Establish quarterly capital health governance cadence</div>
+          <div class="ac-outcome">Define what the board sees, at what frequency, in what format, and with what decision authority for each capital domain. The capital health review precedes the financial metrics review — because capital health describes whether financial metrics are sustainable.</div>
+          <div class="ac-domain" style="background:#E6F1FB;color:#0C447C">Governance infrastructure</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">Government Affairs + CTO</div>
+          <div class="ac-action">Establish political capital signal monitoring by jurisdiction</div>
+          <div class="ac-outcome">Define which leading indicators are tracked in UK and EU markets, at what frequency, with what routing to the board, and what threshold triggers executive escalation. Proactive FCA engagement designed as part of the cadence, not in response to events.</div>
+          <div class="ac-domain" style="background:#FAEEDA;color:#633806">Political capital</div>
+        </div>
+        <div class="action-card">
+          <div class="ac-owner">All governance owners</div>
+          <div class="ac-action">First capital health review — board session</div>
+          <div class="ac-outcome">The governance cadence becomes real when the board conducts its first review using the new capital health framework. The director's question — are we actually getting stronger? — now has an infrastructure for the answer.</div>
+          <div class="ac-domain" style="background:#EAF3DE;color:#27500A">Governance cadence</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="confidential-bar">Capital Exposure Map · Meridian Financial Group · Prepared by Solve Next · April 2026 · Confidential — Board distribution only</div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach((el,i)=>{
+    el.classList.toggle('active',['summary','capitals','findings','actions'][i]===id);
+  });
+}
+function toggleCap(row){
+  row.classList.toggle('expanded');
+}
+</script>
+</body>
+</html>

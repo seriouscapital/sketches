@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth Gap Diagnostic — Three Views</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9f9f7;color:#1a1a1a;padding:24px;font-size:14px}
+h1{font-size:20px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+.doc-sub{font-size:13px;color:#666;margin-bottom:20px}
+
+/* Mode tabs */
+.mode-tabs{display:flex;gap:0;border:1px solid #d8d7d0;border-radius:8px;overflow:hidden;margin-bottom:20px;max-width:600px}
+.mode-tab{flex:1;padding:10px 14px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;background:#fff;color:#666;border-right:1px solid #d8d7d0;transition:all .15s}
+.mode-tab:last-child{border-right:none}
+.mode-tab.active{background:#E6F1FB;color:#0C447C}
+.mode-tab:hover:not(.active){background:#f4f4f2}
+
+.view{display:none}
+.view.active{display:block}
+.hint{font-size:11px;color:#999;margin-bottom:12px;font-style:italic}
+
+/* ── PROCESS VIEW ── */
+.process-wrap{display:flex;flex-direction:column;gap:0;overflow-x:auto}
+.phase-header{display:grid;grid-template-columns:72px 1fr;min-width:700px}
+.phase-label-cell{padding:8px 10px;font-size:10px;font-weight:500;color:#888;display:flex;align-items:center;background:#f4f4f2;border:1px solid #e0dfd8;border-right:none}
+.weeks-row{display:flex;flex:1}
+.week-cell{flex:1;border:1px solid #e0dfd8;border-left:none;padding:10px 10px 12px;cursor:pointer;transition:background .12s;min-width:120px}
+.week-cell:hover{background:#f4f4f2}
+.week-cell.selected{background:#E6F1FB;border-color:#85B7EB;border-left:1px solid #85B7EB}
+.week-cell.selected + .week-cell{border-left:none}
+.week-num{font-size:10px;color:#999;margin-bottom:4px;font-weight:500}
+.week-name{font-size:12px;font-weight:600;color:#1a1a2e;margin-bottom:5px;line-height:1.3}
+.week-who{font-size:10px;color:#666;padding:2px 6px;border-radius:3px;background:#f0f0ee;display:inline-block}
+
+.detail-panel{border:1px solid #d8d7d0;border-radius:8px;padding:18px 20px;margin-top:10px;min-height:180px;background:#fff}
+.detail-empty{color:#bbb;font-size:13px;padding:20px 0}
+.detail-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #eee}
+.detail-badge{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600}
+.detail-title{font-size:15px;font-weight:600;color:#1a1a2e}
+.detail-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.dc-head{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.dc-item{font-size:12px;color:#444;padding:4px 0;line-height:1.5;border-bottom:1px solid #f0f0ee}
+.dc-item:last-child{border-bottom:none}
+.dc-output{padding:4px 8px;border-radius:3px;font-size:11px;margin-bottom:4px;display:block;font-weight:500}
+.dc-note{padding:10px 12px;border-radius:6px;background:#f8f8f6;font-size:12px;color:#555;line-height:1.6}
+
+/* ── EXPERIENCE VIEW ── */
+.exp-wrap{display:flex;flex-direction:column;gap:12px}
+.exp-stage{display:grid;grid-template-columns:170px 1fr;border:1px solid #e0dfd8;border-radius:8px;overflow:hidden;background:#fff}
+.exp-left{padding:14px 16px;border-right:1px solid #e0dfd8;display:flex;flex-direction:column;justify-content:center}
+.exp-role{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.exp-moment{font-size:13px;font-weight:600;color:#1a1a2e;line-height:1.3;margin-bottom:7px}
+.exp-timing{font-size:10px;color:#888;padding:2px 7px;border-radius:3px;background:#f0f0ee;display:inline-block}
+.exp-right{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.exp-col-head{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.ef{font-size:11px;padding:5px 8px;border-radius:4px;line-height:1.4;margin-bottom:4px}
+.ef-n{background:#FCEBEB;color:#A32D2D}
+.ef-m{background:#FAEEDA;color:#633806}
+.ef-p{background:#EAF3DE;color:#27500A}
+.ef-g{background:#F1EFE8;color:#444441}
+
+/* ── RHYTHM VIEW ── */
+.rhythm-wrap{display:flex;flex-direction:column;gap:14px}
+.rhythm-band{border:1px solid #e0dfd8;border-radius:8px;overflow:hidden;background:#fff}
+.rhythm-head{padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0dfd8;background:#fafaf8}
+.rhythm-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.rhythm-label{font-size:13px;font-weight:600;color:#1a1a2e}
+.rhythm-sub{font-size:11px;color:#888;margin-left:auto}
+.rhythm-body{padding:12px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rhythm-cell{border:1px solid #e0dfd8;border-radius:6px;padding:10px 12px;background:#fff}
+.rhythm-period{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.rhythm-activity{font-size:11px;color:#555;line-height:1.5;margin-bottom:7px}
+.rhythm-del{font-size:10px;padding:3px 7px;border-radius:3px;display:inline-block;font-weight:500}
+</style>
+</head>
+<body>
+
+<h1>The Growth Gap Diagnostic — Three Views</h1>
+<p class="doc-sub">For the Solve Next Colombia team · April 2026 · Click the tabs to switch views</p>
+
+<div class="mode-tabs">
+  <div class="mode-tab active" onclick="setMode('process')">Six-week process</div>
+  <div class="mode-tab" onclick="setMode('experience')">Client experience arc</div>
+  <div class="mode-tab" onclick="setMode('rhythm')">Life after the diagnostic</div>
+</div>
+
+<!-- PROCESS -->
+<div class="view active" id="view-process">
+  <p class="hint">Click any week to see activities, participants, and deliverables.</p>
+  <div class="process-wrap">
+    <div class="phase-header">
+      <div class="phase-label-cell">All phases</div>
+      <div class="weeks-row" id="week-cells"></div>
+    </div>
+  </div>
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-empty">Select a week above to see details.</div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="view" id="view-experience">
+  <p class="hint">The diagnostic from the client's perspective — what they carry in, and what shifts.</p>
+  <div class="exp-wrap" id="exp-grid"></div>
+</div>
+
+<!-- RHYTHM -->
+<div class="view" id="view-rhythm">
+  <p class="hint">What the relationship looks like after the diagnostic closes — month by month, quarter by quarter.</p>
+  <div class="rhythm-wrap" id="rhythm-grid"></div>
+</div>
+
+<script>
+const weeks=[
+  {id:0,num:"Week 0",name:"Pre-engagement",who:"Greg + Dani",bg:"#F1EFE8",color:"#444441",phase:"Setup",
+   acts:["Engagement charter drafted","Confidentiality agreement signed","Scope confirmed to one business unit","CFO awareness secured","Data access permissions clarified"],
+   people:["CEO or engagement sponsor","CFO (awareness only)","Dani leads intake","Greg reviews charter"],
+   outputs:[{t:"Engagement charter",bg:"#F1EFE8",c:"#444441"},{t:"Scope confirmation memo",bg:"#F1EFE8",c:"#444441"}],
+   note:"Never begin without CFO awareness. If CFO is unaware, the close will stall at retainer conversion — because the CFO is the decision authority for governance investment."},
+  {id:1,num:"Week 1",name:"Executive alignment",who:"Greg leads",bg:"#E6F1FB",color:"#0C447C",phase:"Ignition",
+   acts:["90-minute executive session","Capital system framing presented","Problem door confirmed from symptom checklist","Portfolio scope locked","Interview list agreed","Communication protocol set"],
+   people:["CEO","CFO","Business unit leader","Greg presents","Dani takes notes and manages room"],
+   outputs:[{t:"Agreed interview list",bg:"#E6F1FB",c:"#0C447C"},{t:"Capital system map (shared)",bg:"#E6F1FB",c:"#0C447C"},{t:"Problem hypothesis (internal)",bg:"#E6F1FB",c:"#0C447C"}],
+   note:"Secure executive protection for candor before interviews begin. Opening frame: 'This is about structural exposure, not personal accountability.' Without it, interview subjects manage their answers."},
+  {id:2,num:"Weeks 2–3",name:"Executive interviews",who:"Greg + Dani",bg:"#EEEDFE",color:"#3C3489",phase:"Investigation",
+   acts:["10–15 structured interviews (45–60 min each)","Creation exposure questions","Protection exposure questions","Liberation exposure questions","Governance architecture questions","AI exposure mapping"],
+   people:["Senior leaders across functions","CHRO, CIO/CTO, COO, CSO","Business unit heads","Not HR generalists or middle management"],
+   outputs:[{t:"Interview transcripts (AI-processed)",bg:"#EEEDFE",c:"#3C3489"},{t:"Exposure theme clusters",bg:"#EEEDFE",c:"#3C3489"},{t:"Capital domain signal map (draft)",bg:"#EEEDFE",c:"#3C3489"}],
+   note:"Do not debate answers. Capture patterns. If three or more interviewees name the same domain without prompting, that is a cascade signal — not an anecdote. The aggregate is the finding."},
+  {id:3,num:"Weeks 3–4",name:"Portfolio data review",who:"Dani leads",bg:"#FBEAF0",color:"#72243E",phase:"Investigation",
+   acts:["10–20 initiatives sampled","Capital contribution scored 1–5","Capital risk scored 1–5","Capital need scored 1–5","Impact = Contribution – Avg(Risk + Need)","AI deployment mapping","Zombie initiative identification"],
+   people:["Strategy team (data provision)","Finance (allocation data)","Dani and Greg synthesize","No client-facing sessions this week"],
+   outputs:[{t:"Portfolio allocation snapshot",bg:"#FBEAF0",c:"#72243E"},{t:"Capital impact scoring",bg:"#FBEAF0",c:"#72243E"},{t:"Zombie capital estimate range",bg:"#FBEAF0",c:"#72243E"}],
+   note:"Precision is not the goal. Directionality is. A CFO who sees that 40% of capital is in declining-return initiatives does not need a decimal-precise model to find that credible and urgent."},
+  {id:4,num:"Week 5",name:"Synthesis",who:"Internal only",bg:"#FAEEDA",color:"#633806",phase:"Synthesis",
+   acts:["Capital Exposure Score produced","Cascade phase determined per domain (I–IV)","Stage determination (1–5)","From/to transformation framed per problem","PSC urgency argument built","Retainer scope drafted from findings"],
+   people:["Greg and Dani only","No client contact this week","AI assists: transcript synthesis, pattern detection, board memo draft"],
+   outputs:[{t:"Capital Exposure Map (draft)",bg:"#FAEEDA",c:"#633806"},{t:"Stage determination",bg:"#FAEEDA",c:"#633806"},{t:"Close-out deck (draft)",bg:"#FAEEDA",c:"#633806"},{t:"Retainer scope memo",bg:"#FAEEDA",c:"#633806"}],
+   note:"Maintain tone throughout: calm, structural, inevitable. Avoid alarm. The urgency argument is the Phase and the corrective cost curve — not drama. The CFO will respect precision; they will dismiss theatrics."},
+  {id:5,num:"Week 6",name:"Executive readout",who:"Greg leads",bg:"#EAF3DE",color:"#1A5C38",phase:"Close",
+   acts:["90-minute readout: CEO + CFO + Board rep","Recognition arc: we found what you recognized","Capital Exposure Map presented","From/to transformation per active problem","PSC urgency argument per domain","90-day governance action priorities","Retainer proposed and scoped"],
+   people:["CEO","CFO (critical)","Board representative if available","Greg presents","Dani manages room dynamics and retainer conversation"],
+   outputs:[{t:"Board-ready Capital Exposure Map",bg:"#EAF3DE",c:"#1A5C38"},{t:"Governance action priorities (90-day)",bg:"#EAF3DE",c:"#1A5C38"},{t:"Retainer proposal (leave behind)",bg:"#EAF3DE",c:"#1A5C38"}],
+   note:"The readout follows the arc: recognition → diagnosis → transformation → path. A presentation that delivers finding without transformation will not convert. The CFO must leave with a governance instrument, not a report."}
+];
+
+const exps=[
+  {role:"Before first contact",moment:"Carrying the unease",timing:"Pre-diagnostic",bg:"#F1EFE8",rc:"#5F5E5A",
+   ins:["Something is off but has no name","Financial results look strong — so what?","Specific anxiety about talent, regulation, or fragility","No governance instrument for the feeling","Cannot bring it to the board without a framework"],
+   outs:["Still carrying it — recognition hasn't happened yet","The financial governance system is confirming their strength","The question the director asked has no answer","The unease is accurate; the framework doesn't exist yet"]},
+  {role:"Entry conversation",moment:"Recognition",timing:"First contact — symptom checklist",bg:"#E6F1FB",rc:"#185FA5",
+   ins:["Sceptical: is this another framework?","Protective: I don't want this to become a witch hunt","Cautious: who else has seen this?","Quietly relieved: someone is naming something"],
+   outs:["Three or more symptoms checked = the problem has a structure","Something shifts from vague anxiety to specific recognition","The recognition frame did what an explanation could not","The leader now has a name for what they have been carrying"]},
+  {role:"Week 1 — alignment",moment:"The mandate tension surfaces",timing:"Days 1–5",bg:"#EEEDFE",rc:"#533AB7",
+   ins:["CEO and CFO in the same room with a new frame","CEO: finally a language for what I sense but cannot report","CFO: sceptical — show me where this connects to financial exposure","Both: testing whether this will embarrass or serve them"],
+   outs:["Scope agreed without defensiveness — framed as structural, not personal","CFO is watching for financial credibility","CEO is watching for confirmation of what they sense","Both leave with a question, not a conclusion: what will we find?"]},
+  {role:"Interviews — weeks 2–3",moment:"The organization speaks",timing:"Days 6–21",bg:"#FBEAF0",rc:"#993556",
+   ins:["Interview subjects: cautious and politically aware","Some speak freely — they have been waiting for this","Some are guarded — they fear what will be found","The aggregate pattern is not visible to any single person"],
+   outs:["The most honest conversations the organization has had about capital health","The pattern the CEO sensed but could not name is becoming visible","Specific domains named by multiple people independently","The cascade hypothesis is forming before synthesis begins"]},
+  {role:"Close-out readout — week 6",moment:"The picture arrives",timing:"Days 36–42",bg:"#FAEEDA",rc:"#854F0B",
+   ins:["CEO: anxious — what did we find?","CFO: analytical — will this be financially defensible?","Board rep: fiduciary — what does this mean for oversight?","All three: prepared to receive difficult information"],
+   outs:["The Capital Exposure Map makes visible what the financial system cannot","The from/to arc gives the finding direction, not just diagnosis","The PSC urgency argument makes the case for acting now","The CFO has a governance instrument — not just a report","The CEO can finally answer: yes, we can see whether we're getting stronger"]},
+  {role:"Retainer decision",moment:"Architecture or report?",timing:"Days 43–60",bg:"#EAF3DE",rc:"#1A5C38",
+   ins:["Do we act on this or file it?","CFO: does this have financial credibility?","CEO: does this match what I sense?","Budget authority: is this in the governance budget or do we need to find it?"],
+   outs:["Convert: finding was specific, steps are concrete, scope matches the diagnostic","Partial: they want to act but need 90 days to secure internal budget","Do not convert: urgency argument did not land — revisit in one quarter","The retainer is the architecture; without it the diagnostic is a report"]}
+];
+
+const rhythms=[
+  {label:"The diagnostic engagement",sub:"Weeks 0–6",dot:"#185FA5",
+   periods:[
+    {p:"Weeks 0–1",a:"Charter, alignment, scope confirmed, problem door identified",d:"Engagement charter",bg:"#E6F1FB",c:"#0C447C"},
+    {p:"Weeks 2–3",a:"10–15 structured interviews across senior leadership team",d:"Interview signal map",bg:"#EEEDFE",c:"#3C3489"},
+    {p:"Weeks 3–4",a:"Portfolio data sampled, capital impact scored across 10–20 initiatives",d:"Exposure snapshot",bg:"#FBEAF0",c:"#72243E"},
+    {p:"Weeks 5–6",a:"Synthesis, close-out readout, retainer proposed with scoped deliverables",d:"Capital Exposure Map",bg:"#EAF3DE",c:"#1A5C38"}
+   ]},
+  {label:"Months 1–3 · Governance installation",sub:"Retainer begins",dot:"#854F0B",
+   periods:[
+    {p:"Month 1",a:"Governor role defined and assigned. Governance cadence established. Board reporting format agreed.",d:"Governance design doc",bg:"#FAEEDA",c:"#633806"},
+    {p:"Month 2",a:"First capital health review. Leading indicators baselined per domain. Signal routing tested.",d:"Baseline capital health",bg:"#FAEEDA",c:"#633806"},
+    {p:"Month 3",a:"First liberation proposal reviewed. One governance action completed. Dashboard configured.",d:"First liberation decision",bg:"#FAEEDA",c:"#633806"},
+    {p:"Between sessions",a:"Dani-led 30-min check. Progress on governance actions reviewed. New signals logged.",d:"Signal check memo",bg:"#F1EFE8",c:"#444441"}
+   ]},
+  {label:"Quarterly governance cadence",sub:"Every 90 days — sustained governance",dot:"#533AB7",
+   periods:[
+    {p:"Month before",a:"Governor prepares capital health summary. Leading indicators pulled. Anomalies flagged.",d:"Pre-session brief",bg:"#EEEDFE",c:"#3C3489"},
+    {p:"Quarterly session",a:"Capital health reviewed domain by domain. Allocation decisions surfaced. Liberation proposals made.",d:"Quarterly capital review",bg:"#EEEDFE",c:"#3C3489"},
+    {p:"Month after",a:"Governance actions from session tracked. Dani monitors progress. New exposure signals logged.",d:"Action tracker",bg:"#EEEDFE",c:"#3C3489"},
+    {p:"Board prep",a:"Board-ready capital health summary produced. CFO briefed. Director's question can now be answered.",d:"Board capital brief",bg:"#EEEDFE",c:"#3C3489"}
+   ]},
+  {label:"Annual full reassessment",sub:"12 months post-diagnostic",dot:"#1A5C38",
+   periods:[
+    {p:"Pre-work",a:"Stage re-determination across all six domains. Year-on-year capital health comparison produced.",d:"Stage reassessment",bg:"#EAF3DE",c:"#1A5C38"},
+    {p:"Full session",a:"Full capital health review with executive team. Year-on-year progress named. New problem doors identified.",d:"Annual capital report",bg:"#EAF3DE",c:"#1A5C38"},
+    {p:"Retainer renewal",a:"Governance architecture assessed for upgrades. Dashboard evolved. Next 12 months scoped.",d:"Retainer renewal brief",bg:"#EAF3DE",c:"#1A5C38"},
+    {p:"Governor circle",a:"Governor identity formalized. Referral conversation opened. Client becomes proof of concept.",d:"Governor designation",bg:"#EAF3DE",c:"#1A5C38"}
+   ]}
+];
+
+let sel=null;
+
+function renderWeeks(){
+  document.getElementById('week-cells').innerHTML=weeks.map((w,i)=>`
+    <div class="week-cell${sel===i?' selected':''}" onclick="pick(${i})">
+      <div class="week-num">${w.num}</div>
+      <div class="week-name">${w.name}</div>
+      <div class="week-who">${w.who}</div>
+    </div>`).join('');
+}
+
+function pick(i){
+  sel=i; renderWeeks();
+  const w=weeks[i];
+  document.getElementById('detail-panel').innerHTML=`
+    <div class="detail-head">
+      <div class="detail-badge" style="background:${w.bg};color:${w.color}">${w.num} · ${w.name}</div>
+      <div class="detail-title">${w.phase} phase</div>
+    </div>
+    <div class="detail-body">
+      <div>
+        <div class="dc-head">Activities</div>
+        ${w.acts.map(a=>`<div class="dc-item">${a}</div>`).join('')}
+      </div>
+      <div>
+        <div class="dc-head">In the room</div>
+        ${w.people.map(p=>`<div class="dc-item">${p}</div>`).join('')}
+        <div style="margin-top:12px">
+          <div class="dc-head">Outputs</div>
+          ${w.outputs.map(o=>`<span class="dc-output" style="background:${o.bg};color:${o.c}">${o.t}</span>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="dc-head">Practitioner note</div>
+        <div class="dc-note">${w.note}</div>
+      </div>
+    </div>`;
+}
+
+function renderExp(){
+  document.getElementById('exp-grid').innerHTML=exps.map(e=>`
+    <div class="exp-stage">
+      <div class="exp-left" style="background:${e.bg}">
+        <div class="exp-role" style="color:${e.rc}">${e.role}</div>
+        <div class="exp-moment">${e.moment}</div>
+        <div class="exp-timing">${e.timing}</div>
+      </div>
+      <div class="exp-right">
+        <div>
+          <div class="exp-col-head">What they carry in</div>
+          ${e.ins.map((x,i)=>`<div class="ef ${i<2?'ef-n':'ef-m'}">${x}</div>`).join('')}
+        </div>
+        <div>
+          <div class="exp-col-head">What shifts</div>
+          ${e.outs.map((x,i)=>`<div class="ef ${i>1?'ef-p':'ef-m'}">${x}</div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderRhythm(){
+  document.getElementById('rhythm-grid').innerHTML=rhythms.map(b=>`
+    <div class="rhythm-band">
+      <div class="rhythm-head">
+        <div class="rhythm-dot" style="background:${b.dot}"></div>
+        <div class="rhythm-label">${b.label}</div>
+        <div class="rhythm-sub">${b.sub}</div>
+      </div>
+      <div class="rhythm-body">
+        ${b.periods.map(p=>`
+          <div class="rhythm-cell">
+            <div class="rhythm-period" style="color:${p.c}">${p.p}</div>
+            <div class="rhythm-activity">${p.a}</div>
+            <span class="rhythm-del" style="background:${p.bg};color:${p.c}">${p.d}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function setMode(m){
+  document.querySelectorAll('.mode-tab').forEach((t,i)=>t.classList.toggle('active',['process','experience','rhythm'][i]===m));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+m).classList.add('active');
+}
+
+renderWeeks(); renderExp(); renderRhythm();
+</script>
+</body>
+</html>

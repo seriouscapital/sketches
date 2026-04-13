@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Pain Point Validation Guide v4 — Solve Next</title>
+<style>
+:root {
+  --pink: #ff0099;
+  --black: #000000;
+  --white: #ffffff;
+  --navy: #333399;
+  --gray: #8a8a8f;
+  --light-gray: #f2f2f2;
+  /* SVA dimension colours */
+  --wanted: #c2185b;
+  --doable: #333399;
+  --worthit: #2e7d32;
+  --wanted-light: #fce4ec;
+  --doable-light: #e8eaf6;
+  --worthit-light: #e8f5e9;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--white);
+  color: var(--black);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── COVER ── */
+.cover {
+  background: var(--black);
+  color: var(--white);
+  padding: 60px 60px 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: end;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: var(--pink);
+  opacity: 0.08;
+}
+.cover-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 20px;
+  grid-column: 1 / -1;
+}
+.cover-title {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.cover-title span { color: var(--pink); }
+.cover-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 14px;
+}
+.cover-subtitle {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.75);
+}
+.cover-meta {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 14px;
+}
+
+/* ── NAV STRIP ── */
+.nav-strip {
+  background: var(--pink);
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.nav-strip span {
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 13px 22px;
+  border-right: 1px solid rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+.nav-strip span.active { background: rgba(0,0,0,0.15); }
+
+/* ── SECTIONS ── */
+.section { padding: 52px 60px; border-bottom: 1px solid #eee; }
+.section-alt { background: var(--light-gray); }
+.section-dark { background: var(--black); color: var(--white); }
+
+.section-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 10px;
+}
+.section-dark .section-tag { color: rgba(255,255,255,0.65); }
+
+.section-title {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.section-dark .section-title span { color: var(--pink); }
+
+.lead {
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.6;
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+.section-dark .lead { color: rgba(255,255,255,0.85); }
+
+p {
+  font-size: 15px;
+  line-height: 1.75;
+  max-width: 700px;
+  margin-bottom: 14px;
+  color: #222;
+}
+.section-dark p { color: rgba(255,255,255,0.75); max-width: 700px; }
+
+/* ── PULLQUOTE ── */
+.pullquote {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  border-left: 6px solid var(--pink);
+  padding-left: 26px;
+  margin: 36px 0;
+  max-width: 680px;
+  color: var(--black);
+}
+.section-dark .pullquote { color: var(--white); }
+
+/* ── GRIDS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 36px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+
+/* ── CARDS ── */
+.card { background: var(--white); border: 1px solid #e0e0e0; padding: 24px 22px; }
+.card-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 24px 22px; }
+.card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pink); margin-bottom: 8px; }
+.card-dark .card-label { color: rgba(255,255,255,0.65); }
+.card-title { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 10px; text-transform: uppercase; }
+.card-dark .card-title { color: var(--white); }
+.card-body { font-size: 13px; line-height: 1.65; color: #444; max-width: none; margin-bottom: 0; }
+.card-dark .card-body { color: rgba(255,255,255,0.7); }
+
+/* ── STAT BLOCKS ── */
+.stat-block { border-top: 4px solid var(--pink); padding-top: 18px; }
+.stat-number { font-size: 52px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--pink); }
+.stat-label { font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--gray); margin-top: 6px; max-width: none; margin-bottom: 0; }
+
+/* ── CTX TABLE ── */
+.ctx-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ctx-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 11px 16px; background: var(--black); color: var(--white); }
+.ctx-table td { padding: 13px 16px; border-bottom: 1px solid #e8e8e8; vertical-align: top; line-height: 1.55; color: #222; max-width: none; margin: 0; }
+.ctx-table td:first-child { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); background: #fafafa; white-space: nowrap; width: 160px; }
+.ctx-table tr:last-child td { border-bottom: none; }
+.ctx-table tr:nth-child(even) td:not(:first-child) { background: #fafafa; }
+
+/* ── SVA 2x2 MATRIX ── */
+.sva-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 36px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  max-width: 760px;
+}
+.sva-body { display: flex; align-items: stretch; }
+.sva-y-label {
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-right: 12px;
+}
+.sva-y-label-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.sva-y-axis-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  color: #bbb;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sva-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 700px;
+}
+.sva-quadrant {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.sva-q-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.sva-q-title {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.sva-assumption-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.sva-assumption-list li {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  padding: 5px 8px;
+  border-radius: 2px;
+  margin-bottom: 0;
+  max-width: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.sva-assumption-list li::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.sva-assumption-list li.wanted::before { background: var(--wanted); }
+.sva-assumption-list li.doable::before { background: var(--doable); }
+.sva-assumption-list li.worthit::before { background: var(--worthit); }
+
+/* Quadrant: Tackle First */
+.q-tackle { background: #fff8e1; border: 2px solid #f57c00; }
+.q-tackle .sva-q-label { color: #f57c00; }
+.q-tackle .sva-q-title { color: #e65100; }
+
+/* Quadrant: Trust But Verify */
+.q-trust { background: #f5f5f5; border: 2px solid #9e9e9e; }
+.q-trust .sva-q-label { color: #757575; }
+.q-trust .sva-q-title { color: #424242; }
+
+/* Quadrant: Validate if Time Allows */
+.q-time { background: #fafafa; border: 1px solid #e0e0e0; }
+.q-time .sva-q-label { color: #bdbdbd; }
+.q-time .sva-q-title { color: #9e9e9e; }
+
+/* Quadrant: Monitor Periodically */
+.q-monitor { background: #f3f3f3; border: 1px solid #ddd; }
+.q-monitor .sva-q-label { color: #aaa; }
+.q-monitor .sva-q-title { color: #888; }
+
+.sva-x-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 60px;
+  padding-top: 10px;
+  width: 700px;
+}
+.sva-x-label { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); }
+.sva-x-axis-label { font-size: 11px; color: #bbb; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ── DIMENSION LEGEND ── */
+.dim-legend {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.dim-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.dim-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── QUESTION ROWS ── */
+.q-row { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 22px 0; border-bottom: 1px solid #eee; align-items: start; }
+.q-row:last-child { border-bottom: none; }
+.q-num { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--pink); opacity: 0.3; }
+.q-body { font-size: 15px; font-weight: 400; color: var(--black); line-height: 1.6; padding-top: 4px; }
+.q-body strong { display: block; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.q-probe { font-size: 12px; color: var(--gray); font-style: italic; display: block; margin-top: 6px; line-height: 1.5; }
+.q-thread { font-size: 12px; color: var(--navy); font-style: italic; font-weight: 600; display: block; margin-top: 6px; line-height: 1.5; }
+.q-sva { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-top: 8px; padding: 4px 8px; display: inline-block; }
+.q-sva-wanted { background: var(--wanted-light); color: var(--wanted); }
+.q-sva-doable { background: var(--doable-light); color: var(--doable); }
+.q-sva-worthit { background: var(--worthit-light); color: var(--worthit); }
+
+.section-dark .q-row { border-bottom-color: rgba(255,255,255,0.08); }
+.section-dark .q-body { color: rgba(255,255,255,0.9); }
+.section-dark .q-probe { color: rgba(255,255,255,0.65); }
+.section-dark .q-thread { color: rgba(180,180,255,0.9); }
+.section-dark .q-num { color: var(--pink); }
+
+/* ── MODULE HEADER ── */
+.module-header {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pink);
+  border-bottom: 2px solid var(--pink);
+  padding-bottom: 8px;
+  margin: 44px 0 4px;
+}
+.module-sva-tag {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 3px 8px;
+  display: inline-block;
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+/* ── HYPOTHESIS CARD ── */
+.hypothesis-card {
+  border: 2px solid var(--navy);
+  padding: 28px 28px 22px;
+  margin-top: 28px;
+  max-width: 760px;
+  background: #f8f8ff;
+}
+.hypothesis-card-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 14px;
+}
+.hypothesis-template {
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 16px;
+}
+.hypothesis-template span {
+  background: #dde;
+  padding: 1px 6px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--navy);
+}
+.hypothesis-template span.wanted { background: var(--wanted-light); color: var(--wanted); }
+.hypothesis-template span.doable { background: var(--doable-light); color: var(--doable); }
+.hypothesis-template span.worthit { background: var(--worthit-light); color: var(--worthit); }
+.hypothesis-note { font-size: 12px; color: #777; line-height: 1.5; margin-bottom: 0; max-width: none; }
+.hyp-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+.hyp-field { border: 1px solid #ccd; background: var(--white); padding: 12px 14px; font-size: 12px; color: #aaa; font-style: italic; min-height: 60px; }
+.hyp-field strong { display: block; font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+
+/* ── HIGHLIGHT BOXES ── */
+.highlight { background: var(--pink); color: var(--white); padding: 22px 26px; margin: 28px 0; font-size: 17px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; max-width: 760px; }
+.highlight-dark { background: rgba(255,0,153,0.1); border-left: 4px solid var(--pink); color: rgba(255,255,255,0.9); padding: 18px 22px; margin: 24px 0; font-size: 14px; line-height: 1.65; max-width: 760px; }
+.highlight-indigo { background: rgba(51,51,153,0.06); border-left: 4px solid var(--navy); color: #222; padding: 18px 22px; margin: 24px 0; font-size: 14px; line-height: 1.65; max-width: 760px; }
+.alvarez-note { background: #f0f0ff; border-left: 4px solid var(--navy); color: #1a1a4a; padding: 16px 22px; margin: 20px 0; font-size: 13px; line-height: 1.7; max-width: 760px; }
+.alvarez-note strong { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 6px; }
+.section-dark .highlight-indigo { background: rgba(51,51,153,0.2); color: rgba(255,255,255,0.85); }
+
+/* ── THRESHOLD GRID ── */
+.threshold-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 28px; border: 1px solid #e0e0e0; }
+.threshold-cell { padding: 22px 20px; border-right: 1px solid #e0e0e0; }
+.threshold-cell:last-child { border-right: none; }
+.threshold-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
+.threshold-cell p { font-size: 13px; color: #444; max-width: none; margin-bottom: 0; }
+
+/* ── OUTCOME ROWS ── */
+.outcome-row { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 0; border-bottom: 1px solid #eee; }
+.outcome-row:last-child { border-bottom: none; }
+.outcome-label { padding: 18px 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; background: #fafafa; border-right: 1px solid #eee; line-height: 1.4; }
+.outcome-body { padding: 18px 20px; font-size: 13px; line-height: 1.65; color: #333; border-right: 1px solid #eee; }
+.outcome-action { padding: 18px 20px; font-size: 13px; line-height: 1.65; color: #555; font-style: italic; }
+
+/* ── DIAG ROWS ── */
+.diag-row { display: grid; grid-template-columns: 36px 200px 1fr; gap: 18px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); align-items: start; }
+.diag-row:last-child { border-bottom: none; }
+.diag-num { font-size: 28px; font-weight: 900; color: var(--pink); line-height: 1; }
+.diag-domain { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--white); line-height: 1.4; }
+.diag-sublabel { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 3px; max-width: none; margin-bottom: 0; }
+.diag-text { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.75); max-width: none; margin-bottom: 0; padding-top: 2px; }
+
+/* ── LOG TABLE ── */
+.log-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 28px; }
+.log-table td { padding: 13px 18px; border-bottom: 1px solid #e8e8e8; vertical-align: top; line-height: 1.55; }
+.log-table td:first-child { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); background: #fafafa; white-space: nowrap; width: 220px; }
+.log-table td:last-child { color: #bbb; font-style: italic; background: #fdfdfd; }
+.log-table tr:last-child td { border-bottom: none; }
+.log-table td.wanted-field { background: var(--wanted-light) !important; }
+.log-table td.doable-field { background: var(--doable-light) !important; }
+.log-table td.worthit-field { background: var(--worthit-light) !important; }
+.log-table td.wanted-label { color: var(--wanted) !important; }
+.log-table td.doable-label { color: var(--doable) !important; }
+.log-table td.worthit-label { color: var(--worthit) !important; }
+
+/* ── ALVAREZ LEGEND PILL ── */
+.alvarez-legend { display: inline-flex; align-items: center; gap: 20px; background: #f8f0ff; border: 1px solid #ddd; padding: 10px 18px; margin: 28px 0 8px; font-size: 12px; }
+.legend-item { display: flex; align-items: center; gap: 7px; color: #333; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--pink); margin: 36px 0; max-width: 80px; }
+.section-dark .divider { background: rgba(255,255,255,0.15); }
+
+/* ── FOOTER ── */
+.footer { background: var(--black); color: rgba(255,255,255,0.6); padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.footer-brand { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; color: var(--white); }
+.footer-brand span { color: var(--pink); }
+
+@media print {
+  .section { page-break-inside: avoid; }
+  .q-row { page-break-inside: avoid; }
+  .diag-row { page-break-inside: avoid; }
+  .sva-container { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Discussion Guide — Internal Use Only — Solve Next</div>
+  <div class="cover-title">Client<br>Pain Point<br><span>Validation.</span></div>
+  <div class="cover-right">
+    <p class="cover-subtitle">A structured listening guide for pre-diagnostic outreach conversations. Built on Lean Customer Development and the SVA Drill: identify which assumptions about Capital Symmetry Governance are Wanted, Doable, and Worth It — then test the Tackle First ones first.</p>
+    <div class="cover-meta">Strategy 3.3 Aligned &nbsp;·&nbsp; Lean CD + SVA Integrated &nbsp;|&nbsp; v4 — Updated April 2026 &nbsp;|&nbsp; Confidential</div>
+  </div>
+</div>
+
+<!-- NAV STRIP -->
+<nav class="nav-strip">
+  <span>How to Use</span>
+  <span>CSG Assumption Map</span>
+  <span>Hypothesis Card</span>
+  <span>Pre-Call Prep</span>
+  <span>Opening Frame</span>
+  <span>Discovery Questions</span>
+  <span>Escalation</span>
+  <span>Closing</span>
+  <span>Signal Log</span>
+  <span>Objection Handling</span>
+</nav>
+
+<!-- HOW TO USE -->
+<div class="section">
+  <div class="section-tag">The Governing Principle</div>
+  <div class="section-title">Test the<br>right assumptions<br><span style="color: var(--pink);">in the right order.</span></div>
+  <p class="lead">These three conversations are not sales calls. They are structured assumption tests. The SVA Drill tells us which assumptions to test first — the ones that are low certainty and high impact. Lean Customer Development tells us how — through stories rooted in past behavior, not opinions about the future.</p>
+
+  <div class="divider"></div>
+
+  <div class="grid-3">
+    <div class="stat-block">
+      <div class="stat-number" style="color: var(--wanted);">W</div>
+      <p class="stat-label"><strong style="color: var(--wanted);">Wanted.</strong> Does the market feel this pain acutely enough to fund action? Is the CEO/CFO mandate tension a real, named governance problem — or an intellectual recognition?</p>
+    </div>
+    <div class="stat-block">
+      <div class="stat-number" style="color: var(--doable);">D</div>
+      <p class="stat-label"><strong style="color: var(--doable);">Doable.</strong> Can we deliver the promise reliably — without Greg in every session, across sectors, producing results a CFO would present to a board without qualification?</p>
+    </div>
+    <div class="stat-block">
+      <div class="stat-number" style="color: var(--worthit);">W</div>
+      <p class="stat-label"><strong style="color: var(--worthit);">Worth It.</strong> Is the business case viable for client and for Solve Next? Will $125K+ move through procurement at mid-enterprise — $150K+ at large enterprise? Does the diagnostic convert to retainers at a rate that funds the architecture?</p>
+    </div>
+  </div>
+
+  <div class="pullquote" style="margin-top: 40px;">"Assumptions in the Tackle First quadrant are the ones that can make or break the opportunity. They have high impact on the outcome — and we don't yet know if they're true. Test those first."<br><span style="font-size: 14px; font-weight: 400; opacity: 0.6;">— SVA Drill, Solve Next</span></div>
+
+  <div class="alvarez-note">
+    <strong>What Changed in v3 — SVA Integration</strong>
+    The CSG Assumption Map (next section) plots all current Capital Symmetry Governance assumptions on the 2x2, color-coded by dimension. The hypothesis card now explicitly names which Tackle First assumption each conversation is designed to test. Each discovery module contains a targeted SVA question designed to move a specific assumption from Low Certainty toward High Certainty. The signal log tracks assumption certainty updates after each conversation. The Colombia debrief aggregate asks which assumptions moved — and which remain stubbornly in Tackle First.
+    <br><br>
+    <strong>What Changed in v4 — Architecture Alignment</strong>
+    Updated to reflect current product architecture. Diagnostic renamed throughout: Growth Gap Diagnostic (not Capital Exposure Diagnostic). Pricing updated to reflect current tiers: $125K mid-enterprise, $150K large enterprise, $175&#x2013;200K complex / regulated. Diagnostic outputs updated: five integrated outputs replace the retired Capital Exposure Score (CES). Capital Sentinel and Growth Gap Phase Assessment added as pre-conversation activation instruments in Pre-Call Prep Step 2 and Signal Log.
+  </div>
+</div>
+
+<!-- CSG ASSUMPTION MAP -->
+<div class="section section-alt">
+  <div class="section-tag">The SVA Drill — Capital Symmetry Governance</div>
+  <div class="section-title">Where our<br>assumptions sit<br>right now.</div>
+  <p class="lead">Every CSG assumption plotted by Certainty (how confident we are) and Impact (how much it affects whether CSG becomes a viable business). The Tackle First quadrant is where the pre-Colombia conversations must focus.</p>
+
+  <div class="dim-legend">
+    <div class="dim-pill"><div class="dim-dot" style="background: var(--wanted);"></div><span style="color: var(--wanted);">Wanted — market feels the pain</span></div>
+    <div class="dim-pill"><div class="dim-dot" style="background: var(--doable);"></div><span style="color: var(--doable);">Doable — we can deliver</span></div>
+    <div class="dim-pill"><div class="dim-dot" style="background: var(--worthit);"></div><span style="color: var(--worthit);">Worth It — business is viable</span></div>
+  </div>
+
+  <div class="sva-container">
+    <div class="sva-body">
+      <div class="sva-y-label">
+        <div class="sva-y-label-text">High</div>
+        <div class="sva-y-axis-label">Impact</div>
+        <div class="sva-y-label-text">Low</div>
+      </div>
+      <div class="sva-grid">
+
+        <!-- TOP LEFT: Tackle First (Low Certainty / High Impact) -->
+        <div class="sva-quadrant q-tackle">
+          <div class="sva-q-label">⚡ Tackle First</div>
+          <div class="sva-q-title">Low Certainty<br>High Impact</div>
+          <ul class="sva-assumption-list">
+            <li class="wanted">CFOs feel the mandate tension as a specific, funded governance problem — not just an interesting frame.</li>
+            <li class="wanted">The pain is acute enough to authorize a $125K+ diagnostic within a normal procurement cycle (mid-enterprise).</li>
+            <li class="wanted">Clients connect their lived governance experience to the cascade narrative unprompted.</li>
+            <li class="doable">The diagnostic produces results a CFO would present to a board without qualification or hedging.</li>
+            <li class="doable">Dani can close a mid-market diagnostic without Greg present by Q3.</li>
+            <li class="worthit">The diagnostic converts to a retainer at a rate that funds the architecture build.</li>
+            <li class="worthit">Retainers renew on Stage movement evidence — not just relationship continuity.</li>
+          </ul>
+        </div>
+
+        <!-- TOP RIGHT: Trust But Verify (High Certainty / High Impact) -->
+        <div class="sva-quadrant q-trust">
+          <div class="sva-q-label">✓ Trust But Verify</div>
+          <div class="sva-q-title">High Certainty<br>High Impact</div>
+          <ul class="sva-assumption-list">
+            <li class="wanted">Enterprises above $100M have capital allocation problems financial reporting misses.</li>
+            <li class="wanted">The rational deferral scene is universally recognized by senior leaders.</li>
+            <li class="wanted">Think Wrong clients have C-suite exposure that can be converted to diagnostic conversations.</li>
+            <li class="doable">The Growth Gap Diagnostic produces defensible, trackable stage movement over 12–18 months.</li>
+            <li class="worthit">The retainer model produces sufficient margin to fund platform development at current pricing.</li>
+          </ul>
+        </div>
+
+        <!-- BOTTOM LEFT: Validate if Time Allows (Low Certainty / Low Impact) -->
+        <div class="sva-quadrant q-time">
+          <div class="sva-q-label">◌ Validate if Time Allows</div>
+          <div class="sva-q-title">Low Certainty<br>Low Impact</div>
+          <ul class="sva-assumption-list">
+            <li class="wanted">Financial services and defence are the highest-leverage sector focus for Year 1.</li>
+            <li class="wanted">The Governor identity resonates as a career aspiration at the CFO level.</li>
+            <li class="doable">The methodology generalizes to public sector without recalibration of weight multipliers.</li>
+          </ul>
+        </div>
+
+        <!-- BOTTOM RIGHT: Monitor Periodically (High Certainty / Low Impact) -->
+        <div class="sva-quadrant q-monitor">
+          <div class="sva-q-label">○ Monitor Periodically</div>
+          <div class="sva-q-title">High Certainty<br>Low Impact</div>
+          <ul class="sva-assumption-list">
+            <li class="wanted">Board-ready PDF export is a valued output for CFOs who present to governance committees.</li>
+            <li class="doable">AI acceleration compresses advisory synthesis time by 25%+ without quality degradation.</li>
+            <li class="worthit">Dashboard access at $20–40K annual is a viable standalone fee after retainer is established.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class="sva-x-footer">
+      <div class="sva-x-label">Low</div>
+      <div class="sva-x-axis-label">Certainty →</div>
+      <div class="sva-x-label">High</div>
+    </div>
+  </div>
+
+  <div class="alvarez-note" style="margin-top: 28px;">
+    <strong>What These Three Conversations Must Move</strong>
+    The pre-Colombia validation is designed to move seven Tackle First assumptions toward higher certainty. Conversations 1 and 2 primarily test the Wanted assumptions. Conversation 3 (diagnostic willingness test) tests the Worth It assumptions. All three conversations have secondary Doable signals embedded in how contacts respond to the cascade narrative and the diagnostic description. After Colombia, the map is updated. Assumptions that remain in Tackle First become the 90-day resolution questions.
+  </div>
+</div>
+
+<!-- HYPOTHESIS CARD -->
+<div class="section">
+  <div class="section-tag">Before Every Call — Lean CD + SVA Discipline</div>
+  <div class="section-title">Name the<br>assumption you're<br>testing.</div>
+  <p class="lead">Write one hypothesis before every conversation. Explicitly name which Tackle First assumption the conversation is designed to test and which dimension it belongs to. The conversation then tests that hypothesis through story extraction — not through survey questions.</p>
+
+  <div class="hypothesis-card">
+    <div class="hypothesis-card-label">Hypothesis Card — Complete Before Every Conversation</div>
+    <div class="hypothesis-template">
+      "I believe <span>[this contact / role]</span> will <span class="wanted">confirm / disconfirm [Wanted assumption]</span> and/or <span class="worthit">reveal evidence on [Worth It assumption]</span> because <span>[this structural reason based on what I know about them]</span>, and I expect it manifests as <span>[this specific story, decision, or workaround they will describe]</span>."
+    </div>
+    <p class="hypothesis-note">Before the call: identify which Tackle First assumption(s) this conversation is primarily testing. After the call: record whether each moved — and in which direction. An assumption that moves from Low Certainty to High Certainty is confirmed. An assumption that proves wrong in an interesting way is the most valuable signal of all.</p>
+    <div class="hyp-fields">
+      <div class="hyp-field"><strong>Primary assumption being tested (name it)</strong>Write the specific Tackle First assumption from the map above.</div>
+      <div class="hyp-field"><strong>Dimension</strong><span style="color: var(--wanted);">Wanted</span> &nbsp;/&nbsp; <span style="color: var(--doable);">Doable</span> &nbsp;/&nbsp; <span style="color: var(--worthit);">Worth It</span></div>
+      <div class="hyp-field"><strong>Post-call: assumption moved?</strong>Confirmed / Partially confirmed / Wrong — interesting / Wrong — expected</div>
+      <div class="hyp-field"><strong>Post-call: what specifically changed?</strong>Record the story or phrase that moved (or failed to move) the assumption.</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px; max-width: 760px;">
+    <p style="font-weight: 700; font-size: 15px; margin-bottom: 12px;">Which assumption does each of the three pre-Colombia conversations test?</p>
+    <table class="ctx-table">
+      <thead><tr><th>Conversation</th><th>Primary assumption tested</th><th>Secondary signals</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1 · CFO mandate tension test</td>
+          <td><span style="color: var(--wanted); font-weight: 700;">WANTED</span> — CFOs feel the mandate tension as a specific, funded governance problem — not just recognition.</td>
+          <td>Worth It signal: does the contact reference a budget context or procurement cycle unprompted?</td>
+        </tr>
+        <tr>
+          <td>2 · Pain point language test</td>
+          <td><span style="color: var(--wanted); font-weight: 700;">WANTED</span> — Clients connect their lived governance experience to the cascade narrative unprompted. The mandate tension framing produces faster recognition than the CSG category name.</td>
+          <td>Doable signal: which language produces a story vs. which produces a generic response?</td>
+        </tr>
+        <tr>
+          <td>3 · Diagnostic willingness test</td>
+          <td><span style="color: var(--worthit); font-weight: 700;">WORTH IT</span> — The pain is acute enough to authorize a $125K+ diagnostic within a normal procurement cycle (mid-enterprise). The diagnostic converts to retainer at a viable rate.</td>
+          <td>Wanted signal: does naming specific outputs (Stage determination, cascade pathway, board-ready briefing) produce urgency or abstraction?</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PRE-CALL PREP -->
+<div class="section section-alt">
+  <div class="section-tag">Pre-Call Preparation — 15 Minutes</div>
+  <div class="section-title">Know before<br>you dial.</div>
+  <p class="lead">15 minutes of preparation changes the quality of assumption signal you receive. Complete all three steps and write the hypothesis card before every conversation.</p>
+
+  <div class="divider"></div>
+
+  <div style="background: rgba(255,0,153,0.04); border: 1px solid rgba(255,0,153,0.2); border-left: 4px solid #FF0099; padding: 18px 22px; margin-bottom: 28px; max-width: 900px;">
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ff0099; margin-bottom: 10px;">Step 0 — Check Pre-Conversation Activation Status</div>
+    <p style="font-size: 14px; font-weight: 400; color: #222; line-height: 1.7; max-width: none; margin-bottom: 10px;">Two entry instruments now activate prospects before any human conversation begins. A contact who has already used either arrives partially activated — the Wanted assumption may already be moving. Check both before you dial.</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+      <div style="background: #fff; border: 1px solid #e0e0e0; border-top: 2px solid #ff0099; padding: 14px 16px;">
+        <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #ff0099; margin-bottom: 6px;">Capital Sentinel (P07 · Live)</div>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-bottom: 8px;">A free AI scan of any named organization — generates a Growth Gap Curve, six-domain status assessment (Human, Intellectual, Reputational, Political, Social, Financial), and a live alert feed. No self-reporting required.</p>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-bottom: 0;"><strong>If this contact has run a scan:</strong> Which domains are at Watch or Alert? What is the Growth Gap index? Use as a story prompt: <em>"I noticed from the Sentinel scan that your [domain] domain showed a Watch signal — walk me through what's been happening in that area."</em> The Wanted assumption may already be partially confirmed.</p>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-top: 8px;"><strong>If they haven't:</strong> Run a scan on their organization yourself before the call. Use it as a preparation tool — the domain signals it surfaces become your story prompts.</p>
+      </div>
+      <div style="background: #fff; border: 1px solid #e0e0e0; border-top: 2px solid #333399; padding: 14px 16px;">
+        <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #333399; margin-bottom: 6px;">Growth Gap Phase Assessment (P01 · Building)</div>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-bottom: 8px;">A self-directed tool that produces a Phase I / II / III cascade determination — where the organization sits in the Growth Gap progression. Ten questions, four minutes. Designed to create self-generated urgency before any conversation begins.</p>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-bottom: 0;"><strong>If this contact has completed the assessment:</strong> Which phase did they score? Phase II and III are your highest-urgency conversations — the Wanted assumption is already confirmed. Open with: <em>"You scored Phase [II/III] — which of the signals it flagged was most recognizable to you?"</em></p>
+        <p style="font-size: 13px; color: #333; line-height: 1.6; max-width: none; margin-top: 8px;"><strong>If they haven't:</strong> Send the Phase Assessment as a pre-call warm-up tool — it activates before you speak, and arrives as a finding, not a pitch.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-weight: 700; font-size: 16px; margin-bottom: 16px; max-width: 100%;">Step 1 — Know the contact's mandate and the story you expect to hear</p>
+  <table class="ctx-table">
+    <thead><tr><th>Role</th><th>Primary mandate</th><th>Story you expect — which Tackle First assumption does it test?</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>CEO</td>
+        <td>Grow. Deploy capital offensively. Build the next capability before competitors force the issue.</td>
+        <td><span style="color: var(--wanted); font-weight: 700;">Wanted:</span> A recent growth investment that was deferred, watered down, or approved without confidence because the non-financial exposure wasn't visible. Ask for that story.</td>
+      </tr>
+      <tr>
+        <td>CFO</td>
+        <td>Protect. Manage exposure. Preserve the cost of capital against unanticipated correction.</td>
+        <td><span style="color: var(--wanted); font-weight: 700;">Wanted + Worth It:</span> A capital allocation decision they approved or blocked where the financial data was incomplete. Ask for that story — then ask what a better-informed version of that decision would have been worth.</td>
+      </tr>
+      <tr>
+        <td>Chief Strategy Officer</td>
+        <td>Sits between both mandates. Owns portfolio allocation against declared priorities.</td>
+        <td><span style="color: var(--wanted); font-weight: 700;">Wanted + Doable:</span> The last time they noticed a gap between declared strategic priorities and actual capital allocation. What happened when they raised it? Did anything change?</td>
+      </tr>
+      <tr>
+        <td>Transformation / Innovation Officer</td>
+        <td>Investment in transformation that doesn't compound — initiatives consuming capital without building capability.</td>
+        <td><span style="color: var(--doable); font-weight: 700;">Doable:</span> An initiative they know should be stopped but hasn't been. What have they tried? The story of what prevented liberation tests whether our governance architecture offers something they haven't already tried.</td>
+      </tr>
+      <tr>
+        <td>Board member / NED</td>
+        <td>Governance and fiduciary accountability. Oversight without adequate visibility.</td>
+        <td><span style="color: var(--worthit); font-weight: 700;">Worth It:</span> A governance decision the board had to make with less information than they wanted. What was the information gap worth — in terms of decisions deferred, risks mispriced, or corrections required afterward?</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-weight: 700; font-size: 16px; margin: 36px 0 16px; max-width: 100%;">Step 2 — 10-minute scan for assumption-relevant signals</p>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label" style="color: var(--wanted);">Wanted signal</div>
+      <div class="card-title">Any visible governance stress?</div>
+      <p class="card-body">Restructuring, leadership turnover, analyst downgrades, or regulatory inquiry in the past 18 months. Each is a story prompt for a specific Tackle First Wanted assumption. "I noticed X — walk me through the governance conversation around that."</p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--doable);">Doable signal</div>
+      <div class="card-title">Any prior governance frameworks in place?</div>
+      <p class="card-body">Big Four governance engagement, internal task force, prior diagnostic output from another firm. If yes: they have already tried to solve a related problem. What did that produce? This tests whether our methodology offers something the prior attempt didn't.</p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--worthit);">Worth It signal</div>
+      <div class="card-title">Any visible capital allocation decisions?</div>
+      <p class="card-body">Major acquisition, transformation program, or capital raise in the last 12 months. These suggest budget authority exists and capital allocation decisions are live. A contact who has recently made a $50M+ decision is a more credible worth-it test than one who hasn't.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">All three</div>
+      <div class="card-title">Strong financials + upstream erosion?</div>
+      <p class="card-body">The highest-value profile: financially strong company whose non-financial capital is quietly deteriorating. Tests all three dimensions simultaneously — the pain is real (Wanted), our detection method adds something financial reporting doesn't (Doable), and the cost of not acting is quantifiable (Worth It).</p>
+    </div>
+  </div>
+
+  <p style="font-weight: 700; font-size: 16px; margin: 36px 0 16px; max-width: 100%;">Step 3 — Set your signal threshold before you dial</p>
+  <div class="threshold-grid">
+    <div class="threshold-cell">
+      <div class="threshold-label" style="color: #2e7d32;">Strong signal</div>
+      <p>The contact tells a specific story, names a capital domain and a decision, has already tried to solve the problem with imperfect results. At least one Tackle First assumption moves from Low to High certainty. The hypothesis is confirmed or interestingly wrong.</p>
+    </div>
+    <div class="threshold-cell">
+      <div class="threshold-label" style="color: #e65100;">Partial signal</div>
+      <p>Recognition is genuine but no past behavior or story surfaces. The contact speaks in generalities. Tackle First assumptions remain at Low Certainty. The hypothesis is neither confirmed nor disconfirmed. Re-test in 90 days.</p>
+    </div>
+    <div class="threshold-cell" style="border-right: none;">
+      <div class="threshold-label" style="color: var(--pink);">Not signal</div>
+      <p>"That sounds interesting." Future-tense responses. No story. No past behavior. No evidence the pain has been felt acutely enough to produce action. No Tackle First assumption moves. Hypothesis cannot be evaluated. Move on.</p>
+    </div>
+  </div>
+</div>
+
+<!-- OPENING FRAME -->
+<div class="section section-dark">
+  <div class="section-tag">Part 1 — Opening the Conversation — Minutes 0–5</div>
+  <div class="section-title">Open with<br><span>the tension.</span><br>Ask for the story.</div>
+  <p class="lead">Do not open with the framework. Open with the tension — and immediately ask for a story. Stories are falsifiable. Opinions are polite. You need stories to move Tackle First assumptions off Low Certainty.</p>
+
+  <div class="divider"></div>
+
+  <p style="color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px; max-width: 100%;">Version A — Warm client or current contact</p>
+  <div class="highlight-dark">
+    "I've been thinking about something we touched on in [context of prior work]. The organizations I'm talking to right now are all navigating the same structural tension — the pressure to grow aggressively and the pressure to protect the cost of that growth. The CFO and the CEO are both right, but most governance systems only give them one set of instruments. <strong>Can you tell me about a recent moment when you felt that tension most acutely — a specific decision where the financial data wasn't giving you the full picture?</strong>"
+    <span style="display: block; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,100,153,0.8);">Testing: WANTED — CFOs feel the mandate tension as a specific, funded governance problem.</span>
+  </div>
+
+  <p style="color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin: 28px 0 14px; max-width: 100%;">Version B — New contact or referral</p>
+  <div class="highlight-dark">
+    "The work I'm focused on right now is about a specific governance problem. Most organizations are trying to govern growth with instruments designed for financial capital — but the things that actually determine whether growth is durable sit in human capital, intellectual capital, and a few other domains that financial reporting doesn't reach. <strong>I'd love to start by hearing about a time when that gap was visible in your organization — a specific decision or situation where you knew something important wasn't in the numbers. Does anything come to mind?</strong>"
+    <span style="display: block; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,100,153,0.8);">Testing: WANTED — Clients connect their lived governance experience to the cascade narrative unprompted.</span>
+  </div>
+
+  <div class="pullquote">Ask one question, then go fully quiet. The story they reach for is the signal. The silence is working. Every sentence you speak is a sentence they are not speaking.</div>
+</div>
+
+<!-- DISCOVERY QUESTIONS -->
+<div class="section">
+  <div class="section-tag">Part 2 — Discovery Questions — Minutes 5–30</div>
+  <div class="section-title">Excavate the story.<br>Move the<br>assumption.</div>
+  <p class="lead">Every question is anchored in past behavior. Each module contains a dedicated SVA question designed to test a specific Tackle First assumption. Use the story thread probes to keep the contact in narrative mode.</p>
+
+  <div class="alvarez-legend">
+    <div class="legend-item"><div class="legend-dot" style="background: var(--gray);"></div><span>Standard probe</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--navy);"></div><span style="color: var(--navy); font-weight: 600;">Story thread</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--pink);"></div><span style="color: var(--pink); font-weight: 600;">Disconfirming</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--wanted);"></div><span style="color: var(--wanted); font-weight: 600;">SVA — Wanted</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--doable);"></div><span style="color: var(--doable); font-weight: 600;">SVA — Doable</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--worthit);"></div><span style="color: var(--worthit); font-weight: 600;">SVA — Worth It</span></div>
+  </div>
+
+  <div class="highlight" style="max-width: 760px; margin-top: 28px;">
+    Story thread sequence — use after any specific story begins: "And then what happened?" → "What did you do next?" → "How did that end up?" → "What did you try in order to solve it?" → "How did that work out?"
+  </div>
+
+  <!-- Module A -->
+  <div class="module-header">Module A — The Mandate Tension · Always ask · Tests Wanted + Worth It Tackle First assumptions</div>
+
+  <div class="q-row">
+    <div class="q-num">A1</div>
+    <div class="q-body">Tell me about the last time a major capital allocation decision was contested inside your organization — between the pressure to invest and the pressure to protect. Walk me through what happened.
+      <span class="q-thread">→ "And then what happened?" / "Who was in the room?" / "How did it resolve?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — moves assumption: CFOs feel the mandate tension as a specific, named governance problem</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">A2</div>
+    <div class="q-body">Think about the last capital investment deferral your organization made — one where the financial model made waiting look safer, even if you suspected the underlying erosion was real. What was the decision, and what happened afterward?
+      <span class="q-thread">→ "How long ago was that?" / "Has that situation changed since?" / "What have you learned from it?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — moves assumption: clients connect their lived governance experience to the cascade narrative unprompted</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">A3</div>
+    <div class="q-body">What have you already tried in order to get better visibility into non-financial exposure — human capital, intellectual capital, anything beyond the financial metrics? What happened when you tried it?
+      <span class="q-thread">→ "Why didn't that fully work?" / "What was missing from that approach?" / "Is it still in place?"</span>
+      <span class="q-sva q-sva-doable">Doable — moves assumption: our methodology offers something prior attempts could not</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">A4</div>
+    <div class="q-body">If you'd had a complete picture of your non-financial capital exposure before that contested decision — a specific score and a set of governance actions — what would it have been worth to have that? In terms of the decision itself, or the confidence with which you made it.
+      <span class="q-probe">This is the Worth It question in story form. Listen for whether they respond with a number, a decision, or a governance improvement — all three are signal. A contact who says "I would have approved the investment with confidence instead of deferring it" has just described the diagnostic's value proposition in their own words.</span>
+      <span class="q-sva q-sva-worthit">Worth It — moves assumption: the pain is acute enough to authorize a $125K+ diagnostic within a normal procurement cycle (mid-enterprise)</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">A5</div>
+    <div class="q-body"><em style="color: var(--pink); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">Disconfirming —</em> What would have to change for this to not be a problem at all? Under what conditions would you feel like you had this fully solved?
+      <span class="q-probe">Tests whether the pain is structural or situational. If they easily describe a condition that resolves it, the pain may not be deep enough to fund a diagnostic. If they struggle to answer, the pain is structural — and a Tackle First Wanted assumption moves toward High Certainty.</span>
+    </div>
+  </div>
+
+  <!-- Module B -->
+  <div class="module-header">Module B — Human Capital · Ask if A surfaces talent or people signals · Tests Wanted Tackle First assumptions</div>
+
+  <div class="q-row">
+    <div class="q-num">B1</div>
+    <div class="q-body">Tell me about a departure in the last 18 months that had a bigger impact on the organization than the official announcement suggested. What happened to the work that person was carrying?
+      <span class="q-thread">→ "How long did it take to feel that?" / "Has it been replaced — or absorbed?" / "Where did that knowledge go?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — surfaces the human capital erosion that precedes financial impact by 12–18 months</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">B2</div>
+    <div class="q-body">Where in your organization have you tried to address a talent or capability gap in the last year — and how did that effort go?
+      <span class="q-thread">→ "What made it harder than expected?" / "What did you learn from that?" / "Is the gap still there?"</span>
+      <span class="q-sva q-sva-doable">Doable — tests whether our human capital diagnostic methodology offers something their prior attempt didn't</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">B3</div>
+    <div class="q-body"><em style="color: var(--pink); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">Disconfirming —</em> If your human capital situation was well-governed — if you had real-time visibility into talent erosion before it reached financial impact — what would you do differently that you can't do now?
+      <span class="q-probe">If they struggle to answer, visibility is not the real problem. If they immediately name three things, the governance gap is real. A Tackle First Wanted assumption moves toward High Certainty.</span>
+    </div>
+  </div>
+
+  <!-- Module C -->
+  <div class="module-header">Module C — Intellectual Capital · Ask if A surfaces technology or systems signals · Tests Wanted + Doable assumptions</div>
+
+  <div class="q-row">
+    <div class="q-num">C1</div>
+    <div class="q-body">Walk me through the last time a technology modernization or systems investment came up for decision and was deferred. What happened in that conversation — and what has happened since?
+      <span class="q-thread">→ "How many cycles has it been deferred?" / "What's the cost of that deferral now compared to when it first came up?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — three or more consecutive deferrals is a Stage 1–2 signal and confirms the cascade narrative</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">C2</div>
+    <div class="q-body">Where has your organization tried to protect or build intellectual capital in the last two years — and what happened? Did it work the way you expected?
+      <span class="q-thread">→ "What made it harder than anticipated?" / "What would you do differently?" / "Is that effort still active?"</span>
+      <span class="q-sva q-sva-doable">Doable — what they tried and failed at defines exactly what our methodology needs to offer that existing approaches cannot</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">C3</div>
+    <div class="q-body"><em style="color: var(--pink); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">Disconfirming —</em> If the deferred modernizations were completed and your core systems were current — what specifically becomes possible that isn't possible now?
+      <span class="q-probe">Tests whether intellectual capital erosion is creating real strategic constraints (Tackle First signal) or just operational friction (lower urgency). Strategic constraints are what the diagnostic is designed to surface.</span>
+    </div>
+  </div>
+
+  <!-- Module D -->
+  <div class="module-header">Module D — Portfolio Allocation · Ask if A surfaces investment drift · Tests Wanted + Worth It assumptions</div>
+
+  <div class="q-row">
+    <div class="q-num">D1</div>
+    <div class="q-body">Tell me about the last time someone in your organization raised the gap between your declared strategic priorities and where the capital was actually going. What happened in that conversation?
+      <span class="q-thread">→ "Who raised it?" / "How was it received?" / "Did anything change as a result?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — the story of what happens when portfolio drift is named reveals the governance detection gap in action</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">D2</div>
+    <div class="q-body">What have you tried in order to stop or exit an initiative that you knew was consuming more than it was building? What happened when you tried?
+      <span class="q-thread">→ "Why was it hard to stop?" / "Who pushed back, and what was their argument?" / "Is it still running?"</span>
+      <span class="q-sva q-sva-doable">Doable — what prevents liberation is the governance problem. Whether we can solve what they've already tried tells us whether our methodology is Doable for this client profile.</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">D3</div>
+    <div class="q-body">If you could quantify the cost of that portfolio drift — the capital consumed by initiatives that weren't building toward your declared priorities — what would be a rough order of magnitude? And what would it have been worth to surface that earlier?
+      <span class="q-probe">This is the Worth It question for portfolio misalignment. A CFO who can put a number on portfolio drift — even a rough one — has just made the diagnostic investment case themselves. Record the exact number or range they name.</span>
+      <span class="q-sva q-sva-worthit">Worth It — moves assumption: the diagnostic investment is proportionate to the cost of the problem it surfaces</span>
+    </div>
+  </div>
+
+  <!-- Module E -->
+  <div class="module-header">Module E — Financial Capital & the Cascade · Use with CFOs and board members · Tests Worth It Tackle First assumptions</div>
+
+  <div class="q-row">
+    <div class="q-num">E1</div>
+    <div class="q-body">Think about the last time your organization's financial performance looked strong but something upstream felt fragile — talent, systems, reputation, something. Did you act on that instinct? What happened?
+      <span class="q-thread">→ "What made you trust or distrust that instinct?" / "In hindsight, was the instinct right?" / "What would you have needed to act on it with confidence?"</span>
+      <span class="q-sva q-sva-wanted">Wanted — the story of an instinct that was right but couldn't be acted on for lack of data is the diagnostic value proposition in their own words</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">E2</div>
+    <div class="q-body">Walk me through the last governance decision you made where you felt you had less information than you needed. What was the decision, and what did you do with the uncertainty?
+      <span class="q-thread">→ "How did that decision turn out?" / "What information, specifically, would have changed it?"</span>
+      <span class="q-sva q-sva-worthit">Worth It — the specific information gap they name is the diagnostic's deliverable. How much was that decision worth? What would better information have been worth?</span>
+    </div>
+  </div>
+
+  <div class="q-row">
+    <div class="q-num">E3</div>
+    <div class="q-body"><em style="color: var(--pink); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">Disconfirming —</em> If you had real-time visibility into non-financial capital exposure — if you could see human, intellectual, and political erosion before it reached the financials — what governance decisions would you make differently? Are there any you wouldn't change at all?
+      <span class="q-probe">The "wouldn't change at all" clause is the disconfirming pressure. If they say everything would change, ask: "What's been in the way of building that visibility?" The answer tests whether our approach is Doable or whether there's a structural barrier we haven't accounted for.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ESCALATION -->
+<div class="section section-dark">
+  <div class="section-tag">Part 3 — The Escalation Question</div>
+  <div class="section-title">Open the<br><span>C-suite door.</span></div>
+  <p class="lead">Use this at the end of any conversation with a mid-level contact. It uses a past-behavior anchor and is designed to surface which Tackle First assumption the C-suite contact would be best positioned to test.</p>
+
+  <div class="divider"></div>
+
+  <p style="color: rgba(255,255,255,0.5); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px; max-width: 100%;">Use verbatim</p>
+  <div class="highlight" style="max-width: 760px;">
+    "Of the stories we've explored today — which one, if the underlying assumption turned out to be wrong, would change a capital allocation decision that only your CFO or CEO has the authority to make?"
+  </div>
+
+  <div class="diag-row">
+    <div class="diag-num">01</div>
+    <div>
+      <div class="diag-domain">Story named + executive named</div>
+      <p class="diag-sublabel">Direct ask available</p>
+    </div>
+    <p class="diag-text">"That story is exactly the kind of governance gap the diagnostic is designed to surface — and it sits at [CFO/CEO]'s level to resolve. Would it make sense to have a 30-minute conversation with them about what that story looks like from their vantage point? Not a proposal — just continuing the conversation one level up." Make the ask immediately.</p>
+  </div>
+  <div class="diag-row">
+    <div class="diag-num">02</div>
+    <div>
+      <div class="diag-domain">Story named, no executive named</div>
+      <p class="diag-sublabel">Indirect pathway</p>
+    </div>
+    <p class="diag-text">"Who in your organization would be most directly affected if that story played out again — and would it be appropriate to copy them on a brief note summarizing what we discussed today?" The note becomes the introduction vehicle.</p>
+  </div>
+  <div class="diag-row">
+    <div class="diag-num">03</div>
+    <div>
+      <div class="diag-domain">No story surfaced</div>
+      <p class="diag-sublabel">Follow-up note only</p>
+    </div>
+    <p class="diag-text">"That's useful context — it tells me the governance gap may still be below the surface in your organization. Let me follow up with a short note on what the diagnostic typically surfaces, and we can decide together whether it's worth taking further." Do not push for the introduction.</p>
+  </div>
+</div>
+
+<!-- CLOSING -->
+<div class="section">
+  <div class="section-tag">Part 4 — Closing the Conversation</div>
+  <div class="section-title">Know which<br>outcome you're in<br>before you close.</div>
+  <p class="lead">Every conversation ends with one of four outcomes. The strongest diagnostic candidate is a contact who has tried to solve the problem, found the attempt insufficient, and can quantify — even roughly — what a complete solution would be worth. That profile moves multiple Tackle First assumptions simultaneously.</p>
+
+  <div class="divider"></div>
+
+  <div style="border: 1px solid #e0e0e0; margin-top: 28px;">
+    <div class="outcome-row" style="background: #f8fff8; border-bottom: 1px solid #e0e0e0;">
+      <div class="outcome-label" style="color: #2e7d32; border-right: 1px solid #e0e0e0;">01 · Diagnostic<br>candidate<br>Proceed</div>
+      <div class="outcome-body"><strong>SVA signal:</strong> Wanted assumption confirmed (specific story, real decision). Worth It assumption confirmed (contact quantified the cost or referenced a budget). Doable signal present (prior attempts didn't fully solve it).<br><br><em>Closing language:</em> "Based on the situation you described — particularly [specific story element] — the Growth Gap Diagnostic would produce five things directly relevant to that: a Capital Symmetry Stage determination set by your lowest-scoring capital domain, an evidence quality audit across all six capital forms, a cascade pathway analysis, an entropy force assessment, and a board-ready governance briefing with governance actions your CFO and CEO can authorize. Can I send you a two-page description?"</div>
+      <div class="outcome-action">Send the two-page diagnostic brief within 24 hours. Reference the specific story in the covering note. Update the assumption map: mark the Wanted and Worth It Tackle First assumptions as High Certainty for this profile.</div>
+    </div>
+    <div class="outcome-row" style="border-bottom: 1px solid #e0e0e0;">
+      <div class="outcome-label" style="color: #e65100; border-right: 1px solid #e0e0e0;">02 · Warm<br>Re-engage<br>in 90 days</div>
+      <div class="outcome-body"><strong>SVA signal:</strong> Wanted assumption partially confirmed (recognition, no specific story). Worth It assumption not tested (no past behavior surfaced). Tackle First assumptions remain at Low Certainty.<br><br><em>Closing language:</em> "This has been a useful conversation. The gap you described is one we see frequently — and when it becomes concrete in a specific decision, that's usually when the diagnostic has the most value. I'll send you a short essay that explores the financial translation of this kind of exposure."</div>
+      <div class="outcome-action">Calendar a 90-day follow-up. A triggering event — a departure, a board question, a failed initiative — is what turns Low Certainty into High Certainty on the Wanted assumptions.</div>
+    </div>
+    <div class="outcome-row" style="border-bottom: 1px solid #e0e0e0;">
+      <div class="outcome-label" style="color: var(--navy); border-right: 1px solid #e0e0e0;">03 · Introduction<br>requested<br>Escalate</div>
+      <div class="outcome-body"><strong>SVA signal:</strong> Wanted assumption confirmed at mid-level. Worth It assumption requires C-suite conversation to test. Introduction is the mechanism to test the remaining Tackle First assumptions at the right level.<br><br><em>Closing language:</em> "The best context for [name] is the story you described about [specific situation]. I'll keep it to 30 minutes. Can I draft a short note you can forward — referencing that situation — so [name] has context before we speak?"</div>
+      <div class="outcome-action">Draft the forwarding note the same day. Four sentences, specific to the story. The C-suite conversation is designed to test the Worth It Tackle First assumptions that cannot be tested at the mid-level.</div>
+    </div>
+    <div class="outcome-row">
+      <div class="outcome-label" style="color: #777; border-right: 1px solid #e0e0e0;">04 · Not a<br>candidate<br>Close cleanly</div>
+      <div class="outcome-body"><strong>SVA signal:</strong> No Tackle First assumptions moved. Disconfirming questions revealed the pain is situational, not structural. Or the contact could easily describe conditions that would resolve the problem — meaning it's not deeply structural.<br><br><em>Closing language:</em> "This has been a good conversation. It sounds like the governance architecture you have is working for now. If the capital allocation pressures shift, I'd welcome the chance to reconnect."</div>
+      <div class="outcome-action">Log the outcome and what the disconfirming questions revealed. A clean close updates the assumption map: this profile does not move the Wanted Tackle First assumptions. Refine the target profile before the next conversation.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNAL LOG -->
+<div class="section section-alt">
+  <div class="section-tag">Part 5 — Signal Log</div>
+  <div class="section-title">Record the stories.<br>Update the<br>assumption map.</div>
+  <p class="lead">Complete within 24 hours. The signal log is the Colombia debrief input. The assumption update fields are as important as the story fields — they translate individual conversations into a structured evidence base for the SVA map.</p>
+
+  <div class="highlight" style="max-width: 760px;">
+    The assumption update fields are not optional. If you cannot record whether any Tackle First assumption moved, the conversation did not produce usable signal. You collected an impression. Impressions do not move the map.
+  </div>
+
+  <table class="log-table">
+    <tbody>
+      <tr><td>Contact name and role</td><td></td></tr>
+      <tr><td>Organisation and sector</td><td></td></tr>
+      <tr><td>Date and format</td><td></td></tr>
+      <tr><td>Conversation type</td><td>Warm client &nbsp;/&nbsp; TW sponsor &nbsp;/&nbsp; Referral &nbsp;/&nbsp; Cold outreach follow-up</td></tr>
+      <tr style="background: rgba(255,0,153,0.03);">
+        <td style="color: #ff0099; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: rgba(255,0,153,0.05); white-space: nowrap; width: 160px; padding: 13px 16px; vertical-align: top;">Capital Sentinel scan</td>
+        <td style="padding: 13px 16px; vertical-align: top; font-size: 14px; line-height: 1.55; color: #222;">Did this contact run a Capital Sentinel scan before the call? If yes: which domains were flagged at Watch or Alert? What was the Growth Gap index score? Did the scan surface the story prompt that led to this conversation?</td>
+      </tr>
+      <tr style="background: rgba(51,51,153,0.03);">
+        <td style="color: #333399; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: rgba(51,51,153,0.05); white-space: nowrap; width: 160px; padding: 13px 16px; vertical-align: top;">Phase Assessment result</td>
+        <td style="padding: 13px 16px; vertical-align: top; font-size: 14px; line-height: 1.55; color: #222;">Did this contact complete the Growth Gap Phase Assessment before the call? If yes: which phase did they score (I / II / III)? Did the phase determination accelerate the Wanted assumption confirmation?</td>
+      </tr>
+      <tr><td>Pre-call hypothesis</td><td>Write the hypothesis you wrote before the call. Do not rewrite it after.</td></tr>
+      <tr><td>Hypothesis outcome</td><td>Confirmed &nbsp;/&nbsp; Partially confirmed &nbsp;/&nbsp; Wrong — interesting &nbsp;/&nbsp; Wrong — expected</td></tr>
+      <tr><td class="wanted-label">Wanted assumption update</td><td class="wanted-field">Which Wanted Tackle First assumption moved? In which direction? What story or phrase moved it? If none moved, why not?</td></tr>
+      <tr><td class="doable-label">Doable assumption update</td><td class="doable-field">What did the contact's prior attempts reveal about whether our methodology offers something different? Did anything surface that suggests our approach is harder than assumed?</td></tr>
+      <tr><td class="worthit-label">Worth It assumption update</td><td class="worthit-field">Did the contact quantify the cost of the problem — even roughly? What number or decision did they name? Did anything suggest the $125K+ diagnostic investment would face procurement resistance? Which pricing tier ($125K / $150K / $175&#x2013;200K) does their profile and sector suggest?</td></tr>
+      <tr><td>Stories told — verbatim summary</td><td>The specific decision, domain, person, and outcome named. Record with enough detail to use in the diagnostic proposal.</td></tr>
+      <tr><td>Exact phrases used</td><td>Record verbatim — especially any language more precise than what is currently in our commercial materials.</td></tr>
+      <tr><td>What have they already tried?</td><td>Every prior attempt to solve the problem. What worked? What failed? What's still in place?</td></tr>
+      <tr><td>Disconfirming question result</td><td>Structural pain (struggled to describe conditions that would resolve it) — or — Situational pain (answered easily)?</td></tr>
+      <tr><td>Closing outcome</td><td>Diagnostic candidate — proceed &nbsp;/&nbsp; Warm — 90 days &nbsp;/&nbsp; Introduction requested &nbsp;/&nbsp; Not a candidate</td></tr>
+      <tr><td>Agreed next step and date</td><td></td></tr>
+      <tr><td>One surprise</td><td>Something that did not fit the hypothesis. The most valuable signal of all.</td></tr>
+      <tr><td>One phrase to steal</td><td>The most precise thing they said that we should use in the commercial brief or diagnostic proposal.</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-weight: 700; font-size: 16px; margin: 40px 0 16px; max-width: 100%;">Colombia debrief aggregate — complete after all three conversations</p>
+  <table class="ctx-table">
+    <thead><tr><th>#</th><th>Question</th><th>Your answer</th></tr></thead>
+    <tbody>
+      <tr><td>Q1</td><td><span style="color: var(--wanted); font-weight: 700;">WANTED</span> — Which Wanted Tackle First assumptions have moved from Low to High Certainty? Which remain Low? What profile of contact confirmed them?</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+      <tr><td>Q2</td><td><span style="color: var(--doable); font-weight: 700;">DOABLE</span> — What did contacts' prior attempts reveal about whether our methodology is genuinely differentiated? Did anything suggest a Doable assumption is more uncertain than we thought?</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+      <tr><td>Q3</td><td><span style="color: var(--worthit); font-weight: 700;">WORTH IT</span> — Did any contact quantify the cost of the problem? What was the number or decision? What does this tell us about the $125K+ diagnostic pricing and procurement pathway? Which tier — mid-enterprise ($125K), large enterprise ($150K), or complex ($175&#x2013;200K) — does this contact profile suggest?</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+      <tr><td>Q4</td><td>Which Tackle First assumptions remain stubbornly Low Certainty after all three conversations? These become Colombia's resolution questions — not aspirations.</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+      <tr><td>Q5</td><td>What exact phrases did contacts use that are more precise than our current commercial language? Which should replace what we currently say?</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+      <tr><td>Q6</td><td>What moved from Tackle First to Trust But Verify? What should be added to Tackle First that wasn't there before?</td><td style="color: #bbb; font-style: italic;">Record here</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- OBJECTION HANDLING -->
+<div class="section section-dark">
+  <div class="section-tag">Appendix — Handling Common Responses</div>
+  <div class="section-title">What to say<br><span>when they push back.</span></div>
+  <p class="lead">Handle objections without defensiveness. Where possible, respond with a question that returns to past behavior — and that simultaneously tests a Tackle First assumption. The goal is not to win the debate. It is to keep the assumption test alive.</p>
+
+  <div class="divider"></div>
+
+  <div class="q-row">
+    <div class="q-num">01</div>
+    <div class="q-body"><strong>"We already have McKinsey / Deloitte / EY advising us on governance."</strong>
+      "Those firms are very capable. The difference is the instrument set — a governance engagement anchored in financial metrics can only surface exposure that your financial system is already measuring. The diagnostic surfaces what financial reporting cannot see."
+      <span class="q-thread">→ "When your existing advisors last assessed governance risk — which of the six capital domains was in their dataset? Has there been a situation where you felt their advice was limited by the data they had?" Testing: <span style="color: rgba(180,180,255,0.8);">DOABLE — our methodology offers something prior approaches cannot.</span></span>
+    </div>
+  </div>
+  <div class="q-row">
+    <div class="q-num">02</div>
+    <div class="q-body"><strong>"We have good governance processes."</strong>
+      "Can I ask — when your governance processes last flagged a concern in human capital or intellectual capital specifically, before it showed up in the financials, what did that look like? What was the mechanism?"
+      <span class="q-probe">If they cannot describe a specific instance, the Wanted assumption is confirmed and the Doable assumption is neutral. If they describe a working mechanism, you learn what already exists — and what it misses.</span>
+    </div>
+  </div>
+  <div class="q-row">
+    <div class="q-num">03</div>
+    <div class="q-body"><strong>"What does this cost?"</strong>
+      "Before I give you the investment, let me describe what you receive — because the price makes more sense in context." [Describe five diagnostic outputs: Stage determination, evidence quality audit, cascade pathway analysis, entropy force assessment, board-ready governance briefing.] "The investment starts at $125,000 for a mid-enterprise organization, $150,000 for a large enterprise, and $175&#x2013;200,000 for complex or regulated sectors. For context: a one-notch credit downgrade on a $10 billion debt position costs $75&#x2013;$150 million annually."
+      <span class="q-probe">Worth It assumption test: if they respond to the $75–$150M figure with recognition ("that's the kind of risk we're managing"), the worth-it assumption is moving toward High Certainty. If they ask for a smaller scope, it may be in Monitor Periodically for this contact today.</span>
+    </div>
+  </div>
+  <div class="q-row">
+    <div class="q-num">04</div>
+    <div class="q-body"><strong>"We are not ready for something like this right now."</strong>
+      "Understood. Can I ask what's made the timing difficult? Has there been a moment recently when the timing felt closer — what was happening then?"
+      <span class="q-thread">→ Return to the story of when the problem was most acute. This tests the Wanted assumption: is the pain structural and persistent, or situational and resolved? The answer tells us whether this assumption is Low or High Certainty for this profile.</span>
+    </div>
+  </div>
+  <div class="q-row">
+    <div class="q-num">05</div>
+    <div class="q-body"><strong>"How is this different from what we already measure?"</strong>
+      "Which of the five non-financial capitals — human, intellectual, political, reputational, social — does your current system give you a leading indicator for? Can you describe what that looks like for human capital specifically?"
+      <span class="q-probe">If they describe a specific mechanism: you learn what exists and what it misses. Doable assumption test: does our methodology offer genuine incremental value, or does it duplicate what they already have? A contact who has a partial solution is the best diagnostic candidate — they know the value of better data.</span>
+    </div>
+  </div>
+  <div class="q-row">
+    <div class="q-num">06</div>
+    <div class="q-body"><strong>"This sounds like it could apply to any organization."</strong>
+      "It does apply broadly — but the specific capital domains most at risk, and the governance actions with highest urgency, are specific to each organization. Based on what you described about [story they told] — what we'd produce for you would be specific to that context."
+      <span class="q-probe">This objection is often a buying signal: they are checking whether the output would be specific to them. Confirming that it would — by referencing the story they told — simultaneously tests the Doable assumption: can we credibly promise specificity for their profile?</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>
+    <div class="footer-brand">Solve<span>Next</span></div>
+    <div style="margin-top: 5px;">Client Pain Point Validation Guide &nbsp;·&nbsp; v3.0 &nbsp;·&nbsp; Lean CD + SVA Integrated</div>
+  </div>
+  <div style="text-align: right;">
+    <div>March–April 2026</div>
+    <div style="margin-top: 3px; color: rgba(255,255,255,0.55);">Confidential — Internal Use Only &nbsp;·&nbsp; Strategy 3.3 Aligned</div>
+  </div>
+</div>
+
+</body>
+</html>
